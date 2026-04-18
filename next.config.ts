@@ -60,6 +60,15 @@ const nextConfig: NextConfig = {
   },
   // Compress output
   compress: true,
+  // Fix dynamic uploads not showing in production
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: "/api/uploads/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
