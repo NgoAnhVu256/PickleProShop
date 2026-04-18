@@ -7,8 +7,8 @@ services:
       POSTGRES_USER: pickleuser
       POSTGRES_PASSWORD: picklepassword
       POSTGRES_DB: picklepro
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
