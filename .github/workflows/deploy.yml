@@ -1,4 +1,4 @@
-name: Xây dựng & Cập Nhật PicklePro VPS (Enterprise GHCR)
+name: Xây dựng & Cập Nhật PicklePro VPS
 
 on:
   push:
@@ -6,79 +6,50 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  # Chuyển tên repo về chữ thường vì Docker không chấp nhận chữ hoa
-  IMAGE_NAME: ngoanhvu256/pickleproshop
-
 jobs:
-  build-and-push:
-    name: Build & Đóng gói Container lên Cloud
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    
-    steps:
-      - name: Lấy mã nguồn mới nhất
-        uses: actions/checkout@v4
-
-      - name: Đăng nhập vào GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build và Push Docker Image siêu tốc
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
   deploy:
-    name: Triển Khai Xuống VPS
-    needs: build-and-push
+    name: Triển Khai Code Tới VPS
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
     steps:
-      - name: Kích hoạt cài đặt vào VPS qua SSH
+      - name: Deploy to VPS qua SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          # Kịch bản thực thi trên máy chủ (VPS)
           script: |
-            # 1. Vào đúng thư mục dự án
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # 1. Vào thư mục dự án
             cd ~/PicklePro || exit 1
             
-            # 2. Cập nhật docker-compose.yml mới nhất
+            # 2. Lấy code mới nhất
             git fetch --all
             git reset --hard origin/main
             
-            # 3. Đăng nhập GHCR bằng thẻ uỷ quyền
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # 3. Xoá rác ngoài dự án (tránh lỗi lockfile trùng)
+            rm -rf /root/package-lock.json /root/node_modules /root/package.json /root/.next
             
-            # 4. Kéo nguyên cái Hộp Container đã build sẵn về và tráo đổi với hộp cũ
-            docker compose pull web
-            docker compose up -d web
+            # 4. Cài đặt gói
+            npm install --legacy-peer-deps
             
-            # 5. Cập nhật nhẹ cấu trúc DB và thoát
-            sleep 5
-            docker exec picklepro-web npx prisma db push --accept-data-loss || true
+            # 5. Prisma
+            npx prisma generate
+            npx prisma db push
             
-            # 6. Dọn dẹp rác tủ kính cũ bảo vệ RAM VPS
-            docker image prune -a -f
+            # 6. Build
+            NODE_ENV=production npm run build
+            
+            # 7. Khởi động PM2
+            pm2 restart picklepro --update-env || pm2 start npm --name "picklepro" -- run start
+            pm2 save
 
   notify:
     name: Thông báo trạng thái (Email)
     needs: deploy
     runs-on: ubuntu-latest
-    if: always() # Luôn luôn chạy dù cho bước Deploy trên kia thành công hay nổ lỗi
+    if: always()
     steps:
       - name: Send Deployment Status Email
         uses: dawidd6/action-send-mail@v3
@@ -88,14 +59,12 @@ jobs:
           secure: true
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: '[PicklePro] Triển khai GHCR Enterprise ${{ needs.deploy.result == ''success'' && ''THÀNH CÔNG 🚀'' || ''THẤT BẠI ❌'' }}'
+          subject: '[PicklePro] Deploy ${{ needs.deploy.result == ''success'' && ''THÀNH CÔNG 🎉'' || ''THẤT BẠI ❌'' }}'
           to: ${{ secrets.TO_EMAIL }}
           from: PicklePro CI/CD Bot
           body: |
             Xin chào!
-
-            Tiến trình tự động hoá CI/CD Enterprise (Cloud Build) vừa hoàn tất xử lý.
-            Trạng thái hiện tại: ${{ needs.deploy.result }}
             
-            Nhánh đẩy: ${{ github.ref_name }}
-            Lịch sử log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Trạng thái: ${{ needs.deploy.result }}
+            Nhánh: ${{ github.ref_name }}
+            Log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
