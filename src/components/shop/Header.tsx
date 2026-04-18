@@ -213,7 +213,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
             /* Not logged in */
             <div className="hidden lg:flex items-center gap-4 text-xs xl:text-sm font-bold">
               <Link href="/login" className="text-gray-600 hover:text-[#a757ff]">Đăng nhập</Link>
-              <Link href="/register" className="bg-gradient-to-r from-[#4f46e5] to-[#a757ff] text-white px-6 py-2 rounded-full shadow-sm hover:shadow-md transition-all">Tham gia</Link>
+              <Link href="/register" className="bg-gradient-to-r from-[#4f46e5] to-[#a757ff] text-white px-6 py-2 rounded-full shadow-sm hover:shadow-md transition-all">Đăng ký</Link>
             </div>
           )}
 

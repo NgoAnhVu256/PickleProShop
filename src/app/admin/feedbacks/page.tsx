@@ -118,8 +118,10 @@ export default function AdminFeedbackPage() {
         setShowBannerForm(false);
         setBannerForm({ title: "", image: "", link: "", isActive: true });
         setEditingBannerId(null);
+      } else {
+        toast.error(data.error || "Lỗi tạo banner");
       }
-    } catch { toast.error("Lỗi lưu banner"); }
+    } catch (err: any) { toast.error("Lỗi lưu banner: " + (err?.message || "Kết nối thất bại")); }
   };
 
   const handleDeleteBanner = async (id: string) => {
