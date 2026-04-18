@@ -1,0 +1,74 @@
+name: Xây dựng & Cập Nhật PicklePro VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Cho phép ấn nút chạy tay trên giao diện Action
+
+jobs:
+  deploy:
+    name: Triển Khai Code Tới VPS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS qua SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          # Kịch bản thực thi trên máy chủ (VPS)
+          script: |
+            # 1. Tìm đúng vào thư mục hiện chứa code (nếu clone nơi khác hãy sửa dòng này)
+            cd PicklePro || exit 1
+            
+            # 2. Lấy nhánh mới nhất xuống
+            git fetch --all
+            git reset --hard origin/main
+            git pull origin main
+            
+            # 3. Cài đặt các gói phần mềm (nếu có bổ sung thư viện backend/frontend)
+            npm install
+            
+            # 4. Giao tiếp đồng bộ cho Cơ sở dữ liệu Postgres
+            npx prisma generate
+            npx prisma db push
+            
+            # 5. Đóng gói mã nguồn 
+            npm run build
+            
+            # 6. Khởi chạy lại bộ cân bằng tải PM2 Picklepro
+            pm2 restart picklepro --update-env || pm2 start npm --name "picklepro" -- run start
+
+  notify:
+    name: Thông báo trạng thái (Email)
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always() # Luôn luôn chạy dù cho bước Deploy trên kia thành công hay nổ lỗi
+    steps:
+      - name: Send Deployment Status Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          # Phân tách tuỳ đề: Thất Bại hay Thành công
+          subject: '[PicklePro] Triển khai hệ thống ${{ needs.deploy.result == ''success'' && ''THÀNH CÔNG 🎉'' || ''THẤT BẠI ❌'' }}'
+          to: ${{ secrets.TO_EMAIL }}
+          from: PicklePro CI/CD Bot
+          # Nội dung thông điệp
+          body: |
+            Xin chào!
+
+            Tiến trình tự động hoá CI/CD cập nhật cho cửa hàng PicklePro vừa hoàn tất xử lý.
+            Trạng thái hiện tại: ${{ needs.deploy.result }}
+            
+            Thông tin mã nguồn:
+            - Nhánh đẩy (Branch): ${{ github.ref_name }}
+            - Tài khoản (Actor): ${{ github.actor }}
+            - Xem lịch sử log cập nhật tại: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            Hãy truy cập VPS để kiểm tra nếu trạng thái trả về là Thất Bại (failure).
+            Trân trọng!

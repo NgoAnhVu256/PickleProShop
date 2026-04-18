@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: picklepro-db
+    restart: always
+    environment:
+      POSTGRES_USER: pickleuser
+      POSTGRES_PASSWORD: picklepassword
+      POSTGRES_DB: picklepro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 512M # Limit memory for 4GB RAM VPS optimization
+
+volumes:
+  postgres_data:
