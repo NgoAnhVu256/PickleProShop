@@ -18,7 +18,7 @@ services:
       retries: 10
 
   web:
-    build: .
+    image: ghcr.io/ngoanhvu256/pickleproshop:latest
     container_name: picklepro-web
     restart: always
     depends_on:
