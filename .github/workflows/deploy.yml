@@ -41,6 +41,9 @@ jobs:
     name: Triển Khai Xuống VPS
     needs: build-and-push
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Kích hoạt cài đặt vào VPS qua SSH
         uses: appleboy/ssh-action@v1.0.3
