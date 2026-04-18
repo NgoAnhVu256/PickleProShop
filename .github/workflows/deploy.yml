@@ -17,6 +17,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
+          command_timeout: 15m
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -29,19 +30,22 @@ jobs:
             git reset --hard origin/main
             
             # 3. Xoá rác ngoài dự án (tránh lỗi lockfile trùng)
-            rm -rf /root/package-lock.json /root/node_modules /root/package.json /root/.next
+            rm -rf /root/package-lock.json /root/node_modules /root/package.json /root/.next /root/pages
             
-            # 4. Cài đặt gói
+            # 4. Xoá cache build cũ (tránh lỗi JSON parse)
+            rm -rf .next tsconfig.tsbuildinfo
+            
+            # 5. Cài đặt gói
             npm install --legacy-peer-deps
             
-            # 5. Prisma
+            # 6. Prisma
             npx prisma generate
             npx prisma db push
             
-            # 6. Build
-            NODE_ENV=production npm run build
+            # 7. Build (KHÔNG đặt NODE_ENV thủ công - Next.js tự xử lý)
+            NODE_OPTIONS="--max-old-space-size=2048" npm run build
             
-            # 7. Khởi động PM2
+            # 8. Khởi động PM2
             pm2 restart picklepro --update-env || pm2 start npm --name "picklepro" -- run start
             pm2 save
 
