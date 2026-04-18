@@ -12,6 +12,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Add Prisma generation
 RUN npx prisma generate
+ENV AUTH_SECRET="luon-chay-khi-build-de-nextauth-khong-crash"
 RUN npm run build
 
 # Stage 3: Runner
