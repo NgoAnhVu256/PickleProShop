@@ -61,7 +61,7 @@ export default function NotFound() {
       <div className="absolute top-10 left-10 w-20 h-20 bg-white/5 rounded-full blur-xl" />
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#a757ff]/10 rounded-full blur-3xl animate-pulse" />
 
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes bounce-slow {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-20px); }
@@ -69,7 +69,7 @@ export default function NotFound() {
         .animate-bounce-slow {
           animation: bounce-slow 4s ease-in-out infinite;
         }
-      `}</style>
+      `}} />
     </div>
   );
 }
