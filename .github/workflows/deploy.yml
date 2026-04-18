@@ -42,7 +42,8 @@ jobs:
             npx prisma generate
             npx prisma db push
             
-            # 7. Build (KHÔNG đặt NODE_ENV thủ công - Next.js tự xử lý)
+            # 7. Build (unset NODE_ENV để Next.js tự xử lý - tránh xung đột từ .env)
+            unset NODE_ENV
             NODE_OPTIONS="--max-old-space-size=2048" npm run build
             
             # 8. Khởi động PM2

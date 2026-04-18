@@ -258,9 +258,6 @@ export default function AdminCategoriesPage() {
           </tbody>
         </table>
       </div>
-      <style jsx>{`
-        .input-label { display: block; font-size: 13px; font-weight: 600; color: #5a6677; margin-bottom: 6px; }
-      `}</style>
     </div>
   );
 }

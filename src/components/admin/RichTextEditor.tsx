@@ -79,30 +79,6 @@ export default function RichTextEditor({ value, onChange, height = 400, placehol
           }
         }}
       />
-      <style jsx global>{`
-        .rich-text-editor-wrapper {
-          border-radius: 12px;
-          overflow: hidden;
-          border: 1px solid #eef2f7;
-        }
-        .tox-tinymce {
-          border: none !important;
-        }
-        .video-container {
-          position: relative;
-          padding-bottom: 56.25%;
-          height: 0;
-          overflow: hidden;
-          max-width: 100%;
-        }
-        .video-container iframe {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
-      `}</style>
     </div>
   );
 }

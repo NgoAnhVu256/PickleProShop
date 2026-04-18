@@ -406,13 +406,6 @@ export default function AdminCreateProduct() {
         </div>
       </form>
 
-      <style jsx>{`
-        .section-title { font-size: 16px; font-weight: 700; color: #323b4b; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-        .input-label { display: block; font-size: 13px; font-weight: 600; color: #5a6677; margin-bottom: 6px; }
-        .spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @media (max-width: 1024px) { .admin-grid-layout { grid-template-columns: 1fr !important; } }
-      `}</style>
     </div>
   );
 }

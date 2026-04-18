@@ -297,11 +297,6 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
           })}
         </div>
       </nav>
-
-      <style jsx>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </header>
   );
 }

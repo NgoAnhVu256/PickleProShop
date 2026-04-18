@@ -242,11 +242,6 @@ export default function AdminEditPost({ params }: { params: Promise<{ id: string
           </div>
         </div>
       </form>
-      <style jsx>{`
-        .input-label { display: block; font-size: 13px; font-weight: 600; color: #5a6677; margin-bottom: 6px; }
-        .spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   );
 }
