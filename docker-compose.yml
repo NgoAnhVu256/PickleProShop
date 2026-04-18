@@ -11,10 +11,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          memory: 512M # Limit memory for 4GB RAM VPS optimization
+
+  web:
+    build: .
+    container_name: picklepro-web
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://pickleuser:picklepassword@db:5432/picklepro?schema=public
 
 volumes:
   postgres_data:
