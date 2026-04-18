@@ -69,17 +69,18 @@ export async function chatWithGemini(
     } catch (error: any) {
       console.error(`[Gemini] Error with model ${modelName}:`, error?.message || error);
       
-      if (error?.status === 429 || error?.message?.includes("429")) {
-        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng từ từ gõ lại câu hỏi sau ít phút nữa để mình sắp xếp trả lời nhé! 🏓 (Error: Quá tải hệ thống)";
-      }
-
-      // If this isn't the last model, try next one
+      // If this isn't the last model, try next one (including for 429)
       if (modelName !== modelNames[modelNames.length - 1]) {
         console.log(`[Gemini] Falling back to next model...`);
         continue;
       }
 
-      return "Đã có lỗi đường truyền dẫn đến cửa hàng. Mình xin lỗi bạn, bạn vui lòng thử lại sau nhé!";
+      // Last model also failed
+      if (error?.status === 429 || error?.message?.includes("429")) {
+        return "Xin lỗi bạn, hệ thống AI đang quá tải. Bạn vui lòng thử lại sau 1 phút nhé! 🏓";
+      }
+
+      return "Đã có lỗi đường truyền. Mình xin lỗi bạn, bạn vui lòng thử lại sau nhé!";
     }
   }
 
