@@ -10,6 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // Credentials provider must use jwt strategy — these co-exist in NextAuth v5
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
