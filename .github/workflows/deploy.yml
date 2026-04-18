@@ -19,26 +19,24 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           # Kịch bản thực thi trên máy chủ (VPS)
           script: |
-            # 1. Tìm đúng vào thư mục hiện chứa code (nếu clone nơi khác hãy sửa dòng này)
-            cd PicklePro || exit 1
+            # 1. Vào đúng thư mục dự án
+            cd ~/PicklePro || exit 1
             
-            # 2. Lấy nhánh mới nhất xuống
+            # 2. Lấy code mới nhất
             git fetch --all
             git reset --hard origin/main
-            git pull origin main
             
-            # 3. Cài đặt các gói phần mềm (nếu có bổ sung thư viện backend/frontend)
-            npm install
+            # 3. Build lại Docker image và khởi động
+            docker compose down
+            docker compose build --no-cache
+            docker compose up -d
             
-            # 4. Giao tiếp đồng bộ cho Cơ sở dữ liệu Postgres
-            npx prisma generate
-            npx prisma db push
+            # 4. Chờ DB sẵn sàng rồi đồng bộ Prisma schema
+            sleep 10
+            docker exec picklepro-web npx prisma db push --accept-data-loss || true
             
-            # 5. Đóng gói mã nguồn 
-            npm run build
-            
-            # 6. Khởi chạy lại bộ cân bằng tải PM2 Picklepro
-            pm2 restart picklepro --update-env || pm2 start npm --name "picklepro" -- run start
+            # 5. Dọn dẹp image cũ
+            docker image prune -f
 
   notify:
     name: Thông báo trạng thái (Email)

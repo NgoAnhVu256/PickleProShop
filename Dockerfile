@@ -10,30 +10,42 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Add Prisma generation
+
+# Biến giả cho build-time — NextAuth + Prisma cần chúng để không crash
+# Giá trị thật sẽ được docker-compose inject khi chạy runtime
+ENV AUTH_SECRET="build-time-dummy-secret-not-used-in-production"
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+
 RUN npx prisma generate
-ENV AUTH_SECRET="luon-chay-khi-build-de-nextauth-khong-crash"
 RUN npm run build
 
-# Stage 3: Runner
+# Stage 3: Runner (siêu nhẹ, chỉ chứa standalone output)
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Copy public assets
 COPY --from=builder /app/public ./public
+
+# Copy standalone server + static files
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy prisma schema (cần cho prisma generate/db push lúc runtime)
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]

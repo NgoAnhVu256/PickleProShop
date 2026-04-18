@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Docker standalone output — produces .next/standalone with minimal server.js
+  output: "standalone",
   // Increase body size limit for admin posts with embedded images
   serverExternalPackages: [],
   experimental: {
