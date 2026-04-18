@@ -7,15 +7,19 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
 async function getCategoryData(slug: string) {
-  return await prisma.category.findUnique({
-    where: { slug },
-    include: {
-      products: {
-        where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
+  try {
+    return await prisma.category.findUnique({
+      where: { slug },
+      include: {
+        products: {
+          where: { isActive: true },
+          orderBy: { createdAt: 'desc' },
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    return null;
+  }
 }
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
