@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 // GET /api/admin/users/:id
 export async function GET(
@@ -14,6 +15,7 @@ export async function GET(
         id: true,
         name: true,
         email: true,
+        phone: true,
         image: true,
         role: true,
         createdAt: true,
@@ -44,7 +46,7 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/users/:id — Update user role or info
+// PUT /api/admin/users/:id — Update user role, name, phone, password
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -52,11 +54,13 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await req.json();
-    const { name, role } = body;
+    const { name, role, phone, password } = body;
 
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
+    if (phone !== undefined) updateData.phone = phone || null;
     if (role && (role === "ADMIN" || role === "USER")) updateData.role = role;
+    if (password) updateData.password = await bcrypt.hash(password, 12);
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
@@ -72,6 +76,7 @@ export async function PUT(
         id: true,
         name: true,
         email: true,
+        phone: true,
         role: true,
         updatedAt: true,
       },

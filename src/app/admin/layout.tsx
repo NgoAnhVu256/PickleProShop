@@ -24,6 +24,7 @@ import {
   Award,
   SlidersHorizontal,
   FileText,
+  MessageSquare,
 } from "lucide-react";
 import { Logo } from "@/components/common/Icons";
 
@@ -57,6 +58,7 @@ const navGroups = [
       { href: "/admin/posts",         label: "Bài viết",     icon: FileText },
       { href: "/admin/banners",       label: "Banners",     icon: ImageIcon },
       { href: "/admin/announcements", label: "Thông báo",   icon: Megaphone },
+      { href: "/admin/feedbacks",     label: "Góp ý",       icon: MessageSquare },
       { href: "/admin/settings",      label: "Cài đặt",     icon: Settings },
     ],
   },

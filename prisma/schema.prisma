@@ -341,6 +341,32 @@ model PromotionBanner {
   @@index([isActive, order])
 }
 
+model Feedback {
+  id        String         @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  subject   String
+  message   String         @db.Text
+  status    FeedbackStatus @default(NEW)
+  isRead    Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model FeedbackBanner {
+  id        String   @id @default(cuid())
+  title     String
+  image     String
+  link      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum Role {
   ADMIN
   USER
@@ -374,3 +400,10 @@ enum BannerPosition {
   RIGHT_BOTTOM
   BOTTOM
 }
+
+enum FeedbackStatus {
+  NEW
+  REVIEWED
+  RESOLVED
+}
+

@@ -1,6 +1,6 @@
 import HomeHeader from '@/components/shop/HomeHeader';
 import Footer from '@/components/shop/Footer';
-import ProductCard from '@/components/shop/ProductCard';
+import CategoryProductFilter from '@/components/shop/CategoryProductFilter';
 import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
@@ -17,6 +17,14 @@ async function getCategoryData(slug: string) {
         products: {
           where: { isActive: true },
           orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            thumbnail: true,
+            basePrice: true,
+            salePrice: true,
+          },
         },
       },
     });
@@ -45,17 +53,17 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     <div className="min-h-screen bg-[#fcfcfc]">
       <HomeHeader settings={settings} />
       
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-8">
+        <div className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-6 md:mb-8">
           <Link href="/" className="hover:text-[#a757ff]">Trang chủ</Link>
           <ChevronRight size={12} />
           <span className="text-gray-900">{category.name}</span>
         </div>
 
         {/* Title & Stats */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight mb-2">
+        <div className="mb-6 md:mb-10">
+          <h1 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight mb-2">
             {category.name}
           </h1>
           <p className="text-gray-500 text-sm font-medium">
@@ -63,24 +71,11 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           </p>
         </div>
 
-        {/* Products Grid */}
-        {category.products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {category.products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="py-32 text-center bg-white border border-dashed border-gray-200 rounded-3xl">
-            <p className="text-gray-400 font-bold italic">Chưa có sản phẩm nào trong danh mục này.</p>
-          </div>
-        )}
+        {/* Client-side filter component */}
+        <CategoryProductFilter products={category.products} categoryName={category.name} />
       </main>
 
       <Footer settings={settings} />
     </div>
   );
 }
-
-
-
