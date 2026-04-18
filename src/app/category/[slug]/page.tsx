@@ -6,6 +6,9 @@ import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getCategoryData(slug: string) {
   try {
     return await prisma.category.findUnique({

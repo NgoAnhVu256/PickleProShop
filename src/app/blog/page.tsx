@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "Tin tức Pickleball",
   description: "Cập nhật tin tức, đánh giá sản phẩm và hướng dẫn chơi Pickleball mới nhất từ PicklePro.",
 };
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 async function getPosts() {
   try {

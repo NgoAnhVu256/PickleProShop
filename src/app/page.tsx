@@ -9,6 +9,9 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getBanners() {
   try {
     const banners = await prisma.banner.findMany({
