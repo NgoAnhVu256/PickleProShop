@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Search, SlidersHorizontal, X, ArrowUpDown } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 
 interface Product {
@@ -11,13 +11,25 @@ interface Product {
   thumbnail: string | null;
   basePrice: number;
   salePrice: number | null;
+  brandId: string | null;
+  brand: { id: string; name: string } | null;
 }
 
 export default function CategoryProductFilter({ products, categoryName }: { products: Product[]; categoryName: string }) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 99999999]);
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Extract unique brands from products
+  const brands = useMemo(() => {
+    const brandMap = new Map<string, string>();
+    products.forEach(p => {
+      if (p.brand) brandMap.set(p.brand.id, p.brand.name);
+    });
+    return Array.from(brandMap.entries()).map(([id, name]) => ({ id, name }));
+  }, [products]);
 
   // Price range from products
   const maxPrice = useMemo(() => {
@@ -38,6 +50,11 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
       result = result.filter(p => p.name.toLowerCase().includes(q));
     }
 
+    // Brand filter
+    if (selectedBrand) {
+      result = result.filter(p => p.brandId === selectedBrand);
+    }
+
     // Price range
     result = result.filter(p => {
       const price = p.salePrice || p.basePrice;
@@ -56,13 +73,13 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
       default:
-        break; // newest = original DB order
+        break;
     }
 
     return result;
-  }, [products, search, sortBy, priceRange]);
+  }, [products, search, sortBy, priceRange, selectedBrand]);
 
-  const hasFilters = search || sortBy !== "newest" || priceRange[0] > 0 || priceRange[1] < maxPrice;
+  const hasFilters = search || sortBy !== "newest" || selectedBrand || priceRange[0] > 0 || priceRange[1] < maxPrice;
 
   return (
     <div>
@@ -81,6 +98,20 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
         </div>
 
         <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+          {/* Brand filter */}
+          {brands.length > 0 && (
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#a757ff]/30 focus:outline-none cursor-pointer"
+            >
+              <option value="">Tất cả thương hiệu</option>
+              {brands.map(b => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </select>
+          )}
+
           {/* Sort */}
           <select
             value={sortBy}
@@ -98,12 +129,12 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-1 px-3 md:px-4 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-colors ${showFilters ? "bg-[#a757ff] text-white" : "bg-gray-50 text-gray-700 hover:bg-gray-100"}`}
           >
-            <SlidersHorizontal size={14} /> Lọc
+            <SlidersHorizontal size={14} /> Lọc giá
           </button>
 
           {hasFilters && (
             <button
-              onClick={() => { setSearch(""); setSortBy("newest"); setPriceRange([0, maxPrice]); }}
+              onClick={() => { setSearch(""); setSortBy("newest"); setSelectedBrand(""); setPriceRange([0, maxPrice]); }}
               className="flex items-center gap-1 px-3 md:px-4 py-2.5 md:py-3 bg-red-50 text-red-500 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold hover:bg-red-100 transition-colors"
             >
               <X size={14} /> Xóa lọc
@@ -140,7 +171,8 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
       {/* Results count */}
       <p className="text-xs md:text-sm text-gray-500 font-medium mb-4 md:mb-6">
         {filtered.length} / {products.length} sản phẩm
-        {search && <span> cho "{search}"</span>}
+        {search && <span> cho &quot;{search}&quot;</span>}
+        {selectedBrand && <span> • {brands.find(b => b.id === selectedBrand)?.name}</span>}
       </p>
 
       {/* Product Grid */}
@@ -171,6 +203,9 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
                   <h3 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#a757ff] transition-colors leading-snug">
                     {product.name}
                   </h3>
+                  {product.brand && (
+                    <p className="text-[10px] md:text-xs text-gray-400 font-medium mb-1">{product.brand.name}</p>
+                  )}
                   <div className="flex items-center gap-2">
                     <span className="text-sm md:text-base font-black text-gray-900">{price.toLocaleString()}₫</span>
                     {hasSale && (

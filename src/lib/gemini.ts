@@ -20,10 +20,9 @@ export async function chatWithGemini(
   productContext: string,
   conversationHistory: { role: "user" | "model"; text: string }[] = []
 ) {
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-  });
-
+  // Try multiple model names for resilience
+  const modelNames = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"];
+  
   const contextMessage = `Dưới đây là dữ liệu sản phẩm hiện có trong cửa hàng (từ database SQL):\n${productContext}\n\nCâu hỏi của khách hàng: ${userMessage}`;
 
   const history = conversationHistory.map((msg) => ({
@@ -31,32 +30,59 @@ export async function chatWithGemini(
     parts: [{ text: msg.text }],
   }));
 
-  try {
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{ text: SYSTEM_PROMPT }],
-        },
-        {
-          role: "model",
-          parts: [
-            {
-              text: "Xin chào mình là Ben Johns rất vui được tư vấn bạn! Mình sẽ chỉ tư vấn dựa trên sản phẩm thực tế trong kho hàng PicklePro. Bạn cần mình hỗ trợ gì nào? 🏓",
-            },
-          ],
-        },
-        ...history,
-      ],
-    });
+  for (const modelName of modelNames) {
+    try {
+      console.log(`[Gemini] Trying model: ${modelName}`);
+      const model = genAI.getGenerativeModel({ model: modelName });
 
-    const result = await chat.sendMessage(contextMessage);
-    return result.response.text();
-  } catch (error: any) {
-    if (error?.status === 429 || error?.message?.includes("429")) {
-      return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng từ từ gõ lại câu hỏi sau ít phút nữa để mình sắp xếp trả lời nhé! 🏓 (Error: Quá tải hệ thống)";
+      const chat = model.startChat({
+        history: [
+          {
+            role: "user",
+            parts: [{ text: SYSTEM_PROMPT }],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: "Xin chào mình là Ben Johns rất vui được tư vấn bạn! Mình sẽ chỉ tư vấn dựa trên sản phẩm thực tế trong kho hàng PicklePro. Bạn cần mình hỗ trợ gì nào? 🏓",
+              },
+            ],
+          },
+          ...history,
+        ],
+      });
+
+      // Add timeout (15 seconds)
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Gemini timeout after 15s")), 15000)
+      );
+
+      const result = await Promise.race([
+        chat.sendMessage(contextMessage),
+        timeoutPromise,
+      ]);
+
+      const text = result.response.text();
+      console.log(`[Gemini] Success with model: ${modelName}, reply length: ${text.length}`);
+      return text;
+    } catch (error: any) {
+      console.error(`[Gemini] Error with model ${modelName}:`, error?.message || error);
+      
+      if (error?.status === 429 || error?.message?.includes("429")) {
+        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng từ từ gõ lại câu hỏi sau ít phút nữa để mình sắp xếp trả lời nhé! 🏓 (Error: Quá tải hệ thống)";
+      }
+
+      // If this isn't the last model, try next one
+      if (modelName !== modelNames[modelNames.length - 1]) {
+        console.log(`[Gemini] Falling back to next model...`);
+        continue;
+      }
+
+      return "Đã có lỗi đường truyền dẫn đến cửa hàng. Mình xin lỗi bạn, bạn vui lòng thử lại sau nhé!";
     }
-    console.error("Gemini Error:", error);
-    return "Đã có lỗi đường truyền dẫn đến cửa hàng. Mình xin lỗi bạn, bạn vui lòng thử lại sau nhé!";
   }
+
+  return "Hiện tại hệ thống AI đang bảo trì. Bạn vui lòng liên hệ hotline để được tư vấn nhé! 🏓";
 }
+

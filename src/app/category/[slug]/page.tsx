@@ -24,6 +24,8 @@ async function getCategoryData(slug: string) {
             thumbnail: true,
             basePrice: true,
             salePrice: true,
+            brandId: true,
+            brand: { select: { id: true, name: true } },
           },
         },
       },
@@ -72,7 +74,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         </div>
 
         {/* Client-side filter component */}
-        <CategoryProductFilter products={category.products} categoryName={category.name} />
+        <CategoryProductFilter products={category.products as any} categoryName={category.name} />
       </main>
 
       <Footer settings={settings} />
