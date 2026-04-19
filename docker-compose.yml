@@ -1,28 +1,10 @@
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: picklepro-db
-    restart: always
-    environment:
-      POSTGRES_USER: pickleuser
-      POSTGRES_PASSWORD: picklepassword
-      POSTGRES_DB: picklepro
-    expose:
-      - "5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pickleuser"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   redis:
     image: redis:7-alpine
     container_name: picklepro-redis
     restart: always
-    expose:
-      - "6379"
+    ports:
+      - "127.0.0.1:6379:6379" # Chỉ mở cổng 6379 nội bộ cho PM2 kết nối
     volumes:
       - redis_data:/data
     healthcheck:
@@ -30,23 +12,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-
-  web:
-    build: .
-    container_name: picklepro-web
-    restart: always
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: postgresql://pickleuser:picklepassword@db:5432/picklepro?schema=public
-      REDIS_URL: redis://redis:6379
 
   worker:
     build: .
@@ -59,8 +24,8 @@ services:
     env_file:
       - .env
     environment:
+      # Worker kết nối qua network docker nên dùng 'redis'
       REDIS_URL: redis://redis:6379
 
 volumes:
-  postgres_data:
   redis_data:
