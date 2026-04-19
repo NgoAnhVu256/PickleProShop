@@ -17,6 +17,20 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    container_name: picklepro-redis
+    restart: always
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   web:
     image: ghcr.io/ngoanhvu256/pickleproshop:latest
     container_name: picklepro-web
@@ -24,12 +38,29 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "3000:3000"
     env_file:
       - .env
     environment:
       DATABASE_URL: postgresql://pickleuser:picklepassword@db:5432/picklepro?schema=public
+      REDIS_URL: redis://redis:6379
+
+  worker:
+    image: ghcr.io/ngoanhvu256/pickleproshop:latest
+    container_name: picklepro-worker
+    restart: always
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: node chatWorker.mjs
+    env_file:
+      - .env
+    environment:
+      REDIS_URL: redis://redis:6379
 
 volumes:
   postgres_data:
+  redis_data:

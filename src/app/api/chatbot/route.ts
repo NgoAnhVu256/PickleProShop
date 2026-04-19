@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { chatWithGemini } from "@/lib/gemini";
+import { getChatQueue } from "@/lib/chatQueue";
 
 // Simple in-memory rate limiter for DoS protection
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -34,6 +35,78 @@ if (typeof globalThis !== "undefined") {
   }, 60_000);
 }
 
+// Build product context from database
+async function buildProductContext(message: string) {
+  const keywords = message
+    .toLowerCase()
+    .replace(
+      /[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]/g,
+      ""
+    )
+    .split(/\s+/)
+    .filter((w: string) => w.length > 2);
+
+  const products = await prisma.product.findMany({
+    where: {
+      isActive: true,
+      OR:
+        keywords.length > 0
+          ? [
+              ...keywords.map((kw: string) => ({
+                name: { contains: kw, mode: "insensitive" as const },
+              })),
+              ...keywords.map((kw: string) => ({
+                description: {
+                  contains: kw,
+                  mode: "insensitive" as const,
+                },
+              })),
+              ...keywords.map((kw: string) => ({
+                category: {
+                  name: { contains: kw, mode: "insensitive" as const },
+                },
+              })),
+            ]
+          : undefined,
+    },
+    include: {
+      category: { select: { name: true } },
+      brand: { select: { name: true } },
+      variants: {
+        where: { isActive: true },
+        include: {
+          attrValues: {
+            include: {
+              attribute: { select: { name: true, label: true } },
+            },
+          },
+        },
+        take: 3,
+      },
+    },
+    take: 10,
+  });
+
+  const productContext =
+    products.length > 0
+      ? products
+          .map((p) => {
+            const variants = p.variants
+              .map((v) => {
+                const attrs = v.attrValues
+                  .map((a) => `${a.attribute.label}: ${a.value}`)
+                  .join(", ");
+                return `  SKU: ${v.sku}, Giá: ${v.price.toLocaleString()}₫, Tồn kho: ${v.stock}${attrs ? `, ${attrs}` : ""}`;
+              })
+              .join("\n");
+            return `Sản phẩm: ${p.name}\nLink chi tiết: /products/${p.slug}\nThương hiệu: ${p.brand?.name || "N/A"}\nDanh mục: ${p.category.name}\nGiá gốc: ${p.basePrice.toLocaleString()}₫${p.salePrice ? ` | Giá sale: ${p.salePrice.toLocaleString()}₫` : ""}\nMô tả: ${(p.description || "N/A").substring(0, 150)}\nPhân loại:\n${variants || "  Không có phân loại"}`;
+          })
+          .join("\n---\n")
+      : "Không tìm thấy sản phẩm phù hợp trong cơ sở dữ liệu.";
+
+  return { productContext, productsFound: products.length };
+}
+
 // POST /api/chatbot — Chat with AI assistant (Ben Johns)
 export async function POST(req: NextRequest) {
   try {
@@ -53,7 +126,7 @@ export async function POST(req: NextRequest) {
             productsFound: 0,
           },
         },
-        { status: 200 } // Return 200 so the widget doesn't crash
+        { status: 200 }
       );
     }
 
@@ -67,7 +140,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Limit message length to prevent abuse
     const sanitizedMessage = message.slice(0, 500);
 
     if (!process.env.GEMINI_API_KEY) {
@@ -81,88 +153,65 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Extract keywords from user message to query relevant products
-    const keywords = sanitizedMessage
-      .toLowerCase()
-      .replace(
-        /[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]/g,
-        ""
-      )
-      .split(/\s+/)
-      .filter((w: string) => w.length > 2);
-
-    // Query relevant products from SQL database (max 10 to keep context small and fast)
-    const products = await prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR:
-          keywords.length > 0
-            ? [
-                ...keywords.map((kw: string) => ({
-                  name: { contains: kw, mode: "insensitive" as const },
-                })),
-                ...keywords.map((kw: string) => ({
-                  description: {
-                    contains: kw,
-                    mode: "insensitive" as const,
-                  },
-                })),
-                ...keywords.map((kw: string) => ({
-                  category: {
-                    name: { contains: kw, mode: "insensitive" as const },
-                  },
-                })),
-              ]
-            : undefined,
-      },
-      include: {
-        category: { select: { name: true } },
-        brand: { select: { name: true } },
-        variants: {
-          where: { isActive: true },
-          include: {
-            attrValues: {
-              include: {
-                attribute: { select: { name: true, label: true } },
-              },
-            },
-          },
-          take: 3,
-        },
-      },
-      take: 10,
-    });
-
-    // Build concise product context string from SQL data
-    const productContext =
-      products.length > 0
-        ? products
-            .map((p) => {
-              const variants = p.variants
-                .map((v) => {
-                  const attrs = v.attrValues
-                    .map((a) => `${a.attribute.label}: ${a.value}`)
-                    .join(", ");
-                  return `  SKU: ${v.sku}, Giá: ${v.price.toLocaleString()}₫, Tồn kho: ${v.stock}${attrs ? `, ${attrs}` : ""}`;
-                })
-                .join("\n");
-              return `Sản phẩm: ${p.name}\nLink chi tiết: /products/${p.slug}\nThương hiệu: ${p.brand?.name || "N/A"}\nDanh mục: ${p.category.name}\nGiá gốc: ${p.basePrice.toLocaleString()}₫${p.salePrice ? ` | Giá sale: ${p.salePrice.toLocaleString()}₫` : ""}\nMô tả: ${(p.description || "N/A").substring(0, 150)}\nPhân loại:\n${variants || "  Không có phân loại"}`;
-            })
-            .join("\n---\n")
-        : "Không tìm thấy sản phẩm phù hợp trong cơ sở dữ liệu.";
-
-    // Limit history to prevent token overflow
+    // Build product context from DB
+    const { productContext, productsFound } = await buildProductContext(sanitizedMessage);
     const trimmedHistory = (history || []).slice(-6);
 
-    const reply = await chatWithGemini(
-      sanitizedMessage,
-      productContext,
-      trimmedHistory
-    );
+    // ─── Try Queue (Redis + BullMQ) ──────────────────────
+    const queue = getChatQueue();
+
+    if (queue) {
+      try {
+        console.log("[Chatbot] Adding job to queue...");
+        const job = await queue.add("chat", {
+          message: sanitizedMessage,
+          productContext,
+          history: trimmedHistory,
+          productsFound,
+        });
+
+        // Poll for job completion (max 30s)
+        for (let i = 0; i < 60; i++) {
+          await new Promise((r) => setTimeout(r, 500));
+          const state = await job.getState();
+
+          if (state === "completed") {
+            const finished = await queue.getJob(job.id!);
+            const result = finished?.returnvalue;
+            if (result) {
+              console.log("[Chatbot] Job completed via queue");
+              return NextResponse.json({ success: true, data: result });
+            }
+          }
+
+          if (state === "failed") {
+            console.error("[Chatbot] Job failed in queue");
+            break;
+          }
+        }
+
+        // Timeout — fell through
+        console.warn("[Chatbot] Queue job timed out, returning fallback");
+        return NextResponse.json({
+          success: true,
+          data: {
+            reply: "Hệ thống đang xử lý nhiều yêu cầu. Vui lòng thử lại sau ít phút nhé!",
+            productsFound: 0,
+          },
+        });
+      } catch (queueError: any) {
+        console.error("[Chatbot] Queue error, falling back to direct:", queueError.message);
+        // Fall through to direct call
+      }
+    }
+
+    // ─── Fallback: Direct Gemini Call (no Redis) ─────────
+    console.log("[Chatbot] Using direct Gemini call (no queue)");
+    const reply = await chatWithGemini(sanitizedMessage, productContext, trimmedHistory);
 
     return NextResponse.json({
       success: true,
-      data: { reply, productsFound: products.length },
+      data: { reply, productsFound },
     });
   } catch (error) {
     console.error("POST /api/chatbot error:", error);
