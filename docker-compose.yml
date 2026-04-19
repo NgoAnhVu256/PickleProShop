@@ -1,4 +1,17 @@
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: picklepro-db
+    restart: always
+    environment:
+      POSTGRES_USER: pickleuser
+      POSTGRES_PASSWORD: picklepassword
+      POSTGRES_DB: picklepro
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   redis:
     image: redis:7-alpine
     container_name: picklepro-redis
@@ -29,3 +42,4 @@ services:
 
 volumes:
   redis_data:
+  postgres_data:
