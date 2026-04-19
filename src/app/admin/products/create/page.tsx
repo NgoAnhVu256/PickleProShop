@@ -52,7 +52,52 @@ export default function AdminCreateProduct() {
   // UI State
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [draftRestored, setDraftRestored] = useState(false);
 
+  const DRAFT_KEY = "picklepro_product_draft";
+
+  // ─── Restore draft from localStorage on mount ───
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (saved) {
+        const draft = JSON.parse(saved);
+        if (draft.name) setName(draft.name);
+        if (draft.description) setDescription(draft.description);
+        if (draft.basePrice) setBasePrice(draft.basePrice);
+        if (draft.salePrice) setSalePrice(draft.salePrice);
+        if (draft.saleStartAt) setSaleStartAt(draft.saleStartAt);
+        if (draft.saleEndAt) setSaleEndAt(draft.saleEndAt);
+        if (draft.categoryId) setCategoryId(draft.categoryId);
+        if (draft.brandId) setBrandId(draft.brandId);
+        if (draft.thumbnail) setThumbnail(draft.thumbnail);
+        if (draft.galleryImages) setGalleryImages(draft.galleryImages);
+        if (draft.variants) setVariants(draft.variants);
+        setDraftRestored(true);
+      }
+    } catch {}
+  }, []);
+
+  // ─── Auto-save draft to localStorage on every change ───
+  useEffect(() => {
+    // Skip saving during initial load
+    if (loading) return;
+    const draft = {
+      name, description, basePrice, salePrice, saleStartAt, saleEndAt,
+      categoryId, brandId, thumbnail, galleryImages, variants,
+    };
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {}
+  }, [name, description, basePrice, salePrice, saleStartAt, saleEndAt, categoryId, brandId, thumbnail, galleryImages, variants, loading]);
+
+  // ─── Clear draft ───
+  const clearDraft = () => {
+    localStorage.removeItem(DRAFT_KEY);
+    setDraftRestored(false);
+  };
+
+  // ─── Fetch categories & brands ───
   useEffect(() => {
     Promise.all([
       fetch("/api/admin/categories").then((r) => r.json()),
@@ -153,6 +198,7 @@ export default function AdminCreateProduct() {
 
       const data = await res.json();
       if (data.success) {
+        clearDraft();
         toast.success("Tạo sản phẩm thành công!");
         router.push("/admin/products");
       } else {
@@ -173,6 +219,30 @@ export default function AdminCreateProduct() {
         <Link href="/admin/products" style={{ color: "#8a98ac" }}><ArrowLeft size={20} /></Link>
         <h1 style={{ fontSize: 24, fontWeight: 800, color: "#323b4b" }}>Thêm sản phẩm mới</h1>
       </div>
+
+      {draftRestored && (
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          padding: "12px 16px", marginBottom: 16, borderRadius: 10,
+          background: "linear-gradient(135deg, #e0f2fe, #dbeafe)", border: "1px solid #93c5fd"
+        }}>
+          <span style={{ fontSize: 13, color: "#1e40af", fontWeight: 600 }}>
+            📝 Đã khôi phục bản nháp trước đó. Bạn có thể tiếp tục nhập liệu.
+          </span>
+          <button type="button" onClick={() => {
+            clearDraft();
+            setName(""); setDescription(""); setBasePrice(""); setSalePrice("");
+            setSaleStartAt(""); setSaleEndAt(""); setCategoryId(""); setBrandId("");
+            setThumbnail(""); setGalleryImages([]); setVariants([]);
+            toast.success("Đã xóa bản nháp");
+          }} style={{
+            background: "#fff", border: "1px solid #93c5fd", borderRadius: 6, padding: "4px 12px",
+            fontSize: 12, color: "#1e40af", cursor: "pointer", fontWeight: 600
+          }}>
+            Xóa nháp
+          </button>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }} className="admin-grid-layout">
