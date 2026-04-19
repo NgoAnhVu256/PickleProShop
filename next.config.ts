@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Increase body size limit for admin posts with embedded images
   serverExternalPackages: [],
+  output: "standalone",
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
