@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+*.zip
+*.sql
+scratch
+.env.local
+.env.development
+tsconfig.tsbuildinfo
