@@ -70,7 +70,7 @@ export async function chatWithGemini(
       console.error(`[Gemini] Error with model ${modelName}:`, error?.message || error);
       
       if (error?.status === 429 || error?.message?.includes("429")) {
-        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng từ từ gõ lại câu hỏi sau ít phút nữa để mình sắp xếp trả lời nhé!(Error: Quá tải hệ thống)";
+        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng liên hệ zalo: 0846915120 để được tư vấn";
       }
 
       // If this isn't the last model, try next one
