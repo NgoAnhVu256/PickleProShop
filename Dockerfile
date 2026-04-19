@@ -55,6 +55,8 @@ COPY --from=builder /app/node_modules/cluster-key-slot ./node_modules/cluster-ke
 COPY --from=builder /app/node_modules/standard-as-callback ./node_modules/standard-as-callback
 COPY --from=builder /app/node_modules/denque ./node_modules/denque
 COPY --from=builder /app/node_modules/redis-parser ./node_modules/redis-parser
+COPY --from=builder /app/node_modules/tslib ./node_modules/tslib
+COPY --from=builder /app/node_modules/uuid ./node_modules/uuid
 
 USER nextjs
 
