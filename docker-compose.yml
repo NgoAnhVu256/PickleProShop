@@ -32,7 +32,7 @@ services:
       retries: 5
 
   web:
-    image: ghcr.io/ngoanhvu256/pickleproshop:latest
+    build: .
     container_name: picklepro-web
     restart: always
     depends_on:
@@ -49,7 +49,7 @@ services:
       REDIS_URL: redis://redis:6379
 
   worker:
-    image: ghcr.io/ngoanhvu256/pickleproshop:latest
+    build: .
     container_name: picklepro-worker
     restart: always
     depends_on:
