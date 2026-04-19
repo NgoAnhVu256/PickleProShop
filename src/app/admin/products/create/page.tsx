@@ -227,7 +227,7 @@ export default function AdminCreateProduct() {
           background: "linear-gradient(135deg, #e0f2fe, #dbeafe)", border: "1px solid #93c5fd"
         }}>
           <span style={{ fontSize: 13, color: "#1e40af", fontWeight: 600 }}>
-            📝 Đã khôi phục bản nháp trước đó. Bạn có thể tiếp tục nhập liệu.
+            Đã khôi phục tiến trình. Bạn có thể tiếp tục nhập liệu.
           </span>
           <button type="button" onClick={() => {
             clearDraft();

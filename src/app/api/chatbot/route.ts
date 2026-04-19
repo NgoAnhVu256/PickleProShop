@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { chatWithGemini } from "@/lib/gemini";
-import { getChatQueue } from "@/lib/chatQueue";
 
 // Simple in-memory rate limiter for DoS protection
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -107,7 +106,7 @@ async function buildProductContext(message: string) {
   return { productContext, productsFound: products.length };
 }
 
-// POST /api/chatbot — Chat with AI assistant (Ben Johns)
+// POST /api/chatbot — Chat with AI assistant (Direct Gemini, no Redis required)
 export async function POST(req: NextRequest) {
   try {
     // --- Rate Limiting (DoS Protection) ---
@@ -147,7 +146,7 @@ export async function POST(req: NextRequest) {
         success: true,
         data: {
           reply:
-            "Xin chào mình là Ben Johns! Hiện tại hệ thống AI đang bảo trì, bạn vui lòng liên hệ hotline để được tư vấn nhé.",
+            "Hiện tại hệ thống AI đang bảo trì. Bạn vui lòng liên hệ hotline để được tư vấn nhé!",
           productsFound: 0,
         },
       });
@@ -157,64 +156,16 @@ export async function POST(req: NextRequest) {
     const { productContext, productsFound } = await buildProductContext(sanitizedMessage);
     const trimmedHistory = (history || []).slice(-6);
 
-    // ─── Try Queue (Redis + BullMQ) ──────────────────────
-    const queue = getChatQueue();
-
-    if (queue) {
-      try {
-        console.log("[Chatbot] Adding job to queue...");
-        const job = await queue.add("chat", {
-          message: sanitizedMessage,
-          productContext,
-          history: trimmedHistory,
-          productsFound,
-        });
-
-        // Poll for job completion (max 30s)
-        for (let i = 0; i < 60; i++) {
-          await new Promise((r) => setTimeout(r, 500));
-          const state = await job.getState();
-
-          if (state === "completed") {
-            const finished = await queue.getJob(job.id!);
-            const result = finished?.returnvalue;
-            if (result) {
-              console.log("[Chatbot] Job completed via queue");
-              return NextResponse.json({ success: true, data: result });
-            }
-          }
-
-          if (state === "failed") {
-            console.error("[Chatbot] Job failed in queue");
-            break;
-          }
-        }
-
-        // Timeout — fell through
-        console.warn("[Chatbot] Queue job timed out, returning fallback");
-        return NextResponse.json({
-          success: true,
-          data: {
-            reply: "Hệ thống đang xử lý nhiều yêu cầu. Vui lòng thử lại sau ít phút nhé!",
-            productsFound: 0,
-          },
-        });
-      } catch (queueError: any) {
-        console.error("[Chatbot] Queue error, falling back to direct:", queueError.message);
-        // Fall through to direct call
-      }
-    }
-
-    // ─── Fallback: Direct Gemini Call (no Redis) ─────────
-    console.log("[Chatbot] Using direct Gemini call (no queue)");
+    // ─── Direct Gemini Call (No Redis/Queue dependency) ─────────
+    console.log("[Chatbot] Calling Gemini directly...");
     const reply = await chatWithGemini(sanitizedMessage, productContext, trimmedHistory);
 
     return NextResponse.json({
       success: true,
       data: { reply, productsFound },
     });
-  } catch (error) {
-    console.error("POST /api/chatbot error:", error);
+  } catch (error: any) {
+    console.error("POST /api/chatbot error:", error?.message || error);
     return NextResponse.json(
       {
         success: true,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Loader2, Bot, User, MessageCircle } from "lucide-react";
+import { X, Send, Loader2, MessageCircle } from "lucide-react";
 
 interface Message {
   role: "user" | "model";
@@ -14,7 +14,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
-      text: "Xin chào! Mình là trợ lý AI PicklePro Bạn cần tư vấn gì?",
+      text: "Xin chào! Mình là trợ lý AI PicklePro. Bạn cần tư vấn gì?",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -80,9 +80,6 @@ export default function ChatWidget() {
           {/* Header */}
           <div className="bg-gradient-to-r from-[#2d3436] to-[#636e72] px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 bg-[#6c5ce7] rounded-lg flex items-center justify-center">
-                <Bot size={14} className="text-white" />
-              </div>
               <div>
                 <h3 className="text-white font-bold text-xs tracking-wide">PICKLEPRO</h3>
                 <p className="text-green-400 text-[9px] font-medium flex items-center gap-1">
@@ -99,30 +96,17 @@ export default function ChatWidget() {
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 bg-gray-50/80">
             {messages.map((msg, i) => (
               <div key={i} className={`flex items-end gap-1.5 ${msg.role === "user" ? "justify-end" : ""}`}>
-                {msg.role === "model" && (
-                  <div className="w-5 h-5 bg-gray-200 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Bot size={10} className="text-gray-500" />
-                  </div>
-                )}
-                <div className={`max-w-[78%] px-3 py-2 text-[12px] leading-relaxed whitespace-pre-wrap ${
+                <div className={`max-w-[85%] px-3 py-2 text-[12px] leading-relaxed whitespace-pre-wrap ${
                   msg.role === "user"
                     ? "bg-[#6c5ce7] text-white rounded-xl rounded-br-sm"
                     : "bg-white text-gray-700 rounded-xl rounded-bl-sm shadow-sm border border-gray-100"
                 }`}>
                   {renderText(msg.text)}
                 </div>
-                {msg.role === "user" && (
-                  <div className="w-5 h-5 bg-[#6c5ce7]/10 rounded-md flex items-center justify-center flex-shrink-0">
-                    <User size={10} className="text-[#6c5ce7]" />
-                  </div>
-                )}
               </div>
             ))}
             {loading && (
               <div className="flex items-end gap-1.5">
-                <div className="w-5 h-5 bg-gray-200 rounded-md flex items-center justify-center flex-shrink-0">
-                  <Bot size={10} className="text-gray-500" />
-                </div>
                 <div className="bg-white px-3 py-2 rounded-xl rounded-bl-sm shadow-sm border border-gray-100 flex gap-1">
                   <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                   <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />

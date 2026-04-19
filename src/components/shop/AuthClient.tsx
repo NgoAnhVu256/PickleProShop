@@ -36,7 +36,7 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
       if (callbackUrl) {
         router.push(callbackUrl);
       } else if (role === "ADMIN") {
-        router.push("/admin");
+        router.push("/admin/dashboard");
       } else {
         router.push("/");
       }
@@ -57,7 +57,17 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
         toast.error("Email hoặc mật khẩu không chính xác.");
       } else {
         toast.success("Đăng nhập thành công!");
-        window.location.href = callbackUrl || "/";
+        // Fetch session to determine role-based redirect
+        const sessionRes = await fetch("/api/auth/session");
+        const sess = await sessionRes.json();
+        const userRole = sess?.user?.role;
+        if (callbackUrl) {
+          window.location.href = callbackUrl;
+        } else if (userRole === "ADMIN") {
+          window.location.href = "/admin/dashboard";
+        } else {
+          window.location.href = "/";
+        }
       }
     } catch (error) {
       toast.error("Đã xảy ra lỗi hệ thống.");
