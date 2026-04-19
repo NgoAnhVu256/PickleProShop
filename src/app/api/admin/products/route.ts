@@ -73,7 +73,25 @@ export async function POST(req: NextRequest) {
 
     const existing = await prisma.product.findUnique({ where: { slug } });
     if (existing) {
-      return NextResponse.json({ success: false, error: "Product name already exists" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Tên sản phẩm đã tồn tại" }, { status: 400 });
+    }
+
+    // Check for duplicate SKUs
+    if (variants && variants.length > 0) {
+      const skus = variants.map((v: any) => v.sku).filter(Boolean);
+      if (skus.length > 0) {
+        const existingVariants = await prisma.productVariant.findMany({
+          where: { sku: { in: skus } },
+          select: { sku: true },
+        });
+        if (existingVariants.length > 0) {
+          const dupSkus = existingVariants.map((v) => v.sku).join(", ");
+          return NextResponse.json(
+            { success: false, error: `Mã SKU đã tồn tại: ${dupSkus}. Vui lòng đổi mã SKU khác.` },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     const product = await prisma.product.create({
