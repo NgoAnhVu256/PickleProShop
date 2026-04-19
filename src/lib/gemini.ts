@@ -69,17 +69,18 @@ export async function chatWithGemini(
     } catch (error: any) {
       console.error(`[Gemini] Error with model ${modelName}:`, error?.message || error);
       
-      if (error?.status === 429 || error?.message?.includes("429")) {
-        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng liên hệ zalo: 0846915120 để được tư vấn";
-      }
-
-      // If this isn't the last model, try next one
+      // If this isn't the last model, try next one (even on 429, different models may have separate quotas)
       if (modelName !== modelNames[modelNames.length - 1]) {
         console.log(`[Gemini] Falling back to next model...`);
         continue;
       }
 
-      return "Đã có lỗi đường truyền dẫn đến cửa hàng. Mình xin lỗi bạn, bạn vui lòng thử lại sau nhé!";
+      // All models failed
+      if (error?.status === 429 || error?.message?.includes("429")) {
+        return "Xin lỗi bạn, hệ thống AI đang quá tải. Xin bạn vui lòng liên hệ zalo: 0846915120 để được tư vấn trực tiếp!";
+      }
+
+      return "Đã có lỗi đường truyền. Bạn vui lòng thử lại sau nhé!";
     }
   }
 
