@@ -45,7 +45,7 @@ export async function chatWithGemini(
             role: "model",
             parts: [
               {
-                text: "Xin chào mình là Ben Johns rất vui được tư vấn bạn! Mình sẽ chỉ tư vấn dựa trên sản phẩm thực tế trong kho hàng PicklePro. Bạn cần mình hỗ trợ gì nào? 🏓",
+                text: "Xin chào mình là Ben Johns rất vui được tư vấn bạn! Mình sẽ chỉ tư vấn dựa trên sản phẩm thực tế trong kho hàng PicklePro. Bạn cần mình hỗ trợ gì nào?",
               },
             ],
           },
@@ -70,7 +70,7 @@ export async function chatWithGemini(
       console.error(`[Gemini] Error with model ${modelName}:`, error?.message || error);
       
       if (error?.status === 429 || error?.message?.includes("429")) {
-        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng từ từ gõ lại câu hỏi sau ít phút nữa để mình sắp xếp trả lời nhé! 🏓 (Error: Quá tải hệ thống)";
+        return "Xin lỗi bạn, lượng người hâm mộ Pickleball truy cập tư vấn đang quá đông! Xin bạn vui lòng từ từ gõ lại câu hỏi sau ít phút nữa để mình sắp xếp trả lời nhé!(Error: Quá tải hệ thống)";
       }
 
       // If this isn't the last model, try next one
@@ -83,6 +83,6 @@ export async function chatWithGemini(
     }
   }
 
-  return "Hiện tại hệ thống AI đang bảo trì. Bạn vui lòng liên hệ hotline để được tư vấn nhé! 🏓";
+  return "Hiện tại hệ thống AI đang bảo trì. Bạn vui lòng liên hệ hotline để được tư vấn nhé!";
 }
 

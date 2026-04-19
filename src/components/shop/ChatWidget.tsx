@@ -14,7 +14,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
-      text: "Xin chào! Mình là trợ lý AI PicklePro 🏓 Bạn cần tư vấn gì?",
+      text: "Xin chào! Mình là trợ lý AI PicklePro Bạn cần tư vấn gì?",
     },
   ]);
   const [loading, setLoading] = useState(false);

@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
           success: true,
           data: {
             reply:
-              "Bạn đang gửi tin nhắn quá nhanh! Vui lòng chờ 1 phút rồi thử lại nhé. 🏓",
+              "Bạn đang gửi tin nhắn quá nhanh! Vui lòng chờ 1 phút rồi thử lại nhé.",
             productsFound: 0,
           },
         },
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
         success: true,
         data: {
           reply:
-            "Xin chào mình là Ben Johns! Hiện tại hệ thống AI đang bảo trì, bạn vui lòng liên hệ hotline để được tư vấn nhé. 🏓",
+            "Xin chào mình là Ben Johns! Hiện tại hệ thống AI đang bảo trì, bạn vui lòng liên hệ hotline để được tư vấn nhé.",
           productsFound: 0,
         },
       });
@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
         success: true,
         data: {
           reply:
-            "Mình đang gặp trục trặc nhỏ. Bạn vui lòng thử lại sau ít phút nhé! 🏓",
+            "Mình đang gặp trục trặc nhỏ. Bạn vui lòng thử lại sau ít phút nhé!",
           productsFound: 0,
         },
       },

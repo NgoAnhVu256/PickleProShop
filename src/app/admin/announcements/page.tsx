@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Check, Eye, EyeOff, Image as ImageIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/admin/ImageUpload";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface Announcement {
   id: string;
@@ -31,6 +32,7 @@ export default function AdminAnnouncementsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(defaultForm);
+  const { confirm, ConfirmDialog } = useConfirm();
 
   const fetchAnnouncements = async () => {
     try {
@@ -91,7 +93,8 @@ export default function AdminAnnouncementsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Xóa thông báo này?")) return;
+    const ok = await confirm({ title: "Xóa thông báo", message: "Bạn có chắc muốn xóa thông báo này?", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/announcements/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -348,6 +351,7 @@ export default function AdminAnnouncementsPage() {
           </tbody>
         </table>
       </div>
+      <ConfirmDialog />
     </div>
   );
 }

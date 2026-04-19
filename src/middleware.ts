@@ -5,6 +5,17 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
   const isApiAdminRoute = pathname.startsWith("/api/admin");
+  const isLoginPage = pathname === "/login";
+
+  // If admin user visits login page or root → redirect to admin dashboard
+  if (isLoginPage && req.auth) {
+    const role = (req.auth.user as Record<string, unknown>)?.role;
+    if (role === "ADMIN") {
+      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    }
+    // Regular logged-in user visiting login → redirect to homepage
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   // Protect admin routes
   if (isAdminRoute || isApiAdminRoute) {
@@ -24,5 +35,6 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/:path*", "/login"],
 };
+

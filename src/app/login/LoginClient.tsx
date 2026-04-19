@@ -25,7 +25,7 @@ export default function LoginClient({ settings }: { settings: any }) {
       if (callbackUrl) {
         router.push(callbackUrl);
       } else if (role === "ADMIN") {
-        router.push("/admin");
+        router.push("/admin/dashboard");
       } else {
         router.push("/");
       }
@@ -165,10 +165,6 @@ export default function LoginClient({ settings }: { settings: any }) {
             </button>
           </form>
 
-          <p className="text-center mt-10 text-sm text-gray-500 font-medium">
-            Chưa có tài khoản?{" "}
-            <Link href="/register" className="text-[#3cc06e] font-bold hover:underline">Đăng ký ngay</Link>
-          </p>
         </div>
 
         {/* Footer info */}

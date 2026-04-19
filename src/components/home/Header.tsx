@@ -84,14 +84,6 @@ export default function Header({ categories, logoUrl }: Props) {
               </Link>
               
               <div className="flex items-center space-x-3 border-l border-gray-200 pl-3">
-                {/* Register link */}
-                <Link
-                  href="/register"
-                  className="text-sm px-2 text-gray-600 hover:text-gray-900 font-medium"
-                >
-                  Đăng ký
-                </Link>
-
                 {/* Login Button */}
                 <Link
                   href="/login"

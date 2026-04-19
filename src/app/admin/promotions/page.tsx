@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, GripVertical, ExternalLink, Eye, EyeOff, Pencil, X, Save, Image as ImageIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/admin/ImageUpload";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface PromoBanner {
   id: string;
@@ -28,6 +29,7 @@ export default function AdminPromotionsPage() {
   const [formLink, setFormLink] = useState("");
   const [formActive, setFormActive] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const { confirm, ConfirmDialog } = useConfirm();
 
   const fetchBanners = useCallback(async () => {
     try {
@@ -103,7 +105,8 @@ export default function AdminPromotionsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Xóa banner này?")) return;
+    const ok = await confirm({ title: "Xóa banner", message: "Bạn có chắc muốn xóa banner này?", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/promotion-banners/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -425,6 +428,7 @@ export default function AdminPromotionsPage() {
           </table>
         </div>
       )}
+      <ConfirmDialog />
     </div>
   );
 }

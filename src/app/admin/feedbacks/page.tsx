@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Search, MessageSquare, Trash2, Loader2, ChevronLeft, ChevronRight, Eye, Check, Clock, Plus, X, ImageIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface FeedbackItem {
   id: string;
@@ -41,6 +42,7 @@ export default function AdminFeedbackPage() {
   const [bannerForm, setBannerForm] = useState({ title: "", image: "", link: "", isActive: true });
   const [editingBannerId, setEditingBannerId] = useState<string | null>(null);
   const [tab, setTab] = useState<"feedbacks" | "banners">("feedbacks");
+  const { confirm, ConfirmDialog } = useConfirm();
 
   const fetchFeedbacks = useCallback(async () => {
     setLoading(true);
@@ -87,7 +89,8 @@ export default function AdminFeedbackPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Xóa góp ý này?")) return;
+    const ok = await confirm({ title: "Xóa góp ý", message: "Xóa góp ý này? Không thể hoàn tác.", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/feedbacks/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -125,7 +128,8 @@ export default function AdminFeedbackPage() {
   };
 
   const handleDeleteBanner = async (id: string) => {
-    if (!confirm("Xóa banner này?")) return;
+    const ok = await confirm({ title: "Xóa banner", message: "Xóa banner góp ý này?", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/feedback-banners/${id}`, { method: "DELETE" });
       if ((await res.json()).success) { toast.success("Đã xóa"); fetchBanners(); }
@@ -372,6 +376,7 @@ export default function AdminFeedbackPage() {
         select:focus { border-color: #3498db !important; }
         input:focus { border-color: #3498db !important; box-shadow: 0 0 0 3px rgba(52,152,219,0.12); }
       `}</style>
+      <ConfirmDialog />
     </div>
   );
 }

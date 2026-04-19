@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Search, Users, Trash2, Loader2, ChevronLeft, ChevronRight, Edit3, X, Plus, Phone } from "lucide-react";
 import toast from "react-hot-toast";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface UserItem {
   id: string;
@@ -28,6 +29,7 @@ export default function AdminUsersPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", role: "USER" as "ADMIN" | "USER", password: "" });
+  const { confirm, ConfirmDialog } = useConfirm();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -84,7 +86,8 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (userId: string, userName: string | null) => {
-    if (!confirm(`Bạn có chắc muốn xóa user "${userName || userId}"?`)) return;
+    const ok = await confirm({ title: "Xóa người dùng", message: `Bạn có chắc muốn xóa "${userName || userId}"? Không thể hoàn tác.`, confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/users/${userId}`, { method: "DELETE" });
       const data = await res.json();
@@ -387,6 +390,7 @@ export default function AdminUsersPage() {
         select:focus { border-color: #58d68d !important; }
         input:focus { border-color: #58d68d !important; box-shadow: 0 0 0 3px rgba(88,214,141,0.12); }
       `}</style>
+      <ConfirmDialog />
     </div>
   );
 }

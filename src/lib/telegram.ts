@@ -33,8 +33,8 @@ export async function sendOrderNotification(order: OrderNotification) {
 
   const isBank = order.paymentMethod === 'BANK';
   const headerInfo = isBank 
-    ? `🚨 *KHÁCH BÁO CHUYỂN KHOẢN (QR)*\n🟡 *TRẠNG THÁI: YÊU CẦU CHECK SAO KÊ*` 
-    : `🏓 *ĐƠN HÀNG COD (GIAO THU TIỀN)*\n🟠 *TRẠNG THÁI: CHỜ XÁC NHẬN*`;
+    ? `*KHÁCH BÁO CHUYỂN KHOẢN (QR)*\n🟡 *TRẠNG THÁI: YÊU CẦU CHECK SAO KÊ*` 
+    : `*ĐƠN HÀNG COD (GIAO THU TIỀN)*\n🟠 *TRẠNG THÁI: CHỜ XÁC NHẬN*`;
 
   const discountLine = order.discountAmount ? `\n🏷 *Giảm giá:* -${formatPrice(order.discountAmount)}` : '';
 

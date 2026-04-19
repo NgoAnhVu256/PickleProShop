@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Calendar, User, Eye, Search, Filter } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface Post {
   id: string;
@@ -19,6 +20,7 @@ export default function AdminPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const { confirm, ConfirmDialog } = useConfirm();
 
   const fetchPosts = async () => {
     try {
@@ -35,7 +37,8 @@ export default function AdminPostsPage() {
   useEffect(() => { fetchPosts(); }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Xóa bài viết này?")) return;
+    const ok = await confirm({ title: "Xóa bài viết", message: "Bạn có chắc muốn xóa bài viết này? Không thể hoàn tác.", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/posts/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -141,6 +144,7 @@ export default function AdminPostsPage() {
           </tbody>
         </table>
       </div>
+      <ConfirmDialog />
     </div>
   );
 }

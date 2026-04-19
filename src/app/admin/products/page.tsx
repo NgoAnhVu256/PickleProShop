@@ -6,6 +6,7 @@ import { Plus, Search, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { PickleballIcon } from "@/components/common/Icons";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface Product {
   id: string;
@@ -28,6 +29,7 @@ export default function AdminProductsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const { confirm, ConfirmDialog } = useConfirm();
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -50,7 +52,8 @@ export default function AdminProductsPage() {
   }, [fetchProducts]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Xóa sản phẩm này?")) return;
+    const ok = await confirm({ title: "Xóa sản phẩm", message: "Bạn có chắc muốn xóa sản phẩm này? Không thể hoàn tác.", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -222,6 +225,7 @@ export default function AdminProductsPage() {
           ))}
         </div>
       )}
+      <ConfirmDialog />
     </div>
   );
 }
