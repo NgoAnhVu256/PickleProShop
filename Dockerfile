@@ -41,19 +41,9 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Copy worker + dependencies (BullMQ, IORedis, Gemini SDK)
+# Copy worker file + install worker dependencies
 COPY --from=builder /app/chatWorker.mjs ./chatWorker.mjs
-COPY --from=builder /app/node_modules/bullmq ./node_modules/bullmq
-COPY --from=builder /app/node_modules/ioredis ./node_modules/ioredis
-COPY --from=builder /app/node_modules/@google ./node_modules/@google
-COPY --from=builder /app/node_modules/denque ./node_modules/denque
-COPY --from=builder /app/node_modules/lodash ./node_modules/lodash
-COPY --from=builder /app/node_modules/cron-parser ./node_modules/cron-parser
-COPY --from=builder /app/node_modules/msgpackr ./node_modules/msgpackr
-COPY --from=builder /app/node_modules/cluster-key-slot ./node_modules/cluster-key-slot
-COPY --from=builder /app/node_modules/standard-as-callback ./node_modules/standard-as-callback
-COPY --from=builder /app/node_modules/luxon ./node_modules/luxon
-COPY --from=builder /app/node_modules/node-abort-controller ./node_modules/node-abort-controller
+RUN npm init -y && npm install --production bullmq ioredis @google/generative-ai 2>/dev/null
 
 USER nextjs
 
