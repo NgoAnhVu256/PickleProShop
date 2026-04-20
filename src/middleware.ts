@@ -11,7 +11,7 @@ export default auth((req) => {
   if (isLoginPage && req.auth) {
     const role = (req.auth.user as Record<string, unknown>)?.role;
     if (role === "ADMIN") {
-      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
     // Regular logged-in user visiting login → redirect to homepage
     return NextResponse.redirect(new URL("/", req.url));

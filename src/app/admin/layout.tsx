@@ -27,6 +27,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { Logo } from "@/components/common/Icons";
+import { signOut } from "next-auth/react";
 
 const navGroups = [
   {
@@ -159,10 +160,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ExternalLink size={16} />
             <span>Về trang chủ</span>
           </Link>
-          <Link href="/api/auth/signout" style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 10px", borderRadius: 8, fontSize: 14, color: "#e57373", textDecoration: "none", transition: "background 0.15s" }}>
+          <button onClick={() => signOut({ callbackUrl: "/" })} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 10px", borderRadius: 8, fontSize: 14, color: "#e57373", background: "none", border: "none", cursor: "pointer", width: "100%", transition: "background 0.15s" }}>
             <LogOut size={16} />
             <span>Đăng xuất</span>
-          </Link>
+          </button>
         </div>
       </aside>
 

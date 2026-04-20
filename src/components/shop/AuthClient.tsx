@@ -36,7 +36,7 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
       if (callbackUrl) {
         router.push(callbackUrl);
       } else if (role === "ADMIN") {
-        router.push("/admin/dashboard");
+        router.push("/");
       } else {
         router.push("/");
       }
@@ -64,7 +64,7 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
         if (callbackUrl) {
           window.location.href = callbackUrl;
         } else if (userRole === "ADMIN") {
-          window.location.href = "/admin/dashboard";
+          window.location.href = "/";
         } else {
           window.location.href = "/";
         }
