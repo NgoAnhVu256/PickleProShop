@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Facebook, Instagram, Youtube, Globe } from "lucide-react";
+import { Facebook, Instagram, Youtube, Globe, MapPin } from "lucide-react";
 
 /* TikTok SVG icon */
 function TikTokIcon({ size = 20 }: { size?: number }) {
@@ -59,7 +59,16 @@ export default function Footer({ settings }: { settings?: any }) {
                 <p>Hotline: <a href={`tel:${settings.hotline || settings.phone}`} className="hover:text-[#2d3a45] transition-colors">{settings.hotline || settings.phone}</a></p>
               )}
               {settings?.address && (
-                <p>Địa chỉ: {settings.address}</p>
+                <div className="flex gap-2 items-start">
+                  <MapPin size={14} className="mt-[2px] shrink-0 text-[#3d8f5f]" />
+                  <span><span className="font-semibold text-[#2d3a45]">CS1:</span> {settings.address}</span>
+                </div>
+              )}
+              {settings?.address2 && (
+                <div className="flex gap-2 items-start">
+                  <MapPin size={14} className="mt-[2px] shrink-0 text-[#3d8f5f]" />
+                  <span><span className="font-semibold text-[#2d3a45]">CS2:</span> {settings.address2}</span>
+                </div>
               )}
             </div>
           </div>

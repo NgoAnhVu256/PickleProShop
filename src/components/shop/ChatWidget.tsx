@@ -1,147 +1,369 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Loader2, MessageCircle } from "lucide-react";
+import { X, Send, MessageCircle, Loader2, ChevronDown, Bot } from "lucide-react";
 
-interface Message {
-  role: "user" | "model";
+const ZALO_NUMBER = "0846915120";
+const QUESTION_LIMIT = 3;
+
+type Message = {
+  role: "user" | "assistant";
   text: string;
+};
+
+function MarkdownText({ text }: { text: string }) {
+  const html = text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:#16a34a;text-decoration:underline;font-weight:600" target="_blank" rel="noopener">$1</a>')
+    .replace(/\n/g, "<br/>");
+  return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState("");
+  const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      role: "model",
-      text: "Xin chào! Mình là trợ lý AI PicklePro. Bạn cần tư vấn gì?",
+      role: "assistant",
+      text: "Xin chào! Mình là **Ben Johns** — tư vấn viên của PicklePro 🏓\n\nBạn cần hỗ trợ gì về sản phẩm Pickleball không? Mình sẵn sàng giúp! *(Bạn có thể đặt tối đa 3 câu hỏi)*",
     },
   ]);
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [limitReached, setLimitReached] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (open) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [open, messages]);
 
-  useEffect(() => {
-    if (isOpen) setTimeout(() => inputRef.current?.focus(), 200);
-  }, [isOpen]);
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || loading || limitReached) return;
 
-  const send = async () => {
-    const t = input.trim();
-    if (!t || loading) return;
-    setMessages((p) => [...p, { role: "user", text: t }]);
+    const newCount = questionCount + 1;
+    setQuestionCount(newCount);
     setInput("");
+
+    const userMsg: Message = { role: "user", text };
+    setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
+
     try {
+      const history = messages
+        .filter((m) => m.role !== "assistant" || messages.indexOf(m) > 0)
+        .map((m) => ({ role: m.role === "assistant" ? "model" : "user", text: m.text }));
+
       const res = await fetch("/api/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: t, history: messages.slice(-8) }),
+        body: JSON.stringify({ message: text, history }),
       });
+
       const data = await res.json();
-      setMessages((p) => [
-        ...p,
-        { role: "model", text: data.data?.reply || "Xin lỗi, mình gặp trục trặc!" },
-      ]);
+      const reply = data?.data?.reply || "Mình gặp sự cố nhỏ, bạn thử lại nhé!";
+
+      setMessages((prev) => [...prev, { role: "assistant", text: reply }]);
+
+      // After reply, check if limit reached
+      if (newCount >= QUESTION_LIMIT) {
+        setLimitReached(true);
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              text: `Bạn đã sử dụng hết **${QUESTION_LIMIT} câu hỏi** miễn phí với AI.\n\nĐể được tư vấn chi tiết hơn, vui lòng **liên hệ Zalo: ${ZALO_NUMBER}** — đội ngũ PicklePro sẽ hỗ trợ bạn trực tiếp! 🎯`,
+            },
+          ]);
+        }, 500);
+      }
     } catch {
-      setMessages((p) => [...p, { role: "model", text: "Mất kết nối, thử lại nhé!" }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", text: "Mình gặp lỗi kết nối. Bạn thử lại sau nhé!" },
+      ]);
     } finally {
       setLoading(false);
     }
   };
 
-  const renderText = (text: string) => {
-    return text.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, i) => {
-      const b = part.match(/^\*\*(.*?)\*\*$/);
-      if (b) return <strong key={i}>{b[1]}</strong>;
-      const l = part.match(/^\[(.*?)\]\((.*?)\)$/);
-      if (l) return <a key={i} href={l[2]} className="text-blue-500 underline underline-offset-2">{l[1]}</a>;
-      return <span key={i}>{part}</span>;
-    });
-  };
+  const remaining = QUESTION_LIMIT - questionCount;
 
   return (
     <>
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-5 right-5 z-50 w-12 h-12 bg-gradient-to-br from-[#6c5ce7] to-[#a29bfe] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
-          aria-label="Mở chat"
-        >
-          <MessageCircle size={20} />
-        </button>
-      )}
+      {/* Floating Button */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="Mở chat tư vấn"
+        style={{
+          position: "fixed",
+          bottom: 28,
+          right: 28,
+          zIndex: 9999,
+          width: 60,
+          height: 60,
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #16a34a, #22c55e)",
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 4px 20px rgba(22,163,74,0.5)",
+          transition: "transform 0.2s, box-shadow 0.2s",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.12)";
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 28px rgba(22,163,74,0.65)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 20px rgba(22,163,74,0.5)";
+        }}
+      >
+        {open ? <ChevronDown size={24} color="#fff" /> : <MessageCircle size={26} color="#fff" />}
 
-      {isOpen && (
-        <div className="fixed bottom-5 right-5 z-50 w-[320px] max-w-[calc(100vw-1.5rem)] h-[420px] max-h-[calc(100vh-3rem)] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200/60">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-[#2d3436] to-[#636e72] px-4 py-3 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-2.5">
-              <div>
-                <h3 className="text-white font-bold text-xs tracking-wide">PICKLEPRO</h3>
-                <p className="text-green-400 text-[9px] font-medium flex items-center gap-1">
-                  <span className="w-1 h-1 bg-green-400 rounded-full" /> Online
-                </p>
+        {/* Pulse ring */}
+        {!open && (
+          <span style={{
+            position: "absolute", inset: -4, borderRadius: "50%",
+            border: "2px solid rgba(34,197,94,0.5)",
+            animation: "chat-pulse 2s ease-in-out infinite",
+          }} />
+        )}
+      </button>
+
+      {/* Chat Panel */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 100,
+          right: 28,
+          zIndex: 9998,
+          width: 360,
+          maxWidth: "calc(100vw - 40px)",
+          height: 520,
+          borderRadius: 20,
+          background: "#fff",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          transform: open ? "scale(1) translateY(0)" : "scale(0.85) translateY(20px)",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+          transformOrigin: "bottom right",
+          transition: "transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease",
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          background: "linear-gradient(135deg, #15803d, #16a34a)",
+          padding: "14px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+        }}>
+          <div style={{
+            width: 38, height: 38, borderRadius: "50%",
+            background: "rgba(255,255,255,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <Bot size={20} color="#fff" />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>Ben Johns – PicklePro AI</div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, marginTop: 2, display: "flex", alignItems: "center", gap: 5 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#86efac", display: "inline-block" }} />
+              Đang hoạt động
+            </div>
+          </div>
+          {/* Question counter badge */}
+          {!limitReached && (
+            <div style={{
+              background: remaining <= 1 ? "rgba(239,68,68,0.25)" : "rgba(255,255,255,0.2)",
+              borderRadius: 20,
+              padding: "3px 10px",
+              fontSize: 11,
+              color: "#fff",
+              fontWeight: 600,
+              flexShrink: 0,
+            }}>
+              {remaining} câu còn lại
+            </div>
+          )}
+          <button
+            onClick={() => setOpen(false)}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.75)", padding: 4, display: "flex" }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Messages */}
+        <div style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "16px 14px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          background: "#f8fafb",
+        }}>
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                alignItems: "flex-end",
+                gap: 6,
+              }}
+            >
+              {msg.role === "assistant" && (
+                <div style={{
+                  width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#15803d,#16a34a)",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginBottom: 2,
+                }}>
+                  <Bot size={14} color="#fff" />
+                </div>
+              )}
+              <div style={{
+                maxWidth: "78%",
+                padding: "9px 13px",
+                borderRadius: msg.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                background: msg.role === "user"
+                  ? "linear-gradient(135deg,#16a34a,#22c55e)"
+                  : "#fff",
+                color: msg.role === "user" ? "#fff" : "#1a2332",
+                fontSize: 13,
+                lineHeight: 1.55,
+                boxShadow: msg.role === "user" ? "0 2px 8px rgba(22,163,74,0.3)" : "0 1px 4px rgba(0,0,0,0.08)",
+                wordBreak: "break-word",
+              }}>
+                <MarkdownText text={msg.text} />
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors p-1" aria-label="Đóng">
-              <X size={16} />
+          ))}
+
+          {loading && (
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#15803d,#16a34a)",
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>
+                <Bot size={14} color="#fff" />
+              </div>
+              <div style={{
+                padding: "10px 16px", background: "#fff", borderRadius: "18px 18px 18px 4px",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: 5,
+              }}>
+                <Loader2 size={14} color="#16a34a" style={{ animation: "spin 0.8s linear infinite" }} />
+                <span style={{ fontSize: 12, color: "#9ca3af" }}>Đang trả lời...</span>
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* Limit reached CTA */}
+        {limitReached && (
+          <div style={{
+            padding: "12px 14px",
+            background: "linear-gradient(135deg,#fef9ec,#fef3c7)",
+            borderTop: "1px solid #fde68a",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+          }}>
+            <p style={{ fontSize: 12, color: "#92400e", fontWeight: 600, textAlign: "center", margin: 0 }}>
+              Hết lượt hỏi miễn phí — Liên hệ Zalo để tiếp tục tư vấn!
+            </p>
+            <a
+              href={`https://zalo.me/${ZALO_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "flex", alignItems: "center", gap: 8,
+                background: "linear-gradient(135deg,#0068ff,#0ea5e9)",
+                color: "#fff", borderRadius: 10, padding: "9px 20px",
+                fontSize: 13, fontWeight: 700, textDecoration: "none",
+                boxShadow: "0 3px 10px rgba(0,104,255,0.35)",
+                transition: "transform 0.15s",
+              }}
+            >
+              {/* Zalo icon */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.26 2 11.5c0 2.94 1.4 5.57 3.6 7.38L5 21.5l2.78-1.46A10.1 10.1 0 0 0 12 21c5.52 0 10-4.26 10-9.5S17.52 2 12 2zm1.07 12.76-2.65-2.82-5.05 2.82 5.56-5.89 2.65 2.82 5.04-2.82-5.55 5.89z"/>
+              </svg>
+              Chat Zalo ngay: {ZALO_NUMBER}
+            </a>
+          </div>
+        )}
+
+        {/* Input */}
+        {!limitReached && (
+          <div style={{
+            padding: "10px 12px",
+            borderTop: "1px solid #eef2f7",
+            background: "#fff",
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+          }}>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+              placeholder={loading ? "Đang trả lời..." : "Nhập câu hỏi..."}
+              disabled={loading}
+              style={{
+                flex: 1, border: "1.5px solid #e5e7eb", borderRadius: 12,
+                padding: "9px 14px", fontSize: 13, outline: "none", fontFamily: "inherit",
+                background: loading ? "#f9fafb" : "#fff", color: "#1a2332",
+                transition: "border-color 0.15s",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#16a34a")}
+              onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+            />
+            <button
+              onClick={handleSend}
+              disabled={loading || !input.trim()}
+              style={{
+                width: 38, height: 38, borderRadius: 10, border: "none", cursor: "pointer",
+                background: loading || !input.trim() ? "#e5e7eb" : "linear-gradient(135deg,#16a34a,#22c55e)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transition: "background 0.2s, transform 0.15s",
+                flexShrink: 0,
+              }}
+              onMouseEnter={(e) => { if (!loading && input.trim()) (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.08)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
+            >
+              <Send size={16} color={loading || !input.trim() ? "#9ca3af" : "#fff"} />
             </button>
           </div>
+        )}
+      </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 bg-gray-50/80">
-            {messages.map((msg, i) => (
-              <div key={i} className={`flex items-end gap-1.5 ${msg.role === "user" ? "justify-end" : ""}`}>
-                <div className={`max-w-[85%] px-3 py-2 text-[12px] leading-relaxed whitespace-pre-wrap ${
-                  msg.role === "user"
-                    ? "bg-[#6c5ce7] text-white rounded-xl rounded-br-sm"
-                    : "bg-white text-gray-700 rounded-xl rounded-bl-sm shadow-sm border border-gray-100"
-                }`}>
-                  {renderText(msg.text)}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex items-end gap-1.5">
-                <div className="bg-white px-3 py-2 rounded-xl rounded-bl-sm shadow-sm border border-gray-100 flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            )}
-            <div ref={endRef} />
-          </div>
-
-          {/* Input */}
-          <div className="px-3 py-2.5 bg-white border-t border-gray-100 flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder="Nhập tin nhắn..."
-                disabled={loading}
-                className="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-xs outline-none focus:ring-1 focus:ring-[#6c5ce7]/30 disabled:opacity-50 placeholder:text-gray-400"
-              />
-              <button
-                onClick={send}
-                disabled={loading || !input.trim()}
-                className="w-8 h-8 bg-[#6c5ce7] text-white rounded-lg flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
-                aria-label="Gửi"
-              >
-                {loading ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <style>{`
+        @keyframes chat-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.6; }
+          50% { transform: scale(1.3); opacity: 0; }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </>
   );
 }

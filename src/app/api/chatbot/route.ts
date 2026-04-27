@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { chatWithGemini } from "@/lib/gemini";
+import { chatWithGroq } from "@/lib/groq";
 
 // Simple in-memory rate limiter for DoS protection
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
 
     const sanitizedMessage = message.slice(0, 500);
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return NextResponse.json({
         success: true,
         data: {
@@ -156,9 +156,9 @@ export async function POST(req: NextRequest) {
     const { productContext, productsFound } = await buildProductContext(sanitizedMessage);
     const trimmedHistory = (history || []).slice(-6);
 
-    // ─── Direct Gemini Call (No Redis/Queue dependency) ─────────
-    console.log("[Chatbot] Calling Gemini directly...");
-    const reply = await chatWithGemini(sanitizedMessage, productContext, trimmedHistory);
+    // ─── Direct Groq Call ─────────────────────────────────────────────────────
+    console.log("[Chatbot] Calling Groq (llama-3.3-70b)...");
+    const reply = await chatWithGroq(sanitizedMessage, productContext, trimmedHistory);
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 export default function BannerGrid({ banners }: { banners?: any }) {
   if (!banners || !banners.HERO || banners.HERO.length === 0) return null;
 
@@ -54,14 +55,23 @@ function AutoSlider({ items = [], interval }: { items: any[], interval: number }
   }, [items]);
   return (
     <div className="w-full h-full relative">
-      {items.map((item, i) => (
-        <img 
-          key={item.id} 
-          src={item.image} 
-          alt={item.title || "Banner"}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === index ? 'opacity-100' : 'opacity-0'}`} 
-        />
-      ))}
+      {items.map((item, i) => {
+        const Wrapper = item.link ? Link : 'div';
+        const wrapperProps = item.link ? { href: item.link } : {};
+        return (
+          <Wrapper
+            key={item.id}
+            {...(wrapperProps as any)}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${i === index ? 'opacity-100' : 'opacity-0'} ${item.link ? 'cursor-pointer' : ''}`}
+          >
+            <img
+              src={item.image}
+              alt={item.title || 'Banner'}
+              className="w-full h-full object-cover"
+            />
+          </Wrapper>
+        );
+      })}
     </div>
   );
 }
@@ -71,35 +81,48 @@ function HeroSlider({ items = [] }: { items: any[] }) {
 
   useEffect(() => {
     if (items.length <= 1) return;
-    const timer = setInterval(() => setIndex((prev) => (prev + 1) % items.length), 2000);
+    const timer = setInterval(() => setIndex((prev) => (prev + 1) % items.length), 4000);
     return () => clearInterval(timer);
   }, [items]);
 
   return (
     <div className="w-full h-full relative group">
-      {items.map((item, i) => (
-        <img 
-          key={item.id} 
-          src={item.image} 
-          alt="Hero"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === index ? 'opacity-100' : 'opacity-0'}`} 
-        />
-      ))}
-      
-      {/* Navigation */}
-      <button onClick={() => setIndex((prev) => (prev - 1 + items.length) % items.length)} 
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+      {items.map((item, i) => {
+        const Wrapper = item.link ? Link : 'div';
+        const wrapperProps = item.link ? { href: item.link } : {};
+        return (
+          <Wrapper
+            key={item.id}
+            {...(wrapperProps as any)}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${i === index ? 'opacity-100' : 'opacity-0'} ${item.link ? 'cursor-pointer' : ''}`}
+          >
+            <img
+              src={item.image}
+              alt={item.title || 'Hero Banner'}
+              className="w-full h-full object-cover"
+            />
+          </Wrapper>
+        );
+      })}
+
+      {/* Navigation — above the link layer */}
+      <button
+        onClick={(e) => { e.preventDefault(); setIndex((prev) => (prev - 1 + items.length) % items.length); }}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+      >
         <ChevronLeft className="w-5 h-5" />
       </button>
-      <button onClick={() => setIndex((prev) => (prev + 1) % items.length)} 
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+      <button
+        onClick={(e) => { e.preventDefault(); setIndex((prev) => (prev + 1) % items.length); }}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+      >
         <ChevronRight className="w-5 h-5" />
       </button>
 
-      {/* Pagination */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      {/* Pagination dots — above the link layer */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20 pointer-events-none">
         {items.map((_, i) => (
-          <div key={i} className={`w-2 h-2 rounded-full ${i === index ? 'bg-white' : 'bg-white/40'}`} />
+          <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === index ? 'bg-white scale-125' : 'bg-white/40'}`} />
         ))}
       </div>
     </div>
