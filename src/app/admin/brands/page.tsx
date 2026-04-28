@@ -174,7 +174,7 @@ export default function AdminBrandsPage() {
                   <td style={{ fontFamily: "monospace", fontSize: 12, color: "#8a98ac" }}>{brand.slug}</td>
                   <td>
                     {brand.logo
-                      ? <span style={{ fontSize: 12, color: "#46b876" }}>✓ Có logo</span>
+                      ? <span style={{ fontSize: 12, color: "#46b876" }}>Có logo</span>
                       : <span style={{ fontSize: 12, color: "#b0bac9" }}>Chưa có</span>
                     }
                   </td>

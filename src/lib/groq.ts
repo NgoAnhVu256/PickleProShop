@@ -33,7 +33,7 @@ export async function chatWithGroq(
 
   // Instruction appended to the last user message when this is question #3
   const lastQuestionNote = isLastQuestion
-    ? `\n\n⚠️ ĐÂY LÀ CÂU HỎI CUỐI TRONG CUỘC TRUNG CHUYỆN NÀY. Sau khi trả lời đầy đủ, BẮT BUỘC kết thúc bằng đoạn sau (nguyên văn, không thay đổi):\n"💬 Để được tư vấn chi tiết và hỗ trợ đặt hàng, bạn vui lòng liên hệ Zalo: **${ZALO_NUMBER}** — mình sẽ tư vấn và chốt đơn ngay cho bạn! 🎯"`
+    ? `\n\nĐÂY LÀ CÂU HỎI CUỐI TRONG CUỘC TRUNG CHUYỆN NÀY. Sau khi trả lời đầy đủ, BẮT BUỘC kết thúc bằng đoạn sau (nguyên văn, không thay đổi):\n"Để được tư vấn chi tiết và hỗ trợ đặt hàng, bạn vui lòng liên hệ Zalo: **${ZALO_NUMBER}** — mình sẽ tư vấn và chốt đơn ngay cho bạn!"`
     : "";
 
   const messages: Groq.Chat.ChatCompletionMessageParam[] = [

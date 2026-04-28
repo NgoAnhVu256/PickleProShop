@@ -124,7 +124,7 @@ export async function chatWithAI(
   }
 
   const lastQuestionNote = isLastQuestion
-    ? `\n\n⚠️ ĐÂY LÀ CÂU HỎI CUỐI CÙNG. Sau khi trả lời đầy đủ, BẮT BUỘC kết thúc bằng:\n"💬 Để được tư vấn chi tiết hơn, bạn vui lòng liên hệ Zalo: **${ZALO_NUMBER}** — mình sẽ hỗ trợ bạn ngay! 🎯"`
+    ? `\n\nĐÂY LÀ CÂU HỎI CUỐI CÙNG. Sau khi trả lời đầy đủ, BẮT BUỘC kết thúc bằng:\n"Để được tư vấn chi tiết hơn, bạn vui lòng liên hệ Zalo: **${ZALO_NUMBER}** — mình sẽ hỗ trợ bạn ngay!"`
     : "";
 
   const userPrompt = `[DỮ LIỆU SẢN PHẨM TỪ DATABASE]\n${productContext}\n\n[CÂU HỎI KHÁCH HÀNG]\n${userMessage}${lastQuestionNote}`;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, Target, Package, Grid3x3, Newspaper, Users } from "lucide-react";
 import Link from "next/link";
 
 export interface BannerProps {
@@ -70,19 +70,19 @@ function CategoryNav() {
       <div className="w-full px-6 lg:px-10 py-4">
         <ul className="flex items-center justify-center gap-10 text-[13px] font-bold text-gray-700 tracking-wide">
           <li className="flex items-center gap-2.5 hover:text-blue-600 cursor-pointer transition-colors group">
-            <span className="text-lg group-hover:scale-110 transition-transform">🎯</span> VỢT PICKLEBALL
+            <Target className="w-4 h-4 group-hover:scale-110 transition-transform" /> VỢT PICKLEBALL
           </li>
           <li className="flex items-center gap-2.5 hover:text-blue-600 cursor-pointer transition-colors group">
-            <span className="text-lg group-hover:scale-110 transition-transform">📦</span> PHỤ KIỆN
+            <Package className="w-4 h-4 group-hover:scale-110 transition-transform" /> PHỤ KIỆN
           </li>
           <li className="flex items-center gap-2.5 hover:text-blue-600 cursor-pointer transition-colors group">
-            <span className="text-lg group-hover:scale-110 transition-transform">📚</span> BỘ SƯU TẬP
+            <Grid3x3 className="w-4 h-4 group-hover:scale-110 transition-transform" /> BỘ SƯU TẬP
           </li>
           <li className="flex items-center gap-2.5 hover:text-blue-600 cursor-pointer transition-colors group">
-            <span className="text-lg group-hover:scale-110 transition-transform">📰</span> TIN TỨC
+            <Newspaper className="w-4 h-4 group-hover:scale-110 transition-transform" /> TIN TỨC
           </li>
           <li className="flex items-center gap-2.5 hover:text-blue-600 cursor-pointer transition-colors group">
-            <span className="text-lg group-hover:scale-110 transition-transform">👥</span> CỘNG ĐỒNG
+            <Users className="w-4 h-4 group-hover:scale-110 transition-transform" /> CỘNG ĐỒNG
           </li>
         </ul>
       </div>

@@ -139,7 +139,7 @@ export default function AdminAnnouncementsPage() {
         <div className="card" style={{ padding: 24, marginBottom: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700 }}>
-              {editId ? "✏️ Sửa thông báo" : "➕ Thêm thông báo"}
+              {editId ? "Sửa thông báo" : "Thêm thông báo"}
             </h2>
             <button onClick={resetForm} style={{ background: "none", border: "none", color: "var(--color-text-muted)", cursor: "pointer" }}>
               <X size={18} />
