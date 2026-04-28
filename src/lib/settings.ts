@@ -9,6 +9,17 @@ export async function getSiteSettings() {
       config[s.key] = s.value;
     });
 
+    // Parse addresses: try JSON array first, then legacy fields
+    let addresses: string[] = [];
+    if (config.store_addresses) {
+      try { addresses = JSON.parse(config.store_addresses); } catch { addresses = []; }
+    }
+    // Fallback: migrate from old store_address / store_address2
+    if (addresses.length === 0) {
+      if (config.store_address) addresses.push(config.store_address);
+      if (config.store_address2) addresses.push(config.store_address2);
+    }
+
     return {
       name: config.store_name || "PicklePro",
       slogan: config.store_slogan || "Cửa hàng Pickleball hàng đầu Việt Nam",
@@ -16,8 +27,7 @@ export async function getSiteSettings() {
       favicon: config.store_favicon || "/favicon.ico",
       email: config.store_email || "help@picklepro.vn",
       phone: config.store_phone || "+84 123 456 789",
-      address: config.store_address || "Ho Chi Minh City, Vietnam",
-      address2: config.store_address2 || "",
+      addresses,
       website: config.store_website || "",
       workingHours: config.store_open_hours || "",
       hotline: config.store_hotline || "",
@@ -34,8 +44,7 @@ export async function getSiteSettings() {
       favicon: "/favicon.ico",
       email: "help@picklepro.vn",
       phone: "+84 123 456 789",
-      address: "Ho Chi Minh City, Vietnam",
-      address2: "",
+      addresses: [] as string[],
       website: "",
       workingHours: "",
       hotline: "",

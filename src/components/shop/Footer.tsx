@@ -58,18 +58,12 @@ export default function Footer({ settings }: { settings?: any }) {
               {(settings?.hotline || settings?.phone) && (
                 <p>Hotline: <a href={`tel:${settings.hotline || settings.phone}`} className="hover:text-[#2d3a45] transition-colors">{settings.hotline || settings.phone}</a></p>
               )}
-              {settings?.address && (
-                <div className="flex gap-2 items-start">
+              {settings?.addresses?.length > 0 && settings.addresses.map((addr: string, i: number) => (
+                <div key={i} className="flex gap-2 items-start">
                   <MapPin size={14} className="mt-[2px] shrink-0 text-[#3d8f5f]" />
-                  <span><span className="font-semibold text-[#2d3a45]">CS1:</span> {settings.address}</span>
+                  <span><span className="font-semibold text-[#2d3a45]">CS{i + 1}:</span> {addr}</span>
                 </div>
-              )}
-              {settings?.address2 && (
-                <div className="flex gap-2 items-start">
-                  <MapPin size={14} className="mt-[2px] shrink-0 text-[#3d8f5f]" />
-                  <span><span className="font-semibold text-[#2d3a45]">CS2:</span> {settings.address2}</span>
-                </div>
-              )}
+              ))}
             </div>
           </div>
 

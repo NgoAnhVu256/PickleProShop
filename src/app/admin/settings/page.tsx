@@ -5,7 +5,7 @@ import {
   Save, Loader2, Store, Search, Share2, Phone, Mail, MapPin,
   Globe, MessageCircle,
   FileText, Link2, Tag, CheckCircle2,
-  AtSign, Video, Rss,
+  AtSign, Video, Rss, Plus, Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/admin/ImageUpload";
@@ -27,8 +27,6 @@ const SETTINGS_CONFIG = {
         { key: "store_slogan",  label: "Slogan",         type: "text",   icon: FileText, placeholder: "Chuyên Pickleball Chính Hãng" },
         { key: "store_email",   label: "Email liên hệ", type: "email",  icon: Mail,     placeholder: "hello@picklepro.vn" },
         { key: "store_phone",   label: "Số điện thoại", type: "text",   icon: Phone,    placeholder: "0909 123 456" },
-        { key: "store_address",  label: "Địa chỉ CS1",    type: "text",   icon: MapPin,   placeholder: "123 Nguyễn Văn A, TP.HCM" },
-        { key: "store_address2", label: "Địa chỉ CS2",    type: "text",   icon: MapPin,   placeholder: "456 Lê Lợi, Hà Nội" },
         { key: "store_website", label: "Website",        type: "text",   icon: Globe,    placeholder: "https://picklepro.vn" },
       ],
     },
@@ -136,6 +134,107 @@ function Field({
   );
 }
 
+/* ─── Dynamic Addresses Manager ─── */
+function AddressesManager({
+  value,
+  onChange,
+}: {
+  value: string; // JSON string of string[]
+  onChange: (v: string) => void;
+}) {
+  let addresses: string[] = [];
+  try { addresses = JSON.parse(value || "[]"); } catch { addresses = []; }
+
+  const update = (newList: string[]) => onChange(JSON.stringify(newList));
+
+  const setAddr = (i: number, v: string) => {
+    const copy = [...addresses];
+    copy[i] = v;
+    update(copy);
+  };
+
+  const addAddr = () => update([...addresses, ""]);
+
+  const removeAddr = (i: number) => {
+    const copy = [...addresses];
+    copy.splice(i, 1);
+    update(copy);
+  };
+
+  return (
+    <div style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden", marginBottom: 20 }}>
+      <div style={{ padding: "14px 22px", borderBottom: "1px solid #eef2f7", background: "#fafbfc", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>
+          Hệ thống chi nhánh ({addresses.length})
+        </h2>
+        <button
+          onClick={addAddr}
+          type="button"
+          style={{
+            display: "flex", alignItems: "center", gap: 5, padding: "5px 12px",
+            borderRadius: 8, border: "none", cursor: "pointer",
+            background: "linear-gradient(135deg, #58d68d, #3cc06e)",
+            color: "#fff", fontSize: 12, fontWeight: 700,
+          }}
+        >
+          <Plus size={13} /> Thêm chi nhánh
+        </button>
+      </div>
+      <div style={{ padding: "16px 22px", display: "flex", flexDirection: "column", gap: 10 }}>
+        {addresses.length === 0 && (
+          <p style={{ fontSize: 13, color: "#b0bac9", textAlign: "center", padding: "12px 0" }}>
+            Chưa có địa chỉ nào. Nhấn &quot;Thêm chi nhánh&quot; để bắt đầu.
+          </p>
+        )}
+        {addresses.map((addr, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{
+              width: 28, height: 28, borderRadius: "50%",
+              background: "linear-gradient(135deg,#58d68d,#3cc06e)",
+              color: "#fff", fontSize: 11, fontWeight: 800,
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+            }}>
+              {i + 1}
+            </span>
+            <div style={{ position: "relative", flex: 1 }}>
+              <MapPin size={13} style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: "#b0bac9" }} />
+              <input
+                type="text"
+                value={addr}
+                onChange={(e) => setAddr(i, e.target.value)}
+                placeholder={`Địa chỉ chi nhánh ${i + 1}`}
+                style={{
+                  width: "100%", padding: "9px 12px 9px 36px",
+                  background: "#f8f9fb", border: "1.5px solid #eef2f7",
+                  borderRadius: 8, fontSize: 13, color: "#323b4b",
+                  outline: "none", fontFamily: "inherit",
+                  transition: "border-color 0.15s",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#58d68d")}
+                onBlur={(e) => (e.target.style.borderColor = "#eef2f7")}
+              />
+            </div>
+            <button
+              onClick={() => removeAddr(i)}
+              type="button"
+              title="Xóa địa chỉ"
+              style={{
+                width: 32, height: 32, borderRadius: 8, border: "none",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                background: "#fef2f2", color: "#ef4444", transition: "background 0.15s", flexShrink: 0,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#fee2e2")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#fef2f2")}
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -223,31 +322,39 @@ export default function AdminSettingsPage() {
       </div>
 
       {activeTab === "general" && (
-        <div style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden", marginBottom: 20 }}>
-          <div style={{ padding: "14px 22px", borderBottom: "1px solid #eef2f7", background: "#fafbfc" }}>
-            <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>
-              Thương hiệu — Logo & Favicon
-            </h2>
+        <>
+          <div style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden", marginBottom: 20 }}>
+            <div style={{ padding: "14px 22px", borderBottom: "1px solid #eef2f7", background: "#fafbfc" }}>
+              <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>
+                Thương hiệu — Logo & Favicon
+              </h2>
+            </div>
+            <div style={{ padding: "20px 22px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+              <ImageUpload
+                label="Logo website"
+                value={settings["store_logo"] || ""}
+                onChange={(url) => set("store_logo", url)}
+                onRemove={() => set("store_logo", "")}
+                folder="site"
+                type="logo"
+              />
+              <ImageUpload
+                label="Favicon"
+                value={settings["store_favicon"] || ""}
+                onChange={(url) => set("store_favicon", url)}
+                onRemove={() => set("store_favicon", "")}
+                folder="site"
+                type="favicon"
+              />
+            </div>
           </div>
-          <div style={{ padding: "20px 22px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-            <ImageUpload 
-              label="Logo website"
-              value={settings["store_logo"] || ""}
-              onChange={(url) => set("store_logo", url)}
-              onRemove={() => set("store_logo", "")}
-              folder="site"
-              type="logo"
-            />
-            <ImageUpload 
-              label="Favicon"
-              value={settings["store_favicon"] || ""}
-              onChange={(url) => set("store_favicon", url)}
-              onRemove={() => set("store_favicon", "")}
-              folder="site"
-              type="favicon"
-            />
-          </div>
-        </div>
+
+          {/* Dynamic Addresses */}
+          <AddressesManager
+            value={settings["store_addresses"] || "[]"}
+            onChange={(v) => set("store_addresses", v)}
+          />
+        </>
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
