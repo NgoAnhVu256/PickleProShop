@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { chatWithGroq } from "@/lib/groq";
+import { chatWithAI } from "@/lib/ai-chat";
 
 // Simple in-memory rate limiter for DoS protection
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -141,12 +141,12 @@ export async function POST(req: NextRequest) {
 
     const sanitizedMessage = message.slice(0, 500);
 
-    if (!process.env.GROQ_API_KEY) {
+    if (!process.env.GROQ_API_KEY && !process.env.GEMINI_API_KEY) {
       return NextResponse.json({
         success: true,
         data: {
           reply:
-            "Hiện tại hệ thống AI đang bảo trì. Bạn vui lòng liên hệ hotline để được tư vấn nhé!",
+            "Hiện tại hệ thống AI đang bảo trì. Bạn vui lòng liên hệ Zalo: 0846915120 để được tư vấn nhé!",
           productsFound: 0,
         },
       });
@@ -156,9 +156,9 @@ export async function POST(req: NextRequest) {
     const { productContext, productsFound } = await buildProductContext(sanitizedMessage);
     const trimmedHistory = (history || []).slice(-6);
 
-    // ─── Direct Groq Call ─────────────────────────────────────────────────────
-    console.log(`[Chatbot] Groq | isLastQuestion: ${isLastQuestion}`);
-    const reply = await chatWithGroq(sanitizedMessage, productContext, trimmedHistory, isLastQuestion);
+    // ─── AI Call (Groq → Gemini fallback) ──────────────────────────────────────
+    console.log(`[Chatbot] AI call | isLastQuestion: ${isLastQuestion}`);
+    const reply = await chatWithAI(sanitizedMessage, productContext, trimmedHistory, isLastQuestion);
 
     return NextResponse.json({
       success: true,
