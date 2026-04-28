@@ -25,7 +25,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      text: "Xin chào! Mình là **Ben Johns** — tư vấn viên của PicklePro.\n\nBạn cần hỗ trợ gì về sản phẩm Pickleball không? Mình sẵn sàng giúp! *(Bạn có thể đặt tối đa **3 câu hỏi** — câu thứ 3 mình sẽ tư vấn chốt và gởi bạn qua Zalo để hỗ trợ thêm!)*",
+      text: "Xin chào! Mình là **PicklePro AI** — tư vấn viên của PicklePro.\n\nBạn cần hỗ trợ gì?",
     },
   ]);
   const [input, setInput] = useState("");

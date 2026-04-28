@@ -18,7 +18,7 @@ Quy tắc BẮT BUỘC:
 6. CHỈ được gửi link sản phẩm nội bộ (định dạng [Tên sản phẩm](/products/slug)). TUYỆT ĐỐI KHÔNG chèn link ngoài.
 7. Câu trả lời ngắn gọn, súc tích, có trọng tâm.`;
 
-const GREETING = "Xin chào mình là Ben Johns rất vui được tư vấn bạn! Mình sẽ tư vấn dựa trên sản phẩm thực tế trong kho PicklePro. Bạn cần hỗ trợ gì nào?";
+const GREETING = "Xin chào mình là PicklePro AI! Rất vui được tư vấn bạn! Mình sẽ tư vấn dựa trên sản phẩm thực tế trong kho PicklePro. Bạn cần hỗ trợ gì nào?";
 
 // ━━━━━━━━━━━━━━━ GROQ ━━━━━━━━━━━━━━━
 const GROQ_MODELS = [
@@ -32,7 +32,11 @@ async function tryGroq(
   history: { role: "user" | "model"; text: string }[],
 ): Promise<string | null> {
   const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey || apiKey === "your_groq_api_key_here") return null;
+  console.log(`[AI] Groq key check: ${apiKey ? "found (" + apiKey.substring(0, 10) + "...)" : "MISSING"}`);
+  if (!apiKey || apiKey === "your_groq_api_key_here") {
+    console.log("[AI] Groq skipped: no valid API key");
+    return null;
+  }
 
   const groq = new Groq({ apiKey });
 
@@ -67,7 +71,7 @@ async function tryGroq(
 }
 
 // ━━━━━━━━━━━━━━━ GEMINI ━━━━━━━━━━━━━━━
-const GEMINI_MODELS = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"];
+const GEMINI_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash-latest"];
 
 async function tryGemini(
   userPrompt: string,
