@@ -2,20 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+
 export default function BannerGrid({ banners }: { banners?: any }) {
   if (!banners || !banners.HERO || banners.HERO.length === 0) return null;
 
   const data = banners;
-  
+
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 border-b border-gray-100">
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        {/* HERO SLIDER - order-1 on mobile, order-2 on desktop */}
+        {/* HERO SLIDER */}
         <div className="col-span-12 lg:col-span-6 order-1 lg:order-2 rounded-xl overflow-hidden bg-[#fffbf4] relative group shadow-sm border border-gray-100 h-60 min-h-[240px] md:h-80 lg:h-[300px]">
           <HeroSlider items={data.HERO} />
         </div>
 
-        {/* LEFT BANNER - order-2 on mobile, order-1 on desktop */}
+        {/* LEFT BANNER */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 order-2 lg:order-1 rounded-xl overflow-hidden bg-[#fffbf4] shadow-sm border border-gray-100 h-48 md:h-80 lg:h-[300px]">
           {data.LEFT?.length > 0 ? (
             <AutoSlider items={data.LEFT} interval={3000} />
@@ -24,8 +25,8 @@ export default function BannerGrid({ banners }: { banners?: any }) {
           )}
         </div>
 
-        {/* RIGHT SECTION - order-3 on all sizes */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-3 order-3 lg:order-3 flex flex-col gap-4 h-auto md:h-80 lg:h-[300px]">
+        {/* RIGHT SECTION */}
+        <div className="col-span-12 md:col-span-6 lg:col-span-3 order-3 flex flex-col gap-4 h-auto md:h-80 lg:h-[300px]">
           <div className="flex-1 rounded-xl overflow-hidden bg-[#fffbf4] shadow-sm border border-gray-100 min-h-[120px] md:min-h-0">
             {data.RIGHT_TOP?.length > 0 ? (
               <AutoSlider items={data.RIGHT_TOP} interval={3300} />
@@ -46,83 +47,130 @@ export default function BannerGrid({ banners }: { banners?: any }) {
   );
 }
 
-function AutoSlider({ items = [], interval }: { items: any[], interval: number }) {
+// ─── AutoSlider (LEFT / RIGHT_TOP / RIGHT_BOTTOM) ───────────────────────────
+function AutoSlider({ items = [], interval }: { items: any[]; interval: number }) {
   const [index, setIndex] = useState(0);
+
   useEffect(() => {
     if (items.length <= 1) return;
-    const timer = setInterval(() => setIndex((prev) => (prev + 1) % items.length), interval);
+    const timer = setInterval(() => setIndex((p) => (p + 1) % items.length), interval);
     return () => clearInterval(timer);
-  }, [items]);
+  }, [items, interval]);
+
   return (
     <div className="w-full h-full relative">
       {items.map((item, i) => {
-        const Wrapper = item.link ? Link : 'div';
-        const wrapperProps = item.link ? { href: item.link } : {};
+        const isActive = i === index;
+        const content = (
+          <img
+            src={item.image}
+            alt={item.title || 'Banner'}
+            className="w-full h-full object-cover"
+          />
+        );
+
+        const cls = `absolute inset-0 w-full h-full transition-opacity duration-700 ${
+          isActive ? 'opacity-100 pointer-events-auto z-10' : 'opacity-0 pointer-events-none z-0'
+        }`;
+
+        if (item.link) {
+          return (
+            <Link key={item.id} href={item.link} className={cls}>
+              {content}
+            </Link>
+          );
+        }
         return (
-          <Wrapper
-            key={item.id}
-            {...(wrapperProps as any)}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${i === index ? 'opacity-100' : 'opacity-0'} ${item.link ? 'cursor-pointer' : ''}`}
-          >
-            <img
-              src={item.image}
-              alt={item.title || 'Banner'}
-              className="w-full h-full object-cover"
-            />
-          </Wrapper>
+          <div key={item.id} className={cls}>
+            {content}
+          </div>
         );
       })}
     </div>
   );
 }
 
+// ─── HeroSlider (HERO center) ────────────────────────────────────────────────
 function HeroSlider({ items = [] }: { items: any[] }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (items.length <= 1) return;
-    const timer = setInterval(() => setIndex((prev) => (prev + 1) % items.length), 4000);
+    const timer = setInterval(() => setIndex((p) => (p + 1) % items.length), 4000);
     return () => clearInterval(timer);
   }, [items]);
 
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIndex((p) => (p - 1 + items.length) % items.length);
+  };
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIndex((p) => (p + 1) % items.length);
+  };
+
   return (
     <div className="w-full h-full relative group">
+      {/* Slides */}
       {items.map((item, i) => {
-        const Wrapper = item.link ? Link : 'div';
-        const wrapperProps = item.link ? { href: item.link } : {};
+        const isActive = i === index;
+        const content = (
+          <img
+            src={item.image}
+            alt={item.title || 'Hero Banner'}
+            className="w-full h-full object-cover"
+          />
+        );
+
+        const cls = `absolute inset-0 w-full h-full transition-opacity duration-1000 ${
+          isActive ? 'opacity-100 pointer-events-auto z-10' : 'opacity-0 pointer-events-none z-0'
+        }`;
+
+        if (item.link) {
+          return (
+            <Link key={item.id} href={item.link} className={cls}>
+              {content}
+            </Link>
+          );
+        }
         return (
-          <Wrapper
-            key={item.id}
-            {...(wrapperProps as any)}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${i === index ? 'opacity-100' : 'opacity-0'} ${item.link ? 'cursor-pointer' : ''}`}
-          >
-            <img
-              src={item.image}
-              alt={item.title || 'Hero Banner'}
-              className="w-full h-full object-cover"
-            />
-          </Wrapper>
+          <div key={item.id} className={cls}>
+            {content}
+          </div>
         );
       })}
 
-      {/* Navigation — above the link layer */}
-      <button
-        onClick={(e) => { e.preventDefault(); setIndex((prev) => (prev - 1 + items.length) % items.length); }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-      <button
-        onClick={(e) => { e.preventDefault(); setIndex((prev) => (prev + 1) % items.length); }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
+      {/* Prev / Next — always above slides (z-20) */}
+      {items.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow"
+            aria-label="Ảnh trước"
+          >
+            <ChevronLeft className="w-5 h-5 text-gray-700" />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow"
+            aria-label="Ảnh sau"
+          >
+            <ChevronRight className="w-5 h-5 text-gray-700" />
+          </button>
+        </>
+      )}
 
-      {/* Pagination dots — above the link layer */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20 pointer-events-none">
+      {/* Dots — z-20, pointer-events-none so they don't swallow clicks */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 pointer-events-none">
         {items.map((_, i) => (
-          <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === index ? 'bg-white scale-125' : 'bg-white/40'}`} />
+          <span
+            key={i}
+            className={`block rounded-full transition-all duration-300 ${
+              i === index ? 'w-4 h-2 bg-white' : 'w-2 h-2 bg-white/50'
+            }`}
+          />
         ))}
       </div>
     </div>

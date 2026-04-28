@@ -25,7 +25,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      text: "Xin chào! Mình là **Ben Johns** — tư vấn viên của PicklePro 🏓\n\nBạn cần hỗ trợ gì về sản phẩm Pickleball không? Mình sẵn sàng giúp! *(Bạn có thể đặt tối đa 3 câu hỏi)*",
+      text: "Xin chào! Mình là **Ben Johns** — tư vấn viên của PicklePro 🏓\n\nBạn cần hỗ trợ gì về sản phẩm Pickleball không? Mình sẵn sàng giúp! *(Bạn có thể đặt tối đa **3 câu hỏi** — câu thứ 3 mình sẽ tư vấn chốt và gởi bạn qua Zalo để hỗ trợ thêm!)*",
     },
   ]);
   const [input, setInput] = useState("");
@@ -47,6 +47,7 @@ export default function ChatWidget() {
     if (!text || loading || limitReached) return;
 
     const newCount = questionCount + 1;
+    const isLastQuestion = newCount >= QUESTION_LIMIT;
     setQuestionCount(newCount);
     setInput("");
 
@@ -62,7 +63,7 @@ export default function ChatWidget() {
       const res = await fetch("/api/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history }),
+        body: JSON.stringify({ message: text, history, isLastQuestion }),
       });
 
       const data = await res.json();
@@ -70,18 +71,9 @@ export default function ChatWidget() {
 
       setMessages((prev) => [...prev, { role: "assistant", text: reply }]);
 
-      // After reply, check if limit reached
-      if (newCount >= QUESTION_LIMIT) {
+      // Lock input after 3rd question (AI already included Zalo CTA in its reply)
+      if (isLastQuestion) {
         setLimitReached(true);
-        setTimeout(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "assistant",
-              text: `Bạn đã sử dụng hết **${QUESTION_LIMIT} câu hỏi** miễn phí với AI.\n\nĐể được tư vấn chi tiết hơn, vui lòng **liên hệ Zalo: ${ZALO_NUMBER}** — đội ngũ PicklePro sẽ hỗ trợ bạn trực tiếp! 🎯`,
-            },
-          ]);
-        }, 500);
       }
     } catch {
       setMessages((prev) => [

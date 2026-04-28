@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { message, history = [] } = body;
+    const { message, history = [], isLastQuestion = false } = body;
 
     if (!message || typeof message !== "string") {
       return NextResponse.json(
@@ -157,8 +157,8 @@ export async function POST(req: NextRequest) {
     const trimmedHistory = (history || []).slice(-6);
 
     // ─── Direct Groq Call ─────────────────────────────────────────────────────
-    console.log("[Chatbot] Calling Groq (llama-3.3-70b)...");
-    const reply = await chatWithGroq(sanitizedMessage, productContext, trimmedHistory);
+    console.log(`[Chatbot] Groq | isLastQuestion: ${isLastQuestion}`);
+    const reply = await chatWithGroq(sanitizedMessage, productContext, trimmedHistory, isLastQuestion);
 
     return NextResponse.json({
       success: true,
