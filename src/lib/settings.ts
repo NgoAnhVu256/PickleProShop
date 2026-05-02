@@ -37,7 +37,7 @@ export async function getSiteSettings() {
       tiktok: config.social_tiktok || "",
       zalo: config.social_zalo || "",
       messenger: config.social_messenger || "",
-      ga4MeasurementId: config.ga4_measurement_id || "",
+      ga4MeasurementId: config.ga4_measurement_id || "G-K6CQGHX7LV",
     };
   } catch (error) {
     return {
@@ -57,7 +57,7 @@ export async function getSiteSettings() {
       tiktok: "",
       zalo: "",
       messenger: "",
-      ga4MeasurementId: "",
+      ga4MeasurementId: "G-K6CQGHX7LV",
     };
   }
 }
