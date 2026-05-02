@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { Search, ShoppingCart, Target, Package, Grid3x3, Newspaper, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+
 
 export interface BannerProps {
   image: string;
@@ -41,8 +43,14 @@ function TopBanner({ banners }: { banners: BannerProps[] }) {
             idx === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={b.image} alt="Top Banner" className="w-full h-full object-cover" />
+          <Image 
+            src={b.image} 
+            alt="Top Banner" 
+            fill 
+            className="object-cover"
+            priority={idx === 0}
+            sizes="100vw"
+          />
         </Link>
       ))}
     </div>
@@ -97,8 +105,15 @@ function Header({ logoUrl }: { logoUrl?: string | null }) {
         {/* LEFT: Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity">
           {logoUrl ? (
-             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt="Logo" className="h-[46px] w-auto object-contain" />
+            <div className="relative h-[46px] w-[150px]">
+              <Image 
+                src={logoUrl} 
+                alt="Logo" 
+                fill 
+                className="object-contain object-left"
+                priority
+              />
+            </div>
           ) : (
             <div className="w-12 h-12 bg-[#0f172a] rounded-[14px] flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-white/20">
               P
@@ -149,8 +164,13 @@ function SideSlider({ banners, intervalTime = 3000, className = "" }: { banners:
       ) : (
         banners.map((b, idx) => (
           <Link key={idx} href={b.link || "#"} className={`absolute inset-0 w-full h-full transition-opacity duration-700 block ${idx === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={b.image} alt="Side Banners" className="w-full h-full object-cover" />
+            <Image 
+              src={b.image} 
+              alt="Side Banners" 
+              fill 
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 25vw"
+            />
           </Link>
         ))
       )}
@@ -177,8 +197,14 @@ function HeroSlider({ banners, className = "" }: { banners: BannerProps[], class
         <>
           {banners.map((b, idx) => (
             <Link key={idx} href={b.link || "#"} className={`absolute inset-0 w-full h-full transition-opacity duration-700 block ${idx === currentIndex ? "opacity-100 z-10 scale-100" : "opacity-0 z-0 scale-105"}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={b.image} alt="Hero Banner" className="w-full h-full object-cover" />
+              <Image 
+                src={b.image} 
+                alt="Hero Banner" 
+                fill 
+                className="object-cover"
+                priority={idx === 0}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </Link>
           ))}
 
