@@ -78,16 +78,6 @@ async function getPosts() {
   }
 }
 
-async function getFeedbackBanner() {
-  try {
-    return await prisma.feedbackBanner.findFirst({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-    });
-  } catch (error) {
-    return null;
-  }
-}
 
 export default async function HomePage() {
   const banners = await getBanners();
@@ -96,7 +86,6 @@ export default async function HomePage() {
   const settings = await getSiteSettings();
   const promotionBanners = await getPromotionBanners();
   const posts = await getPosts();
-  const feedbackBanner = await getFeedbackBanner();
 
   return (
     <div className="min-h-screen bg-white">
@@ -189,22 +178,7 @@ export default async function HomePage() {
           )}
         </section>
 
-        {/* FEEDBACK BANNER */}
-        {feedbackBanner && (
-          <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-20">
-            <Link href={feedbackBanner.link || "/feedback"} className="block rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <img 
-                src={feedbackBanner.image}
-                alt={feedbackBanner.title}
-                className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                style={{ aspectRatio: '1142/323' }}
-                loading="lazy"
-              />
-            </Link>
-          </section>
-        )}
-
-        {/* BOTTOM BANNER (from Admin -> Banner -> Bottom) */}
+        {/* BOTTOM BANNER (from Admin -> Banner -> Dưới cùng) */}
         {banners?.BOTTOM && banners.BOTTOM.length > 0 && (
           <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-20">
             {banners.BOTTOM.map((b: any) => (
