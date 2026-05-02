@@ -9,6 +9,8 @@ import Providers from "@/components/shop/Providers";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"] });
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   
