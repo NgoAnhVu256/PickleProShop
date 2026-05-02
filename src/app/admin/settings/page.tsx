@@ -456,7 +456,7 @@ export default function AdminSettingsPage() {
                 Thương hiệu — Logo & Favicon
               </h2>
             </div>
-            <div style={{ padding: "20px 22px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+            <div style={{ padding: "20px 22px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
               <ImageUpload
                 label="Logo website"
                 value={settings["store_logo"] || ""}
@@ -472,6 +472,14 @@ export default function AdminSettingsPage() {
                 onRemove={() => set("store_favicon", "")}
                 folder="site"
                 type="favicon"
+              />
+              <ImageUpload
+                label="Avatar Chat AI"
+                value={settings["chatbot_avatar"] || ""}
+                onChange={(url) => set("chatbot_avatar", url)}
+                onRemove={() => set("chatbot_avatar", "")}
+                folder="site"
+                type="logo"
               />
             </div>
           </div>

@@ -67,6 +67,7 @@ export default async function RootLayout({
           <ChatWidget
             zaloLink={settings.zalo}
             messengerLink={settings.messenger}
+            chatbotAvatar={settings.chatbotAvatar}
           />
         </Providers>
         <Toaster position="top-center" />

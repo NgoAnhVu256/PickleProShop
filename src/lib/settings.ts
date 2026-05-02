@@ -38,6 +38,7 @@ export async function getSiteSettings() {
       zalo: config.social_zalo || "",
       messenger: config.social_messenger || "",
       ga4MeasurementId: config.ga4_measurement_id || "G-K6CQGHX7LV",
+      chatbotAvatar: config.chatbot_avatar || "",
     };
   } catch (error) {
     return {
@@ -58,6 +59,7 @@ export async function getSiteSettings() {
       zalo: "",
       messenger: "",
       ga4MeasurementId: "G-K6CQGHX7LV",
+      chatbotAvatar: "",
     };
   }
 }
