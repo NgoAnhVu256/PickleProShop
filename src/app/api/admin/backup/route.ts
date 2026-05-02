@@ -5,63 +5,51 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 /**
+ * Safely query a Prisma model — returns empty array if the query fails.
+ */
+async function safeQuery<T>(name: string, fn: () => Promise<T[]>): Promise<T[]> {
+  try {
+    return await fn();
+  } catch (err: any) {
+    console.error(`[Backup] Failed to query "${name}":`, err?.message);
+    return [];
+  }
+}
+
+/**
  * GET /api/admin/backup
  * Export full database as JSON for backup/restore.
- * Returns a downloadable JSON file with all tables.
  */
 export async function GET() {
   try {
-    // Fetch all tables in parallel — using exact Prisma model names
-    const [
-      users,
-      categories,
-      brands,
-      products,
-      productVariants,
-      attributes,
-      attributeValues,
-      variantAttributeValues,
-      categoryAttributes,
-      productImages,
-      orders,
-      orderItems,
-      coupons,
-      banners,
-      announcements,
-      settings,
-      posts,
-      postCategories,
-      feedbacks,
-      feedbackBanners,
-      promotionBanners,
-    ] = await Promise.all([
+    const users = await safeQuery("users", () =>
       prisma.user.findMany({
         select: {
           id: true, name: true, email: true, role: true,
           image: true, phone: true, createdAt: true,
         },
-      }),
-      prisma.category.findMany(),
-      prisma.brand.findMany(),
-      prisma.product.findMany(),
-      prisma.productVariant.findMany(),
-      prisma.attribute.findMany(),
-      prisma.attributeValue.findMany(),
-      prisma.variantAttributeValue.findMany(),
-      prisma.categoryAttribute.findMany(),
-      prisma.productImage.findMany(),
-      prisma.order.findMany({ include: { items: true } }),
-      prisma.orderItem.findMany(),
-      prisma.coupon.findMany(),
-      prisma.banner.findMany(),
-      prisma.announcement.findMany(),
-      prisma.setting.findMany(),
-      prisma.post.findMany(),
-      prisma.postCategory.findMany(),
-      prisma.feedback.findMany(),
-      prisma.feedbackBanner.findMany(),
-      prisma.promotionBanner.findMany(),
-    ]);
+      })
+    );
+    const categories = await safeQuery("categories", () => prisma.category.findMany());
+    const brands = await safeQuery("brands", () => prisma.brand.findMany());
+    const products = await safeQuery("products", () => prisma.product.findMany());
+    const productVariants = await safeQuery("productVariants", () => prisma.productVariant.findMany());
+    const attributes = await safeQuery("attributes", () => prisma.attribute.findMany());
+    const attributeValues = await safeQuery("attributeValues", () => prisma.attributeValue.findMany());
+    const variantAttributeValues = await safeQuery("variantAttributeValues", () => prisma.variantAttributeValue.findMany());
+    const categoryAttributes = await safeQuery("categoryAttributes", () => prisma.categoryAttribute.findMany());
+    const productImages = await safeQuery("productImages", () => prisma.productImage.findMany());
+    const orders = await safeQuery("orders", () => prisma.order.findMany({ include: { items: true } }));
+    const orderItems = await safeQuery("orderItems", () => prisma.orderItem.findMany());
+    const coupons = await safeQuery("coupons", () => prisma.coupon.findMany());
+    const banners = await safeQuery("banners", () => prisma.banner.findMany());
+    const announcements = await safeQuery("announcements", () => prisma.announcement.findMany());
+    const settings = await safeQuery("settings", () => prisma.setting.findMany());
+    const posts = await safeQuery("posts", () => prisma.post.findMany());
+    const postCategories = await safeQuery("postCategories", () => prisma.postCategory.findMany());
+    const feedbacks = await safeQuery("feedbacks", () => prisma.feedback.findMany());
+    const feedbackBanners = await safeQuery("feedbackBanners", () => prisma.feedbackBanner.findMany());
+    const promotionBanners = await safeQuery("promotionBanners", () => prisma.promotionBanner.findMany());
 
     const backup = {
       exportedAt: new Date().toISOString(),
@@ -99,11 +87,9 @@ export async function GET() {
         orders: orders.length,
         coupons: coupons.length,
         banners: banners.length,
-        announcements: announcements.length,
-        settings: settings.length,
         posts: posts.length,
         feedbacks: feedbacks.length,
-        promotionBanners: promotionBanners.length,
+        settings: settings.length,
       },
     };
 
@@ -123,10 +109,7 @@ export async function GET() {
   } catch (error: any) {
     console.error("Backup error:", error?.message || error);
     return NextResponse.json(
-      {
-        success: false,
-        error: "Backup failed: " + (error?.message || "Unknown error"),
-      },
+      { success: false, error: "Backup failed: " + (error?.message || "Unknown error") },
       { status: 500 }
     );
   }
