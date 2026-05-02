@@ -70,6 +70,12 @@ const SETTINGS_CONFIG = {
         { key: "og_type",        label: "OG Type",        type: "text",     icon: Tag,       placeholder: "website" },
       ],
     },
+    {
+      section: "Google Analytics",
+      fields: [
+        { key: "ga4_measurement_id", label: "GA4 Measurement ID", type: "text", icon: Tag, placeholder: "G-XXXXXXXXXX" },
+      ],
+    },
   ],
   social: [
     {
@@ -79,6 +85,8 @@ const SETTINGS_CONFIG = {
         { key: "social_instagram", label: "Instagram URL",      type: "text", icon: AtSign,        placeholder: "https://instagram.com/picklepro" },
         { key: "social_youtube",   label: "Youtube Channel",    type: "text", icon: Video,         placeholder: "https://youtube.com/@picklepro" },
         { key: "social_tiktok",    label: "TikTok URL",         type: "text", icon: Share2,        placeholder: "https://tiktok.com/@picklepro" },
+        { key: "social_zalo",      label: "Link Zalo (Chat)",   type: "text", icon: MessageCircle, placeholder: "https://zalo.me/0846915120" },
+        { key: "social_messenger", label: "Link Messenger",     type: "text", icon: MessageCircle, placeholder: "https://m.me/picklepro" },
       ],
     },
   ],

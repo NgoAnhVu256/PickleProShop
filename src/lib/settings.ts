@@ -35,6 +35,9 @@ export async function getSiteSettings() {
       instagram: config.social_instagram || "",
       youtube: config.social_youtube || "",
       tiktok: config.social_tiktok || "",
+      zalo: config.social_zalo || "",
+      messenger: config.social_messenger || "",
+      ga4MeasurementId: config.ga4_measurement_id || "",
     };
   } catch (error) {
     return {
@@ -52,6 +55,9 @@ export async function getSiteSettings() {
       instagram: "",
       youtube: "",
       tiktok: "",
+      zalo: "",
+      messenger: "",
+      ga4MeasurementId: "",
     };
   }
 }

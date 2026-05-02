@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { getSiteSettings } from "@/lib/settings";
 import ChatWidget from "@/components/shop/ChatWidget";
+import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"] });
@@ -36,22 +37,40 @@ export async function generateMetadata(): Promise<Metadata> {
       description: settings.slogan,
       images: [settings.logo || "/favicon.ico"],
     },
+    // Full SEO access for all bots
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="vi" suppressHydrationWarning>
       <body className={`${inter.className} antialiased text-gray-900`}>
         <Providers>
           {children}
-          <ChatWidget />
+          <ChatWidget
+            zaloLink={settings.zalo}
+            messengerLink={settings.messenger}
+          />
         </Providers>
         <Toaster position="top-center" />
+        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
       </body>
     </html>
   );
