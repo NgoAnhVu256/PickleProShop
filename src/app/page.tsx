@@ -203,21 +203,20 @@ export default async function HomePage() {
             </Link>
           </section>
         )}
-        {/* BOTTOM BANNERS (loaded from Admin → Banner → BOTTOM) */}
+
+        {/* BOTTOM BANNER (from Admin -> Banner -> Bottom) */}
         {banners?.BOTTOM && banners.BOTTOM.length > 0 && (
           <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-20">
-            <div className="flex flex-col gap-4">
-              {banners.BOTTOM.map((b: any) => (
-                <Link key={b.id} href={b.link || "#"} className="block rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <img
-                    src={b.image}
-                    alt={b.title}
-                    className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                    loading="lazy"
-                  />
-                </Link>
-              ))}
-            </div>
+            {banners.BOTTOM.map((b: any) => (
+              <Link key={b.id} href={b.link || "#"} className="block rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300 mb-4 last:mb-0">
+                <img 
+                  src={b.image}
+                  alt={b.title}
+                  className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                  loading="lazy"
+                />
+              </Link>
+            ))}
           </section>
         )}
       </main>
