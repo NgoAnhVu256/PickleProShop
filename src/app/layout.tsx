@@ -19,7 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: settings.slogan,
     icons: {
-      icon: settings.favicon,
+      icon: "/api/favicon",
+      shortcut: "/api/favicon",
     },
     keywords: ["Pickleball", "PicklePro", "Vợt Pickleball", "Giày Pickleball", "Phụ kiện Pickleball chính hãng", "Pickleball Vietnam"],
     openGraph: {
