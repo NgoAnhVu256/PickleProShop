@@ -6,6 +6,7 @@ import {
   Globe, MessageCircle,
   FileText, Link2, Tag, CheckCircle2,
   AtSign, Video, Rss, Plus, Trash2,
+  Database, HardDrive, Download, Settings,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/admin/ImageUpload";
@@ -15,6 +16,7 @@ const TABS = [
   { id: "general", label: "Thông tin chung", icon: Store },
   { id: "seo",     label: "SEO",             icon: Search },
   { id: "social",  label: "Mạng xã hội",     icon: Share2 },
+  { id: "system",  label: "Hệ thống",        icon: Settings },
 ];
 
 /* ─── Settings config ─── */
@@ -80,9 +82,126 @@ const SETTINGS_CONFIG = {
       ],
     },
   ],
+  system: [],
 } as const;
 
 type TabId = keyof typeof SETTINGS_CONFIG;
+
+/* ─── Backup Section ─── */
+function BackupSection() {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleBackup = async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch("/api/admin/backup");
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Backup failed");
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const cd = res.headers.get("content-disposition");
+      const match = cd?.match(/filename="([^"]+)"/);
+      a.download = match?.[1] || `picklepro-backup-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("Đã tải bản sao lưu thành công!");
+    } catch (error: any) {
+      toast.error(error?.message || "Lỗi sao lưu");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Info Card */}
+      <div style={{ background: "#eff6ff", borderRadius: 14, border: "1px solid #bfdbfe", padding: "16px 22px" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <HardDrive size={16} style={{ color: "#3b82f6", marginTop: 2, flexShrink: 0 }} />
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", margin: "0 0 4px 0" }}>Lưu trữ dữ liệu</p>
+            <p style={{ fontSize: 12, color: "#3b82f6", margin: 0, lineHeight: 1.6 }}>
+              Hình ảnh sản phẩm, banner, khuyến mãi được lưu tại thư mục <code style={{ background: "#dbeafe", padding: "1px 5px", borderRadius: 4, fontSize: 11 }}>/public/uploads/</code> trên máy chủ VPS.
+              Dữ liệu sản phẩm, đơn hàng, cài đặt được lưu trong cơ sở dữ liệu PostgreSQL.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Backup Card */}
+      <div style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden" }}>
+        <div style={{ padding: "14px 22px", borderBottom: "1px solid #eef2f7", background: "#fafbfc" }}>
+          <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>
+            Sao lưu dữ liệu
+          </h2>
+        </div>
+        <div style={{ padding: "20px 22px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: "linear-gradient(135deg, #f0fdf4, #dcfce7)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <Database size={22} style={{ color: "#16a34a" }} />
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "#323b4b", margin: "0 0 3px 0" }}>Sao lưu Cơ sở dữ liệu</p>
+                <p style={{ fontSize: 12, color: "#8a98ac", margin: 0 }}>
+                  Xuất toàn bộ dữ liệu (Sản phẩm, Đơn hàng, Banner, Cài đặt...) ra file JSON
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleBackup}
+              disabled={downloading}
+              style={{
+                display: "flex", alignItems: "center", gap: 8,
+                padding: "10px 20px", borderRadius: 10, border: "none",
+                cursor: downloading ? "not-allowed" : "pointer",
+                background: downloading ? "#e5e7eb" : "linear-gradient(135deg, #16a34a, #22c55e)",
+                color: "#fff", fontSize: 13, fontWeight: 700,
+                boxShadow: downloading ? "none" : "0 3px 12px rgba(22,163,74,0.3)",
+                transition: "all 0.2s",
+              }}
+            >
+              {downloading ? (
+                <><Loader2 size={15} style={{ animation: "spin 0.8s linear infinite" }} /> Đang xuất...</>
+              ) : (
+                <><Download size={15} /> Tải bản sao lưu</>
+              )}
+            </button>
+          </div>
+
+          {/* Storage paths info */}
+          <div style={{ marginTop: 20, background: "#f8f9fb", borderRadius: 10, padding: "14px 16px" }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: "#8a98ac", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 10 }}>Đường dẫn lưu trữ trên VPS</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {[
+                { label: "Ảnh sản phẩm", path: "/public/uploads/products/" },
+                { label: "Ảnh banner", path: "/public/uploads/banners/" },
+                { label: "Ảnh thương hiệu", path: "/public/uploads/brands/" },
+                { label: "Ảnh khuyến mãi", path: "/public/uploads/promotions/" },
+                { label: "Database", path: "PostgreSQL (picklepro)" },
+              ].map((item) => (
+                <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
+                  <span style={{ color: "#8a98ac", width: 110, flexShrink: 0 }}>{item.label}:</span>
+                  <code style={{ background: "#eef2f7", padding: "2px 8px", borderRadius: 4, fontSize: 11, color: "#4b5563" }}>{item.path}</code>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Field({
   field, value, onChange,
@@ -357,25 +476,29 @@ export default function AdminSettingsPage() {
         </>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        {sections.map((section) => (
-          <div key={section.section} style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden" }}>
-            <div style={{ padding: "14px 22px", borderBottom: "1px solid #eef2f7", background: "#fafbfc" }}>
-              <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>{section.section}</h2>
+      {activeTab === "system" ? (
+        <BackupSection />
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {sections.map((section) => (
+            <div key={section.section} style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden" }}>
+              <div style={{ padding: "14px 22px", borderBottom: "1px solid #eef2f7", background: "#fafbfc" }}>
+                <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>{section.section}</h2>
+              </div>
+              <div style={{ padding: "20px 22px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+                {section.fields.map((field: any) => (
+                  <Field
+                    key={field.key}
+                    field={field}
+                    value={settings[field.key] || ""}
+                    onChange={(v) => set(field.key, v)}
+                  />
+                ))}
+              </div>
             </div>
-            <div style={{ padding: "20px 22px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-              {section.fields.map((field: any) => (
-                <Field
-                  key={field.key}
-                  field={field}
-                  value={settings[field.key] || ""}
-                  onChange={(v) => set(field.key, v)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
