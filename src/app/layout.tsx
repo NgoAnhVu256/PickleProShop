@@ -64,6 +64,7 @@ export default async function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body className={`${inter.className} antialiased text-gray-900`}>
+        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <Providers>
           {children}
           <ChatWidget
@@ -73,7 +74,6 @@ export default async function RootLayout({
           />
         </Providers>
         <Toaster position="top-center" />
-        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
       </body>
     </html>
   );

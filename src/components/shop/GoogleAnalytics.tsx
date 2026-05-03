@@ -1,10 +1,10 @@
-"use client";
-
 import Script from "next/script";
 
 /**
  * Google Analytics GA4 component.
- * Loads the GA4 tracking script only when a measurement ID is provided.
+ * 
+ * This is a SERVER component that uses next/script to inject GA4 tracking.
+ * Placing it as a server component at the layout level ensures it always renders.
  */
 export default function GoogleAnalytics({ measurementId }: { measurementId: string }) {
   if (!measurementId) return null;
