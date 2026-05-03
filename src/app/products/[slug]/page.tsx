@@ -109,28 +109,45 @@ export default function ProductDetailPage() {
   ].filter(Boolean) as string[];
 
   const handleAddToCart = () => {
-    if (!variant) {
+    if (product.variants.length > 0 && !variant) {
       toast.error("Vui lòng chọn phân loại sản phẩm");
       return;
     }
-    if (variant.stock < quantity) {
-      toast.error("Số lượng vượt quá tồn kho");
-      return;
+
+    if (variant) {
+      // Product WITH variants
+      if (variant.stock < quantity) {
+        toast.error("Số lượng vượt quá tồn kho");
+        return;
+      }
+
+      const variantLabel = variant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || variant.sku;
+
+      addToCart({
+        variantId: variant.id,
+        productId: product.id,
+        productName: product.name,
+        productSlug: product.slug,
+        variantSku: variant.sku,
+        variantLabel,
+        price: variant.price,
+        quantity,
+        image: variant.images?.[0] || product.thumbnail || "",
+      });
+    } else {
+      // Product WITHOUT variants — use base/sale price
+      addToCart({
+        variantId: product.id,
+        productId: product.id,
+        productName: product.name,
+        productSlug: product.slug,
+        variantSku: "",
+        variantLabel: "Mặc định",
+        price: product.salePrice || product.basePrice,
+        quantity,
+        image: product.thumbnail || "",
+      });
     }
-
-    const variantLabel = variant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || variant.sku;
-
-    addToCart({
-      variantId: variant.id,
-      productId: product.id,
-      productName: product.name,
-      productSlug: product.slug,
-      variantSku: variant.sku,
-      variantLabel,
-      price: variant.price,
-      quantity,
-      image: variant.images?.[0] || product.thumbnail || "",
-    });
 
     toast.success("Đã thêm vào giỏ hàng! 🛒");
   };
