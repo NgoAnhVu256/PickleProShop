@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import { getUploadDir, getUploadFilePath, getPublicUrl } from "@/lib/uploads";
 
 // Next.js 15 App Router: ensure enough time for large uploads
 export const maxDuration = 60;
@@ -24,22 +25,16 @@ export async function POST(req: NextRequest) {
     const ext = path.extname(file.name);
     const filename = `${uuidv4()}${ext}`;
     
-    // Path relative to public
-    const publicDir = "uploads";
     const subfolder = folder.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-    const uploadDir = path.join(process.cwd(), "public", publicDir, subfolder);
+    const uploadDir = getUploadDir(subfolder);
     
     // Ensure directory exists
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if exists
-    }
+    await mkdir(uploadDir, { recursive: true });
 
     const filePath = path.join(uploadDir, filename);
     await writeFile(filePath, buffer);
 
-    const url = `/${publicDir}/${subfolder}/${filename}`;
+    const url = getPublicUrl(subfolder, filename);
 
     return NextResponse.json({ success: true, url });
   } catch (error) {
@@ -56,7 +51,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Invalid file URL" }, { status: 400 });
     }
 
-    const filePath = path.join(process.cwd(), "public", url);
+    const filePath = getUploadFilePath(url);
     
     try {
       await unlink(filePath);

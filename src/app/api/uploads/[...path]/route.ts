@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile } from "fs/promises";
+import { readFile, stat } from "fs/promises";
 import path from "path";
-import { existsSync } from "fs";
+import { getUploadFilePath } from "@/lib/uploads";
+
+export const dynamic = "force-dynamic";
 
 /**
  * API route to serve dynamic uploads that are not recognized by the static file server
@@ -18,11 +20,15 @@ export async function GET(
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    // Security check: prevent directory traversal
-    const safePath = pathSegments.join(path.sep).replace(/\.\./g, "");
-    const filePath = path.join(process.cwd(), "public", "uploads", safePath);
+    // Build the relative path from segments
+    const relativePath = pathSegments.join("/");
+    const filePath = getUploadFilePath(relativePath);
 
-    if (!existsSync(filePath)) {
+    // Check file exists
+    try {
+      await stat(filePath);
+    } catch {
+      console.warn(`[uploads] File not found: ${filePath}`);
       return new NextResponse("File Not Found", { status: 404 });
     }
 

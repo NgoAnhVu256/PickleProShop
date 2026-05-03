@@ -1,99 +1,87 @@
 #!/bin/bash
-# ══════════════════════════════════════════════════════════
-#  PicklePro — Safe Deploy Script
-#  Bảo vệ thư mục uploads khi update code mới
-#  Chạy: bash deploy.sh
-# ══════════════════════════════════════════════════════════
+# ╔══════════════════════════════════════════════════╗
+# ║     PicklePro — Safe Deployment Script           ║
+# ║     Bảo vệ uploads khi deploy code mới           ║
+# ╚══════════════════════════════════════════════════╝
 
 set -e
 
-APP_DIR="/var/www/picklepro"
-UPLOADS_SAFE="/var/www/picklepro-uploads"   # Thư mục uploads an toàn (ngoài project)
+PROJECT_DIR="/var/www/picklepro"
+UPLOAD_DIR="$PROJECT_DIR/public/uploads"
+BACKUP_DIR="/tmp/picklepro_uploads_backup"
 
-echo ""
 echo "═══════════════════════════════════════════"
-echo "  🚀 PicklePro Deploy - Bắt đầu..."
+echo "  🚀 PicklePro Deploy — $(date '+%Y-%m-%d %H:%M:%S')"
 echo "═══════════════════════════════════════════"
 
-cd "$APP_DIR"
+cd "$PROJECT_DIR"
 
-# ─── Bước 1: Bảo vệ uploads ─────────────────────────────
+# ─── 1. Backup uploads (an toàn) ─────────────
 echo ""
-echo "📦 Bước 1: Bảo vệ uploads..."
-
-# Lần đầu tiên: di chuyển uploads ra ngoài
-if [ -d "$APP_DIR/public/uploads" ] && [ ! -L "$APP_DIR/public/uploads" ]; then
-    echo "  → Phát hiện uploads trong project, di chuyển ra ngoài..."
-    
-    # Tạo thư mục an toàn nếu chưa có
-    mkdir -p "$UPLOADS_SAFE"
-    
-    # Copy toàn bộ nội dung (giữ nguyên file gốc)
-    cp -rn "$APP_DIR/public/uploads/"* "$UPLOADS_SAFE/" 2>/dev/null || true
-    
-    # Xóa thư mục cũ
-    rm -rf "$APP_DIR/public/uploads"
-    
-    echo "  ✅ Đã di chuyển uploads → $UPLOADS_SAFE"
+echo "📦 [1/7] Sao lưu thư mục uploads..."
+if [ -d "$UPLOAD_DIR" ]; then
+  rm -rf "$BACKUP_DIR"
+  cp -r "$UPLOAD_DIR" "$BACKUP_DIR"
+  echo "   ✅ Đã sao lưu $(find $UPLOAD_DIR -type f | wc -l) file vào $BACKUP_DIR"
+else
+  echo "   ⚠️  Không có thư mục uploads, bỏ qua."
 fi
 
-# Đảm bảo thư mục an toàn tồn tại
-mkdir -p "$UPLOADS_SAFE"
-
-# ─── Bước 2: Pull code mới ──────────────────────────────
+# ─── 2. Pull code mới ────────────────────────
 echo ""
-echo "📥 Bước 2: Pull code mới từ GitHub..."
+echo "📥 [2/7] Kéo code mới từ GitHub..."
 git fetch origin main
 git reset --hard origin/main
-echo "  ✅ Code đã cập nhật"
+echo "   ✅ Đã cập nhật code"
 
-# ─── Bước 3: Khôi phục symlink uploads ──────────────────
+# ─── 3. Khôi phục uploads ────────────────────
 echo ""
-echo "🔗 Bước 3: Tạo lại symlink uploads..."
+echo "🔄 [3/7] Khôi phục thư mục uploads..."
+if [ -d "$BACKUP_DIR" ]; then
+  # Đảm bảo thư mục tồn tại
+  mkdir -p "$UPLOAD_DIR"
+  # Copy tất cả file từ backup, giữ nguyên cấu trúc
+  cp -r "$BACKUP_DIR/"* "$UPLOAD_DIR/" 2>/dev/null || true
+  echo "   ✅ Đã khôi phục uploads"
+else
+  mkdir -p "$UPLOAD_DIR"
+  echo "   ⚠️  Không có backup, tạo thư mục uploads mới"
+fi
 
-# Xóa nếu git tạo lại thư mục uploads
-rm -rf "$APP_DIR/public/uploads" 2>/dev/null || true
-
-# Tạo symlink
-ln -sf "$UPLOADS_SAFE" "$APP_DIR/public/uploads"
-echo "  ✅ Symlink: public/uploads → $UPLOADS_SAFE"
-
-# ─── Bước 4: Install dependencies ───────────────────────
+# ─── 4. Install dependencies ─────────────────
 echo ""
-echo "📦 Bước 4: Cài đặt dependencies..."
+echo "📦 [4/7] Cài đặt dependencies..."
 npm install --production=false
-echo "  ✅ Dependencies đã cài"
+echo "   ✅ Dependencies OK"
 
-# ─── Bước 5: Generate Prisma ────────────────────────────
+# ─── 5. Generate Prisma ──────────────────────
 echo ""
-echo "🔧 Bước 5: Generate Prisma Client..."
+echo "🔧 [5/7] Generate Prisma Client..."
 npx prisma generate
-echo "  ✅ Prisma Client đã generate"
+echo "   ✅ Prisma Client OK"
 
-# ─── Bước 6: Build ──────────────────────────────────────
+# ─── 6. Build ────────────────────────────────
 echo ""
-echo "🏗️  Bước 6: Build production..."
+echo "🏗️  [6/7] Build production..."
 npm run build
-echo "  ✅ Build hoàn thành"
+echo "   ✅ Build OK"
 
-# ─── Bước 7: Restart PM2 ────────────────────────────────
+# ─── 7. Restart PM2 ──────────────────────────
 echo ""
-echo "🔄 Bước 7: Restart PM2..."
+echo "🔄 [7/7] Restart PM2..."
 pm2 restart all
-echo "  ✅ PM2 đã restart"
+echo "   ✅ PM2 restarted"
 
-# ─── Kiểm tra ───────────────────────────────────────────
+# ─── Cleanup ─────────────────────────────────
+echo ""
+echo "🧹 Dọn backup tạm..."
+rm -rf "$BACKUP_DIR"
+
+# ─── Verify ──────────────────────────────────
 echo ""
 echo "═══════════════════════════════════════════"
-echo "  ✅ DEPLOY HOÀN TẤT!"
-echo "═══════════════════════════════════════════"
-echo ""
-echo "  📁 Uploads an toàn tại: $UPLOADS_SAFE"
-echo "  🔗 Symlink: public/uploads → $UPLOADS_SAFE"
-
-# Đếm file uploads
-UPLOAD_COUNT=$(find "$UPLOADS_SAFE" -type f | wc -l)
-echo "  📊 Tổng file uploads: $UPLOAD_COUNT"
-echo ""
+UPLOAD_COUNT=$(find "$UPLOAD_DIR" -type f 2>/dev/null | wc -l)
+echo "  ✅ Deploy hoàn tất!"
+echo "  📁 Uploads: $UPLOAD_COUNT file"
 echo "  🌐 Website: https://picklepro.vn"
-echo ""
+echo "═══════════════════════════════════════════"
