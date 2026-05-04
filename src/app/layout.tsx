@@ -60,9 +60,67 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getSiteSettings();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
+
+  // JSON-LD Structured Data for Google Search
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: settings.name,
+    url: siteUrl,
+    logo: settings.logo
+      ? (settings.logo.startsWith("http") ? settings.logo : `${siteUrl}${settings.logo}`)
+      : `${siteUrl}/api/favicon`,
+    description: settings.slogan,
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: settings.phone,
+      contactType: "customer service",
+      availableLanguage: ["Vietnamese", "English"],
+    },
+    sameAs: [
+      settings.facebook,
+      settings.instagram,
+      settings.youtube,
+      settings.tiktok,
+    ].filter(Boolean),
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: settings.name,
+    url: siteUrl,
+    description: settings.slogan,
+    publisher: {
+      "@type": "Organization",
+      name: settings.name,
+      logo: {
+        "@type": "ImageObject",
+        url: settings.logo
+          ? (settings.logo.startsWith("http") ? settings.logo : `${siteUrl}${settings.logo}`)
+          : `${siteUrl}/api/favicon`,
+      },
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/products?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
 
   return (
     <html lang="vi" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body className={`${inter.className} antialiased text-gray-900`}>
         <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <Providers>
