@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { getSiteSettings } from "@/lib/settings";
 import ChatWidget from "@/components/shop/ChatWidget";
+import PopupBanner from "@/components/shop/PopupBanner";
 import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
 
@@ -130,6 +131,7 @@ export default async function RootLayout({
       <body className={`${inter.className} antialiased text-gray-900`}>
         <Providers>
           {children}
+          <PopupBanner />
           <ChatWidget
             zaloLink={settings.zalo}
             messengerLink={settings.messenger}

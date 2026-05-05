@@ -58,6 +58,7 @@ function ProductListingContent() {
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "newest");
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get("brand") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
+  const [priceRange, setPriceRange] = useState(searchParams.get("price") || "");
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
   const [settings, setSettings] = useState<any>(null);
 
@@ -97,6 +98,11 @@ function ProductListingContent() {
       if (debouncedSearch) params.set("search", debouncedSearch);
       if (selectedBrand) params.set("brand", selectedBrand);
       if (selectedCategory) params.set("category", selectedCategory);
+      if (priceRange) {
+        const [min, max] = priceRange.split("-");
+        if (min) params.set("minPrice", min);
+        if (max) params.set("maxPrice", max);
+      }
 
       const res = await fetch(`/api/products?${params}`);
       const data = await res.json();
@@ -110,7 +116,7 @@ function ProductListingContent() {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, sortBy, selectedBrand, selectedCategory]);
+  }, [page, debouncedSearch, sortBy, selectedBrand, selectedCategory, priceRange]);
 
   useEffect(() => {
     fetchProducts();
@@ -120,11 +126,12 @@ function ProductListingContent() {
     setSearchTerm("");
     setSelectedBrand("");
     setSelectedCategory("");
+    setPriceRange("");
     setSortBy("newest");
     setPage(1);
   };
 
-  const hasFilters = debouncedSearch || selectedBrand || selectedCategory || sortBy !== "newest";
+  const hasFilters = debouncedSearch || selectedBrand || selectedCategory || priceRange || sortBy !== "newest";
 
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
@@ -188,6 +195,20 @@ function ProductListingContent() {
               {brands.map(b => (
                 <option key={b.id} value={b.slug}>{b.name} ({b._count.products})</option>
               ))}
+            </select>
+
+            {/* Price Range filter */}
+            <select
+              value={priceRange}
+              onChange={(e) => { setPriceRange(e.target.value); setPage(1); }}
+              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#a757ff]/30 focus:outline-none cursor-pointer"
+            >
+              <option value="">Tất cả mức giá</option>
+              <option value="0-500000">Dưới 500.000₫</option>
+              <option value="500000-1000000">500.000₫ - 1.000.000₫</option>
+              <option value="1000000-2000000">1.000.000₫ - 2.000.000₫</option>
+              <option value="2000000-5000000">2.000.000₫ - 5.000.000₫</option>
+              <option value="5000000-">Trên 5.000.000₫</option>
             </select>
 
             {hasFilters && (

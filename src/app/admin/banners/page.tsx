@@ -25,6 +25,7 @@ const positions = [
   { value: "RIGHT_TOP", label: "Phải trên" },
   { value: "RIGHT_BOTTOM", label: "Phải dưới" },
   { value: "BOTTOM", label: "Dưới cùng" },
+  { value: "POPUP", label: "Popup (Khi vào trang)" },
 ];
 
 export default function AdminBannersPage() {

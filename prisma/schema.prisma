@@ -399,6 +399,7 @@ enum BannerPosition {
   RIGHT_TOP
   RIGHT_BOTTOM
   BOTTOM
+  POPUP
 }
 
 enum FeedbackStatus {
