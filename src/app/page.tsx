@@ -101,9 +101,9 @@ export default async function HomePage() {
         <section className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
           <h2 className="text-2xl md:text-3xl font-black mb-6 md:mb-8 uppercase tracking-tight text-center">Danh mục sản phẩm</h2>
           {displayCategories.length > 0 ? (
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               {displayCategories.map((cat: any) => (
-                <Link key={cat.id || cat.name} href={`/category/${cat.slug}`} className="flex flex-col items-center gap-4 group">
+                <Link key={cat.id || cat.name} href={`/category/${cat.slug}`} className="flex flex-col items-center gap-4 group w-[130px] md:w-[160px]">
                   <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100 group-hover:shadow-md transition-shadow">
                     <img src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
