@@ -46,7 +46,7 @@ async function getCategories() {
 async function getProducts() {
   try {
     return await prisma.product.findMany({
-      take: 4,
+      take: 10,
       where: { isActive: true },
     });
   } catch (error) {
@@ -99,7 +99,7 @@ export default async function HomePage() {
 
         {/* CATEGORY GRID */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
-          <h2 className="text-lg md:text-xl font-bold mb-6 md:mb-8 uppercase tracking-tight text-center md:text-left">Danh mục sản phẩm</h2>
+          <h2 className="text-2xl md:text-3xl font-black mb-6 md:mb-8 uppercase tracking-tight text-center">Danh mục sản phẩm</h2>
           {displayCategories.length > 0 ? (
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
               {displayCategories.map((cat: any) => (
@@ -122,14 +122,11 @@ export default async function HomePage() {
         {/* PROMOTION SECTION */}
         <section className="bg-gray-50 py-10 md:py-16">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
-            <div className="flex items-center justify-between mb-6 md:mb-8">
-              <h2 className="text-lg md:text-xl font-bold uppercase tracking-tight">Sản phẩm Pickleball Nổi bật</h2>
-              <Link href="/products" className="text-sm font-medium flex items-center gap-1 hover:text-[#a757ff] transition-colors">
-                Tất cả <ChevronRight className="w-4 h-4" />
-              </Link>
+            <div className="flex flex-col items-center mb-6 md:mb-8">
+              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-center">Sản phẩm Pickleball Nổi bật</h2>
             </div>
             {products.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
                 {products.map((prod: any) => (
                   <ProductCard key={prod.id} product={prod} />
                 ))}
@@ -144,7 +141,7 @@ export default async function HomePage() {
         </section>
 
         <section className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
-          <h2 className="text-lg md:text-xl font-bold mb-8 md:mb-10 uppercase tracking-tight">Tin tức mới nhất</h2>
+          <h2 className="text-2xl md:text-3xl font-black mb-8 md:mb-10 uppercase tracking-tight text-center">Tin tức mới nhất</h2>
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {posts.map((post: any) => (

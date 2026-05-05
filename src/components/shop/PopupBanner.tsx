@@ -112,8 +112,6 @@ export default function PopupBanner() {
         {banner.link ? (
           <a
             href={banner.link}
-            target="_blank"
-            rel="noopener noreferrer"
             style={{ display: "block", cursor: "pointer" }}
           >
             {content}

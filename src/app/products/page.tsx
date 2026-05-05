@@ -181,7 +181,7 @@ function ProductListingContent() {
             >
               <option value="">Tất cả danh mục</option>
               {categories.map(c => (
-                <option key={c.id} value={c.slug}>{c.name} ({c._count.products})</option>
+                <option key={c.id} value={c.slug}>{c.name}</option>
               ))}
             </select>
 
@@ -193,7 +193,7 @@ function ProductListingContent() {
             >
               <option value="">Tất cả thương hiệu</option>
               {brands.map(b => (
-                <option key={b.id} value={b.slug}>{b.name} ({b._count.products})</option>
+                <option key={b.id} value={b.slug}>{b.name}</option>
               ))}
             </select>
 

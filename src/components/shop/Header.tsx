@@ -268,7 +268,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
 
       {/* CATEGORY NAV */}
       <nav className="border-t border-gray-100 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-12 md:h-14 flex items-center gap-6 md:gap-12 text-[13px] md:text-[15px] font-bold tracking-tight overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-center gap-6 md:gap-10 text-[14px] md:text-[16px] font-bold tracking-tight overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
           {[
             { name: "Trang chủ", href: "/" },
             { name: "Sản phẩm", href: "/products" },

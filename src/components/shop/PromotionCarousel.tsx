@@ -16,8 +16,10 @@ export default function PromotionCarousel({ promotions = [] }: { promotions: any
 
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10 relative group">
-      <div className="flex items-center justify-between mb-6 md:mb-8">
-        <h2 className="text-lg md:text-xl font-bold uppercase tracking-tight">Khuyến mãi</h2>
+      <div className="flex flex-col items-center mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-center">Khuyến mãi</h2>
+      </div>
+      <div className="flex justify-end gap-2 mb-4">
         <div className="hidden md:flex gap-2">
           <button 
             onClick={() => scroll('left')}
