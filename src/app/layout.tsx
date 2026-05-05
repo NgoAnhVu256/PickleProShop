@@ -113,6 +113,7 @@ export default async function RootLayout({
     <html lang="vi" suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="f59892f24bf2f7c1" />
+        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -123,7 +124,6 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} antialiased text-gray-900`}>
-        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <Providers>
           {children}
           <ChatWidget
