@@ -22,8 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: settings.slogan,
     icons: {
-      icon: "/api/favicon",
+      icon: [
+        { url: "/api/favicon", type: "image/x-icon" },
+        { url: "/api/favicon", type: "image/png" }
+      ],
       shortcut: "/api/favicon",
+      apple: "/api/favicon",
     },
     keywords: ["Pickleball", "PicklePro", "Vợt Pickleball", "Giày Pickleball", "Phụ kiện Pickleball chính hãng", "Pickleball Vietnam"],
     openGraph: {
