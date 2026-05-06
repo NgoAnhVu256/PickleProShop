@@ -244,13 +244,13 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                 <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
               </div>
 
-              {categoryId && !hasMatrix && (
+              {categoryId && !hasVariants && (
                 <div style={{ padding: 20, textAlign: "center", background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, color: "#0369a1", fontSize: 13 }}>
                   Danh mục chưa có thuộc tính Màu sắc & Size.
                 </div>
               )}
 
-              {categoryId && hasMatrix && (
+              {categoryId && hasVariants && (
                 <>
                   <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 16 }}>
                     {colorGroups.map((cg, cIdx) => (

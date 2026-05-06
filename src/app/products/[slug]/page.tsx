@@ -157,7 +157,7 @@ export default function ProductDetailPage() {
     }
   };
 
-  // Build image gallery — deduplicated, max 6
+  // Build image gallery — deduplicated
   const allImages = useMemo(() => {
     if (!product) return [];
     
@@ -170,22 +170,18 @@ export default function ProductDetailPage() {
     // 1. Thumbnail always first
     add(product.thumbnail);
 
-    // 2. Selected color's variant images
-    if (selectedColor) {
-      product.variants.forEach(v => {
-        const isColor = v.attrValues.some(av => {
-          const n = av.attribute.name.toLowerCase();
-          return (n.includes("color") || n.includes("mau")) && av.value === selectedColor;
-        });
-        if (isColor && v.images) v.images.forEach(add);
-      });
-    }
+    // 2. All variant images
+    product.variants.forEach(v => {
+      if (v.images && v.images.length > 0) {
+        v.images.forEach(add);
+      }
+    });
 
-    // 3. Gallery (no duplicate with above)
+    // 3. Global Gallery
     product.gallery.forEach(g => add(g.url));
 
-    return imgs.slice(0, 6);
-  }, [product, selectedColor]);
+    return imgs; // No hard limit so all variant images show
+  }, [product]);
 
   if (loading) {
     return (
