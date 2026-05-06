@@ -3,14 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { getSiteSettings } from "@/lib/settings";
-import dynamic from "next/dynamic";
 import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
-
-// Lazy load non-critical client components
-const ChatWidget = dynamic(() => import("@/components/shop/ChatWidget"), { ssr: false });
-const PopupBanner = dynamic(() => import("@/components/shop/PopupBanner"), { ssr: false });
-
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"] });
 
 
@@ -131,14 +125,8 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} antialiased text-gray-900`}>
-        <Providers>
+        <Providers settings={settings}>
           {children}
-          <PopupBanner />
-          <ChatWidget
-            zaloLink={settings.zalo}
-            messengerLink={settings.messenger}
-            chatbotAvatar={settings.chatbotAvatar}
-          />
         </Providers>
         <Toaster position="top-center" />
       </body>
