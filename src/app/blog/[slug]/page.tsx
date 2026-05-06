@@ -6,8 +6,8 @@ import Footer from '@/components/shop/Footer';
 import { ChevronRight, Calendar, User, Share2, Facebook, Twitter, Link as LinkIcon, ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR: revalidate every 120s
+export const revalidate = 120;
 
 async function getPostData(slug: string) {
   try {

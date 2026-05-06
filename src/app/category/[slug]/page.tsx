@@ -6,8 +6,8 @@ import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR: pre-render & revalidate every 60s for near-instant loads
+export const revalidate = 60;
 
 async function getCategoryData(slug: string) {
   try {

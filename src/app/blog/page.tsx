@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   title: "Tin tức Pickleball",
   description: "Cập nhật tin tức, đánh giá sản phẩm và hướng dẫn chơi Pickleball mới nhất từ PicklePro.",
 };
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR: revalidate every 120s — blog content doesn't change often
+export const revalidate = 120;
 
 async function getPosts() {
   try {

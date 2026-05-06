@@ -15,7 +15,11 @@ export async function GET(req: NextRequest) {
       orderBy: { name: "asc" },
     });
 
-    return NextResponse.json({ success: true, data: categories });
+    return NextResponse.json({ success: true, data: categories }, {
+      headers: {
+        "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600",
+      },
+    });
   } catch (error) {
     console.error("GET /api/categories error:", error);
     return NextResponse.json(
