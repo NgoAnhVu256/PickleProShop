@@ -267,31 +267,47 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
       )}
 
       {/* CATEGORY NAV */}
-      <nav className="border-t border-gray-100 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-center gap-6 md:gap-10 text-[14px] md:text-[16px] font-bold tracking-tight overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
+      <nav className="bg-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-center gap-2 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
+          {/* Home icon */}
+          <Link
+            href="/"
+            className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+              pathname === "/" ? "bg-[#7DAACB] text-white" : "bg-white/10 text-white hover:bg-white/20"
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </Link>
           {[
-            { name: "Trang chủ", href: "/" },
-            { name: "Sản phẩm", href: "/products" },
-            { name: "Vợt Pickleball", href: "/category/vot-pickleball" },
-            { name: "Giày Pickleball", href: "/category/giay-pickleball" },
-            { name: "Trang Phục", href: "/category/trang-phuc" },
-            { name: "Balo & Túi", href: "/category/balo-tui" },
-            { name: "Phụ kiện", href: "/category/phu-kien" },
-            { name: "Tin tức", href: "/blog" },
+            { name: "Sản phẩm", href: "/products", color: "#7DAACB" },
+            { name: "Vợt Pickleball", href: "/category/vot-pickleball", color: "#E8DBB3" },
+            { name: "Giày Pickleball", href: "/category/giay-pickleball", color: "#FFFDEB" },
+            { name: "Trang Phục", href: "/category/trang-phuc", color: "#7DAACB" },
+            { name: "Balo & Túi", href: "/category/balo-tui", color: "#E8DBB3" },
+            { name: "Phụ kiện", href: "/category/phu-kien", color: "#CE2626" },
+            { name: "Tin tức", href: "/blog", color: "#FFFDEB" },
           ].map((item) => {
-            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const isActive = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative py-1 shrink-0 transition-colors duration-200 ${
-                  isActive ? "text-[#7DAACB]" : "text-gray-600 md:text-gray-900 hover:text-[#7DAACB]"
-                }`}
+                className="shrink-0 transition-all duration-200"
+                style={{
+                  padding: "8px 20px",
+                  borderRadius: 9999,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase" as const,
+                  background: isActive ? item.color : "rgba(255,255,255,0.08)",
+                  color: isActive
+                    ? (item.color === "#CE2626" || item.color === "#7DAACB" ? "#fff" : "#1a1a1a")
+                    : "rgba(255,255,255,0.7)",
+                  border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
+                }}
               >
                 {item.name}
-                <div className={`absolute -bottom-1 left-0 w-full h-0.5 bg-[#7DAACB] transition-transform duration-300 origin-left ${
-                  isActive ? "scale-x-100" : "scale-x-0"
-                }`} />
               </Link>
             );
           })}
