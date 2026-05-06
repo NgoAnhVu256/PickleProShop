@@ -94,7 +94,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between gap-4 md:gap-8">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0">
-          <img src={logo || '/api/favicon'} alt={siteName} className="h-8 md:h-10 w-auto object-contain" />
+          <img src={logo || '/api/favicon'} alt={siteName} className="h-8 md:h-10 w-8 md:w-10 rounded-full object-cover" />
           <span className="font-extrabold text-base md:text-xl tracking-tighter">{siteName}</span>
         </Link>
 

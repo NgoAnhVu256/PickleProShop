@@ -157,31 +157,34 @@ export default function ProductDetailPage() {
     }
   };
 
-  // Build image gallery for current color
+  // Build image gallery — deduplicated, max 6
   const allImages = useMemo(() => {
     if (!product) return [];
     
+    const seen = new Set<string>();
     const imgs: string[] = [];
+    const add = (url: string | null | undefined) => {
+      if (url && !seen.has(url)) { seen.add(url); imgs.push(url); }
+    };
 
-    // If a color is selected, prioritize that color's variant images
+    // 1. Thumbnail always first
+    add(product.thumbnail);
+
+    // 2. Selected color's variant images
     if (selectedColor) {
-      const colorVariants = product.variants.filter(v =>
-        v.attrValues.some(av => {
+      product.variants.forEach(v => {
+        const isColor = v.attrValues.some(av => {
           const n = av.attribute.name.toLowerCase();
-          return (n === "color" || n === "mau_sac" || n === "màu sắc" || n.includes("color") || n.includes("mau")) && av.value === selectedColor;
-        })
-      );
-      colorVariants.forEach(v => {
-        if (v.images) imgs.push(...v.images);
+          return (n.includes("color") || n.includes("mau")) && av.value === selectedColor;
+        });
+        if (isColor && v.images) v.images.forEach(add);
       });
     }
 
-    // Fallback: product thumbnail + gallery
-    if (product.thumbnail && !imgs.includes(product.thumbnail)) imgs.unshift(product.thumbnail);
-    product.images.forEach(img => { if (!imgs.includes(img)) imgs.push(img); });
-    product.gallery.forEach(g => { if (!imgs.includes(g.url)) imgs.push(g.url); });
+    // 3. Gallery (no duplicate with above)
+    product.gallery.forEach(g => add(g.url));
 
-    return imgs.filter(Boolean);
+    return imgs.slice(0, 6);
   }, [product, selectedColor]);
 
   if (loading) {
