@@ -148,7 +148,7 @@ async function CategorySection() {
           {categories.map((cat) => (
             <Link key={cat.id} href={`/category/${cat.slug}`} className="flex flex-col items-center gap-4 group w-[130px] md:w-[160px]">
               <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100 group-hover:shadow-md transition-shadow">
-                <img src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <img src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
               </div>
               <span className="text-sm font-semibold text-gray-800">{cat.name}</span>
             </Link>
@@ -204,6 +204,7 @@ async function LatestPostsSection() {
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-[#7DAACB]">
                   {post.category?.name}

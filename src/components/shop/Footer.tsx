@@ -1,4 +1,4 @@
-"use client";
+// Server Component — no interactivity needed
 
 import Link from "next/link";
 import { Facebook, Instagram, Youtube, Globe, MapPin } from "lucide-react";

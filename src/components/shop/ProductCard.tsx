@@ -12,6 +12,8 @@ export default function ProductCard({ product }: { product: any }) {
           src={product.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
           alt={product.name} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+          loading="lazy"
+          decoding="async"
         />
         {hasSale && (
           <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm">

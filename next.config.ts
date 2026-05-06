@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Hide X-Powered-By header
+  poweredByHeader: false,
+  reactStrictMode: true,
   // Increase body size limit for admin posts with embedded images
   serverExternalPackages: [],
   experimental: {
@@ -56,6 +59,20 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/favicon.ico",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      // Cache Next.js static assets forever (hashed filenames)
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      // Cache fonts
+      {
+        source: "/fonts/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],

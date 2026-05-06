@@ -3,10 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { getSiteSettings } from "@/lib/settings";
-import ChatWidget from "@/components/shop/ChatWidget";
-import PopupBanner from "@/components/shop/PopupBanner";
+import dynamic from "next/dynamic";
 import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
+
+// Lazy load non-critical client components
+const ChatWidget = dynamic(() => import("@/components/shop/ChatWidget"), { ssr: false });
+const PopupBanner = dynamic(() => import("@/components/shop/PopupBanner"), { ssr: false });
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"] });
 
@@ -116,6 +119,10 @@ export default async function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <meta name="google-site-verification" content="f59892f24bf2f7c1" />
         <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <script

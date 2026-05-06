@@ -66,6 +66,8 @@ function AutoSlider({ items = [], interval }: { items: any[]; interval: number }
             src={item.image}
             alt={item.title || 'Banner'}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         );
 
@@ -121,6 +123,7 @@ function HeroSlider({ items = [] }: { items: any[] }) {
             src={item.image}
             alt={item.title || 'Hero Banner'}
             className="w-full h-full object-cover"
+            fetchPriority={i === 0 ? "high" : "auto"}
           />
         );
 
