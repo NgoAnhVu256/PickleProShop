@@ -63,24 +63,34 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           else if (p.images?.length > 0) setGalleryImages(p.images);
           if (!p.thumbnail && p.images?.length > 0) setThumbnail(p.images[0]);
 
-          // Rebuild color groups from existing variants
+          // Rebuild dynamic attribute groups from existing variants
           const cat = cData.data?.find((c: any) => c.id === p.categoryId);
           const attrs = cat?.categoryAttrs?.map((ca: any) => ca.attribute) || [];
-          const cAttr = attrs.find((a: any) => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-          const sAttr = attrs.find((a: any) => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
+          let pAttr = attrs.find((a: any) => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
+          let sAttr = attrs.find((a: any) => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
 
-          if (cAttr && sAttr && p.variants?.length > 0) {
+          if (!pAttr && attrs.length > 0) {
+            pAttr = attrs[0];
+            if (!sAttr && attrs.length > 1) sAttr = attrs[1];
+          } else if (pAttr && !sAttr && attrs.length > 1) {
+            sAttr = attrs.find((a: any) => a.id !== pAttr?.id);
+          } else if (!pAttr && sAttr && attrs.length > 1) {
+             pAttr = attrs.find((a: any) => a.id !== sAttr?.id);
+          }
+
+          if (attrs.length > 0 && p.variants?.length > 0) {
             const groups: Record<string, ColorGroup> = {};
             p.variants.forEach((v: any) => {
               let color = "", size = "";
               v.attrValues.forEach((av: any) => {
-                if (av.attributeId === cAttr.id || av.attribute?.name?.toLowerCase().includes("color") || av.attribute?.name?.toLowerCase().includes("mau")) color = av.value;
-                if (av.attributeId === sAttr.id || av.attribute?.name?.toLowerCase().includes("size") || av.attribute?.name?.toLowerCase().includes("kich")) size = av.value;
+                if (av.attributeId === pAttr?.id) color = av.value;
+                if (av.attributeId === sAttr?.id) size = av.value;
               });
-              if (!groups[color]) groups[color] = { color, images: v.images || [], sizes: [] };
-              groups[color].sizes.push({ size, sku: v.sku, price: String(v.price), stock: String(v.stock), id: v.id });
-              // Use first variant's images for the color group
-              if (v.images?.length > 0 && groups[color].images.length === 0) groups[color].images = v.images;
+              const groupKey = color || "Mặc định";
+              if (!groups[groupKey]) groups[groupKey] = { color, images: v.images || [], sizes: [] };
+              groups[groupKey].sizes.push({ size, sku: v.sku, price: String(v.price), stock: String(v.stock), id: v.id });
+              // Use first variant's images for the group
+              if (v.images?.length > 0 && groups[groupKey].images.length === 0) groups[groupKey].images = v.images;
             });
             setColorGroups(Object.values(groups));
           }
@@ -93,9 +103,19 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
 
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
-  const colorAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  const sizeAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
-  const hasMatrix = !!colorAttr && !!sizeAttr;
+  let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
+  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
+  
+  if (!primaryAttr && categoryAttributes.length > 0) {
+    primaryAttr = categoryAttributes[0];
+    if (!secondaryAttr && categoryAttributes.length > 1) secondaryAttr = categoryAttributes[1];
+  } else if (primaryAttr && !secondaryAttr && categoryAttributes.length > 1) {
+    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id);
+  } else if (!primaryAttr && secondaryAttr && categoryAttributes.length > 1) {
+     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id);
+  }
+
+  const hasVariants = categoryAttributes.length > 0;
 
   const discountPercent = (() => {
     const bp = parseFloat(basePrice); const sp = parseFloat(salePrice);
@@ -111,7 +131,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
   const updateSize = (cIdx: number, sIdx: number, field: string, val: string) => { const u = [...colorGroups]; (u[cIdx].sizes[sIdx] as any)[field] = val; setColorGroups(u); };
 
   const buildVariants = () => {
-    if (!hasMatrix) return [];
+    if (!hasVariants) return [];
     const variants: any[] = [];
     colorGroups.forEach(cg => {
       cg.sizes.forEach(s => {
@@ -119,9 +139,9 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
         variants.push({
           id: s.id, sku: s.sku, price: parseFloat(s.price) || 0, stock: parseInt(s.stock) || 0, images: cg.images,
           attrValues: [
-            { attributeId: colorAttr!.id, value: cg.color },
-            { attributeId: sizeAttr!.id, value: s.size },
-          ].filter(av => av.value),
+            primaryAttr && cg.color ? { attributeId: primaryAttr.id, value: cg.color } : null,
+            secondaryAttr && s.size ? { attributeId: secondaryAttr.id, value: s.size } : null,
+          ].filter(Boolean),
         });
       });
     });
@@ -221,7 +241,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
             {/* Option-Matrix */}
             <div className="card" style={{ padding: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể (Màu sắc × Size)</h2>
+                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
               </div>
 
               {categoryId && !hasMatrix && (
@@ -237,7 +257,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                       <div key={cIdx} style={{ padding: 20, border: "2px solid #e2e8f0", borderRadius: 16, background: "#fafbfc" }}>
                         <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
                           <div style={{ flex: 1 }}>
-                            <label className="input-label" style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed" }}>🎨 Tên màu sắc</label>
+                            <label className="input-label" style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed" }}> Tên màu sắc</label>
                             <input className="input" value={cg.color} onChange={e => updateColorGroup(cIdx, "color", e.target.value)} placeholder="VD: Đỏ, Xanh..." style={{ fontWeight: 700, fontSize: 15 }} />
                           </div>
                           <button type="button" onClick={() => removeColorGroup(cIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginTop: 24 }}><Trash2 size={18} /></button>

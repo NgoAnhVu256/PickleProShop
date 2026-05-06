@@ -56,10 +56,19 @@ export default function AdminCreateProduct() {
 
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
-  // Detect if this category has color & size attributes
-  const colorAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  const sizeAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
-  const hasMatrix = !!colorAttr && !!sizeAttr;
+  let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
+  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
+  
+  if (!primaryAttr && categoryAttributes.length > 0) {
+    primaryAttr = categoryAttributes[0];
+    if (!secondaryAttr && categoryAttributes.length > 1) secondaryAttr = categoryAttributes[1];
+  } else if (primaryAttr && !secondaryAttr && categoryAttributes.length > 1) {
+    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id);
+  } else if (!primaryAttr && secondaryAttr && categoryAttributes.length > 1) {
+     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id);
+  }
+
+  const hasVariants = categoryAttributes.length > 0;
 
   const discountPercent = (() => {
     const bp = parseFloat(basePrice); const sp = parseFloat(salePrice);
@@ -93,7 +102,7 @@ export default function AdminCreateProduct() {
 
   // Convert matrix to flat variants for API
   const buildVariants = () => {
-    if (!hasMatrix) return [];
+    if (!hasVariants) return [];
     const variants: any[] = [];
     colorGroups.forEach(cg => {
       cg.sizes.forEach(s => {
@@ -104,9 +113,9 @@ export default function AdminCreateProduct() {
           stock: parseInt(s.stock) || 0,
           images: cg.images,
           attrValues: [
-            { attributeId: colorAttr!.id, value: cg.color },
-            { attributeId: sizeAttr!.id, value: s.size },
-          ].filter(av => av.value),
+            primaryAttr && cg.color ? { attributeId: primaryAttr.id, value: cg.color } : null,
+            secondaryAttr && s.size ? { attributeId: secondaryAttr.id, value: s.size } : null,
+          ].filter(Boolean),
         });
       });
     });
@@ -229,7 +238,7 @@ export default function AdminCreateProduct() {
             {/* ─── OPTION-MATRIX: Color → Sizes ─── */}
             <div className="card" style={{ padding: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể (Màu sắc × Size)</h2>
+                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
               </div>
 
               {!categoryId && (
@@ -238,30 +247,30 @@ export default function AdminCreateProduct() {
                 </div>
               )}
 
-              {categoryId && !hasMatrix && (
+              {categoryId && !hasVariants && (
                 <div style={{ padding: 20, textAlign: "center", background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, color: "#0369a1", fontSize: 13 }}>
-                  Danh mục này chưa có thuộc tính Màu sắc & Size. Vào <Link href="/admin/attributes" style={{ fontWeight: 700, textDecoration: "underline" }}>Thuộc tính</Link> để tạo.
+                  Danh mục này chưa có thuộc tính. Sản phẩm sẽ được tạo mặc định không có biến thể. Vào <Link href="/admin/attributes" style={{ fontWeight: 700, textDecoration: "underline" }}>Thuộc tính</Link> để tạo.
                 </div>
               )}
 
-              {categoryId && hasMatrix && (
+              {categoryId && hasVariants && (
                 <>
                   <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 16 }}>
                     {colorGroups.map((cg, cIdx) => (
                       <div key={cIdx} style={{ padding: 20, border: "2px solid #e2e8f0", borderRadius: 16, background: "#fafbfc" }}>
-                        {/* Color header */}
+                        {/* Primary Attribute Header */}
                         <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
                           <div style={{ flex: 1 }}>
-                            <label className="input-label" style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed" }}>🎨 Tên màu sắc</label>
-                            <input className="input" value={cg.color} onChange={e => updateColorGroup(cIdx, "color", e.target.value)} placeholder="VD: Đỏ, Xanh, Vàng..." style={{ fontWeight: 700, fontSize: 15 }} />
+                            <label className="input-label" style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed" }}>{primaryAttr?.label || "Nhóm biến thể"}</label>
+                            <input className="input" value={cg.color} onChange={e => updateColorGroup(cIdx, "color", e.target.value)} placeholder={`Nhập ${primaryAttr?.label?.toLowerCase() || "giá trị"}...`} style={{ fontWeight: 700, fontSize: 15 }} />
                           </div>
                           <button type="button" onClick={() => removeColorGroup(cIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginTop: 24 }}><Trash2 size={18} /></button>
                         </div>
 
-                        {/* Color images */}
+                        {/* Primary Images */}
                         <div style={{ marginBottom: 16 }}>
                           <MultiImageUpload
-                            label="Ảnh cho màu này"
+                            label={`Ảnh cho ${primaryAttr?.label?.toLowerCase() || "nhóm"} này`}
                             value={cg.images}
                             onChange={urls => updateColorGroup(cIdx, "images", urls)}
                             onRemove={url => updateColorGroup(cIdx, "images", cg.images.filter(i => i !== url))}
@@ -269,32 +278,34 @@ export default function AdminCreateProduct() {
                           />
                         </div>
 
-                        {/* Sizes table */}
+                        {/* Secondary Attributes Table */}
                         <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                            <span>Size</span><span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
+                          <div style={{ display: "grid", gridTemplateColumns: secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+                            {secondaryAttr && <span>{secondaryAttr.label}</span>}<span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
                           </div>
                           {cg.sizes.map((s, sIdx) => (
-                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
-                              <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder="39" style={{ fontSize: 13 }} />
-                              <input className="input" value={s.sku} onChange={e => updateSize(cIdx, sIdx, "sku", e.target.value)} placeholder="GIAY-DO-39" style={{ fontSize: 13 }} />
+                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
+                              {secondaryAttr && <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder={`Nhập ${secondaryAttr.label?.toLowerCase()}`} style={{ fontSize: 13 }} />}
+                              <input className="input" value={s.sku} onChange={e => updateSize(cIdx, sIdx, "sku", e.target.value)} placeholder="Mã SKU" style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.price} onChange={e => updateSize(cIdx, sIdx, "price", e.target.value)} style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.stock} onChange={e => updateSize(cIdx, sIdx, "stock", e.target.value)} style={{ fontSize: 13 }} />
                               <button type="button" onClick={() => removeSizeFromColor(cIdx, sIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}><X size={16} /></button>
                             </div>
                           ))}
-                          <div style={{ padding: "8px 12px" }}>
-                            <button type="button" onClick={() => addSizeToColor(cIdx)} style={{ width: "100%", padding: 8, border: "1px dashed #cbd5e1", borderRadius: 8, background: "transparent", cursor: "pointer", fontSize: 12, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                              <Plus size={14} /> Thêm size
-                            </button>
-                          </div>
+                          {secondaryAttr && (
+                            <div style={{ padding: "8px 12px" }}>
+                              <button type="button" onClick={() => addSizeToColor(cIdx)} style={{ width: "100%", padding: 8, border: "1px dashed #cbd5e1", borderRadius: 8, background: "transparent", cursor: "pointer", fontSize: 12, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                                <Plus size={14} /> Thêm {secondaryAttr.label?.toLowerCase() || "thuộc tính"}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
 
                   <button type="button" onClick={addColorGroup} className="btn btn-secondary btn-sm" style={{ width: "100%", padding: 12, display: "flex", justifyContent: "center", gap: 8, fontSize: 13 }}>
-                    <Plus size={16} /> Thêm màu sắc mới
+                    <Plus size={16} /> Thêm {primaryAttr?.label?.toLowerCase() || "nhóm"} mới
                   </button>
                 </>
               )}
@@ -326,7 +337,7 @@ export default function AdminCreateProduct() {
               {colorGroups.length > 0 && (
                 <div style={{ marginBottom: 20, padding: 12, background: "#f0fdf4", borderRadius: 10, border: "1px solid #bbf7d0" }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: "#166534", textTransform: "uppercase", marginBottom: 6 }}>Tóm tắt biến thể</p>
-                  <p style={{ fontSize: 13, color: "#15803d" }}>{colorGroups.length} màu sắc • {colorGroups.reduce((sum, cg) => sum + cg.sizes.length, 0)} biến thể</p>
+                  <p style={{ fontSize: 13, color: "#15803d" }}>{colorGroups.length} {primaryAttr?.label?.toLowerCase() || "nhóm"} • {colorGroups.reduce((sum, cg) => sum + cg.sizes.length, 0)} biến thể</p>
                 </div>
               )}
 

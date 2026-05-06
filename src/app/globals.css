@@ -255,24 +255,16 @@ tr:last-child td {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #FFFDE8;
+  color: #2b2b2b;
+  border: none;
   transition: all 0.2s ease;
   text-decoration: none;
   flex-shrink: 0;
 }
 .nav-pill:hover {
   background: #E8DBB3;
-  color: #2b2b2b;
-  border-color: #E8DBB3;
 }
 .nav-pill.active {
-  background: #FFFDE8;
-  color: #2b2b2b;
-  border-color: #FFFDE8;
-}
-.nav-pill.active:hover {
   background: #E8DBB3;
-  border-color: #E8DBB3;
 }
