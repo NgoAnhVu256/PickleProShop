@@ -16,6 +16,7 @@ export default function PopupBanner() {
 
   useEffect(() => {
     // Check if popup was already dismissed in this session
+    if (typeof window === "undefined") return;
     const dismissed = sessionStorage.getItem("popup_banner_dismissed");
     if (dismissed) return;
 

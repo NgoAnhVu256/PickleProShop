@@ -47,9 +47,10 @@ const getCachedProducts = unstable_cache(
   async () => prisma.product.findMany({
     take: 10,
     where: { isActive: true },
-    select: {
-      id: true, name: true, slug: true, thumbnail: true,
-      basePrice: true, salePrice: true,
+    include: {
+      category: { select: { name: true, slug: true } },
+      brand: { select: { name: true, slug: true } },
+      _count: { select: { variants: true } },
     },
     orderBy: { createdAt: 'desc' },
   }),
@@ -79,12 +80,6 @@ const getCachedPosts = unstable_cache(
   }),
   ['home-posts'],
   { revalidate: 120 }
-);
-
-const getCachedSettings = unstable_cache(
-  () => getSiteSettings(),
-  ['home-settings'],
-  { revalidate: 60 }
 );
 
 // ─── SKELETON LOADERS ───
@@ -260,7 +255,7 @@ export default async function HomePage() {
   // Critical above-fold data — fetched immediately (parallel)
   const [banners, settings, promotionBanners] = await Promise.all([
     getCachedBanners(),
-    getCachedSettings(),
+    getSiteSettings(),
     getCachedPromotions(),
   ]);
 
