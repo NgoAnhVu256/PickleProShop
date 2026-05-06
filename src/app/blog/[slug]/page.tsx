@@ -68,7 +68,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
   return (
     <div className="min-h-screen bg-white">
-      <HomeHeader settings={settings} />
+      <HomeHeader />
 
       <main className="pb-20">
         {/* --- HERO HEADER --- */}

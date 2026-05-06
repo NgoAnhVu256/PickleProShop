@@ -14,9 +14,13 @@ interface SearchResult {
   salePrice: number | null;
 }
 
+import { useSiteSettings } from './Providers';
+
 let globalNavCategories: {name: string, href: string}[] | null = null;
 
-export default function Header({ settings, cartCount = 0, onCartClick }: { settings?: any; cartCount?: number; onCartClick?: () => void }) {
+export default function Header({ cartCount = 0, onCartClick }: { cartCount?: number; onCartClick?: () => void }) {
+  const settingsContext = useSiteSettings();
+  
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -39,8 +43,8 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
   const role = (user as any)?.role;
   const pathname = usePathname();
 
-  const logo = settings?.logo;
-  const siteName = settings?.name || "PicklePro";
+  const logo = settingsContext?.logo;
+  const siteName = settingsContext?.name || "PicklePro";
 
   // Close dropdowns on click outside
   useEffect(() => {

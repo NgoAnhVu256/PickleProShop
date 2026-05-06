@@ -30,7 +30,7 @@ export default async function BlogListPage() {
 
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
-      <HomeHeader settings={settings} />
+      <HomeHeader />
       
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
         <div className="mb-10 md:mb-12 text-center md:text-left">

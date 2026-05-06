@@ -60,15 +60,6 @@ function ProductListingContent() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
   const [priceRange, setPriceRange] = useState(searchParams.get("price") || "");
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
-  const [settings, setSettings] = useState<any>(null);
-
-  // Load settings
-  useEffect(() => {
-    fetch("/api/admin/settings")
-      .then(r => r.json())
-      .then(d => { if (d.success) setSettings(d.data); })
-      .catch(() => {});
-  }, []);
 
   // Load brands and categories
   useEffect(() => {
@@ -135,7 +126,7 @@ function ProductListingContent() {
 
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
-      <Header settings={settings} />
+      <Header />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
         {/* Title */}

@@ -45,7 +45,7 @@ export default function FeedbackPage() {
   if (sent) {
     return (
       <div className="min-h-screen bg-[#fcfcfc]">
-        <Header settings={settings} />
+        <Header />
         <div className="max-w-lg mx-auto px-4 py-20 md:py-32 text-center">
           <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-500" />
@@ -62,7 +62,7 @@ export default function FeedbackPage() {
 
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
-      <Header settings={settings} />
+      <Header />
       <div className="max-w-2xl mx-auto px-4 py-10 md:py-16">
         {/* Header */}
         <div className="text-center mb-10 md:mb-12">

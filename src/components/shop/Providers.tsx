@@ -8,6 +8,12 @@ import CartDrawer from "@/components/shop/CartDrawer";
 const ChatWidget = dynamic(() => import("@/components/shop/ChatWidget"), { ssr: false });
 const PopupBanner = dynamic(() => import("@/components/shop/PopupBanner"), { ssr: false });
 
+import React, { createContext, useContext } from "react";
+
+const SiteSettingsContext = createContext<any>(null);
+
+export const useSiteSettings = () => useContext(SiteSettingsContext);
+
 export default function Providers({ 
   children,
   settings 
@@ -16,17 +22,19 @@ export default function Providers({
   settings?: any;
 }) {
   return (
-    <SessionProvider>
-      <CartProvider>
-        {children}
-        <CartDrawer />
-        <PopupBanner />
-        <ChatWidget
-          zaloLink={settings?.zalo}
-          messengerLink={settings?.messenger}
-          chatbotAvatar={settings?.chatbotAvatar}
-        />
-      </CartProvider>
-    </SessionProvider>
+    <SiteSettingsContext.Provider value={settings}>
+      <SessionProvider>
+        <CartProvider>
+          {children}
+          <CartDrawer />
+          <PopupBanner />
+          <ChatWidget
+            zaloLink={settings?.zalo}
+            messengerLink={settings?.messenger}
+            chatbotAvatar={settings?.chatbotAvatar}
+          />
+        </CartProvider>
+      </SessionProvider>
+    </SiteSettingsContext.Provider>
   );
 }

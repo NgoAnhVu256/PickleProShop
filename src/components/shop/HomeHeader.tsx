@@ -3,11 +3,10 @@
 import Header from "@/components/shop/Header";
 import { useCart } from "@/components/shop/CartContext";
 
-export default function HomeHeader({ settings }: { settings?: any }) {
+export default function HomeHeader() {
   const { totalItems, setIsCartOpen } = useCart();
   return (
     <Header
-      settings={settings}
       cartCount={totalItems}
       onCartClick={() => setIsCartOpen(true)}
     />

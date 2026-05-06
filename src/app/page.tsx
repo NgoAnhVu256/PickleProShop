@@ -276,7 +276,7 @@ export default async function HomePage() {
       )}
       {/* ABOVE THE FOLD — renders immediately */}
       <TopBanner banners={banners?.FIXED_TOP} />
-      <HomeHeader settings={settings} />
+      <HomeHeader />
       
       <main className="pb-20">
         <BannerGrid banners={banners} />
