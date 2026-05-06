@@ -21,6 +21,14 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [navCategories, setNavCategories] = useState<{name: string, href: string}[]>([
+    { name: "Sản phẩm", href: "/products" },
+    { name: "Vợt Pickleball", href: "/category/vot-pickleball" },
+    { name: "Giày Pickleball", href: "/category/giay-pickleball" },
+    { name: "Trang Phục", href: "/category/trang-phuc" },
+    { name: "Phụ kiện", href: "/category/phu-kien" },
+    { name: "Tin tức", href: "/blog" }
+  ]);
   const searchRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +52,26 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Fetch categories dynamically
+  useEffect(() => {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          const fetchedCats = data.data.map((c: any) => ({
+            name: c.name,
+            href: `/category/${c.slug}`
+          }));
+          setNavCategories([
+            { name: "Sản phẩm", href: "/products" },
+            ...fetchedCats,
+            { name: "Tin tức", href: "/blog" }
+          ]);
+        }
+      })
+      .catch(err => console.error("Error fetching categories:", err));
   }, []);
 
   // Ajax search with debounce
@@ -278,16 +306,8 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </Link>
-          {[
-            { name: "Sản phẩm", href: "/products" },
-            { name: "Vợt Pickleball", href: "/category/vot-pickleball" },
-            { name: "Giày Pickleball", href: "/category/giay-pickleball" },
-            { name: "Trang Phục", href: "/category/trang-phuc" },
-            { name: "Balo & Túi", href: "/category/balo-tui-pickleball" },
-            { name: "Phụ kiện", href: "/category/phu-kien" },
-            { name: "Tin tức", href: "/blog" },
-          ].map((item) => {
-            const isActive = pathname.startsWith(item.href);
+          {navCategories.map((item) => {
+            const isActive = pathname.startsWith(item.href) && item.href !== "/";
             return (
               <Link
                 key={item.name}
