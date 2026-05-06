@@ -13,7 +13,7 @@ function TikTokIcon({ size = 20 }: { size?: number }) {
 }
 
 export default function Footer({ settings }: { settings?: any }) {
-  const logo = settings?.logo || settings?.favicon || '/favicon.ico';
+  const logo = settings?.logo || '/api/favicon';
   const siteName = settings?.name || "PicklePro";
 
   return (
@@ -28,7 +28,7 @@ export default function Footer({ settings }: { settings?: any }) {
               <img
                 src={logo}
                 alt={siteName}
-                className="h-16 w-16 object-contain"
+                className="h-16 w-16 rounded-full object-cover"
               />
             </Link>
             {settings?.slogan && (

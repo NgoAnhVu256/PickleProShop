@@ -38,13 +38,13 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: settings.name,
       title: settings.name,
       description: settings.slogan,
-      images: [settings.logo || "/favicon.ico"],
+      images: [settings.logo || "/api/favicon"],
     },
     twitter: {
       card: "summary_large_image",
       title: settings.name,
       description: settings.slogan,
-      images: [settings.logo || "/favicon.ico"],
+      images: [settings.logo || "/api/favicon"],
     },
     // Full SEO access for all bots
     robots: {
