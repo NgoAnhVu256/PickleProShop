@@ -46,6 +46,10 @@ export default function PopupBanner() {
     <img
       src={banner.image}
       alt={banner.title}
+      width={600}
+      height={600}
+      loading="lazy"
+      decoding="async"
       style={{
         maxWidth: "90vw",
         maxHeight: "80vh",

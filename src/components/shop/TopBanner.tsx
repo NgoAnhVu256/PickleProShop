@@ -24,7 +24,7 @@ export default function TopBanner({ banners = [] }: { banners?: any[] }) {
             i === index ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
           }`}
         >
-          <img src={banner.image} alt={banner.title || 'Announcement'} className="w-full h-full object-cover" />
+          <img src={banner.image} alt={banner.title || 'Announcement'} width={1920} height={40} className="w-full h-full object-cover" fetchPriority={i === 0 ? "high" : "auto"} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
         </Link>
       ))}
     </div>

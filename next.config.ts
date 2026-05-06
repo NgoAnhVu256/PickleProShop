@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "50mb",
     },
     middlewareClientMaxBodySize: "50mb",
+    optimizePackageImports: ["lucide-react"],
   },
   eslint: {
     ignoreDuringBuilds: true,
