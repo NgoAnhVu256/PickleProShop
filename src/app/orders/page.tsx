@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -16,7 +15,7 @@ const statusMap: Record<string, { label: string; color: string; bg: string }> = 
 export const metadata = { title: "Đơn hàng của tôi - PicklePro" };
 
 export default async function OrdersPage() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/orders");
 
   const orders = await prisma.order.findMany({
