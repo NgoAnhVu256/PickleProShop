@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 export async function GET() {
+  const session = await auth();
+  if ((session?.user as any)?.role !== "ADMIN") {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const promotions = await prisma.promotion.findMany({
       include: {
@@ -17,6 +22,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await auth();
+  if ((session?.user as any)?.role !== "ADMIN") {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const body = await request.json();
     const { name, isActive, startDate, endDate, conditions, rewards } = body;
