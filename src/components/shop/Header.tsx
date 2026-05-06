@@ -14,6 +14,8 @@ interface SearchResult {
   salePrice: number | null;
 }
 
+let globalNavCategories: {name: string, href: string}[] | null = null;
+
 export default function Header({ settings, cartCount = 0, onCartClick }: { settings?: any; cartCount?: number; onCartClick?: () => void }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,7 +23,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [navCategories, setNavCategories] = useState<{name: string, href: string}[]>([
+  const [navCategories, setNavCategories] = useState<{name: string, href: string}[]>(globalNavCategories || [
     { name: "Sản phẩm", href: "/products" },
     { name: "Vợt Pickleball", href: "/category/vot-pickleball" },
     { name: "Giày Pickleball", href: "/category/giay-pickleball" },
@@ -56,6 +58,8 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
 
   // Fetch categories dynamically
   useEffect(() => {
+    if (globalNavCategories) return; // Skip if already fetched in this session
+    
     fetch('/api/categories')
       .then(res => res.json())
       .then(data => {
@@ -64,11 +68,13 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
             name: c.name,
             href: `/category/${c.slug}`
           }));
-          setNavCategories([
+          const newCats = [
             { name: "Sản phẩm", href: "/products" },
             ...fetchedCats,
             { name: "Tin tức", href: "/blog" }
-          ]);
+          ];
+          globalNavCategories = newCats;
+          setNavCategories(newCats);
         }
       })
       .catch(err => console.error("Error fetching categories:", err));
