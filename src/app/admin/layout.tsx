@@ -104,7 +104,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Logo */}
         <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid #eef2f7", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/admin" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-            <img src={settings.store_logo || "/api/favicon"} alt="Logo" style={{ height: 34, width: 34, objectFit: "cover", borderRadius: "50%" }} />
+            <img src={settings.store_favicon || settings.store_logo || "/api/favicon"} alt="Logo" style={{ height: 34, width: 34, objectFit: "cover", borderRadius: "50%" }} />
             <span style={{ fontSize: 18, fontWeight: 800, color: "#323b4b", letterSpacing: -0.5 }}>
               {settings.store_name || "PicklePro"}
             </span>

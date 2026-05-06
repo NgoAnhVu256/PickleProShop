@@ -96,7 +96,7 @@ export default function RegisterClient({ settings }: { settings: any }) {
       <div className="w-full max-w-[480px] z-10">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group">
-            <img src={logo || '/api/favicon'} alt={siteName} className="h-12 w-12 rounded-full object-cover transition-transform group-hover:scale-105" />
+            <img src={logo || '/api/favicon'} alt={siteName} className="h-12 w-12 rounded-lg object-cover transition-transform group-hover:scale-105" />
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Trở thành thành viên</h1>
           <p className="text-gray-500 text-sm px-10">Gia nhập cộng đồng {siteName || "PicklePro"} để nhận ưu đãi đặc quyền.</p>

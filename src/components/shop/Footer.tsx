@@ -28,7 +28,7 @@ export default function Footer({ settings }: { settings?: any }) {
               <img
                 src={logo}
                 alt={siteName}
-                className="h-16 w-16 rounded-full object-cover"
+                className="h-16 w-16 rounded-lg object-cover"
               />
             </Link>
             {settings?.slogan && (

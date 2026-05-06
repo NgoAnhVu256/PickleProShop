@@ -267,8 +267,57 @@ export default function ProductDetailPage() {
     return v?.stock ?? 0;
   };
 
+  // ─── Dynamic SEO: title + JSON-LD structured data ───
+  useEffect(() => {
+    if (!product) return;
+    document.title = `${product.name} | PicklePro`;
+    // Meta description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", product.description?.slice(0, 160) || `Mua ${product.name} chính hãng tại PicklePro`);
+  }, [product]);
+
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+
+  // JSON-LD Product Schema for Google Rich Snippets
+  const productJsonLd = product ? {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.thumbnail ? `${siteUrl}${product.thumbnail}` : undefined,
+    description: product.description?.slice(0, 300) || `${product.name} - PicklePro`,
+    brand: product.brand ? { "@type": "Brand", name: product.brand.name } : undefined,
+    category: product.category.name,
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "VND",
+      lowPrice: matchedVariant?.price || product.salePrice || product.basePrice,
+      highPrice: product.basePrice,
+      availability: "https://schema.org/InStock",
+      seller: { "@type": "Organization", name: "PicklePro" },
+    },
+  } : null;
+
+  // BreadcrumbList Schema
+  const breadcrumbJsonLd = product ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Trang chủ", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Sản phẩm", item: `${siteUrl}/products` },
+      { "@type": "ListItem", position: 3, name: product.category.name, item: `${siteUrl}/category/${product.category.slug}` },
+      { "@type": "ListItem", position: 4, name: product.name },
+    ],
+  } : null;
+
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
+      {/* JSON-LD Structured Data */}
+      {productJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+      )}
+      {breadcrumbJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      )}
       <Header settings={settings} />
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
