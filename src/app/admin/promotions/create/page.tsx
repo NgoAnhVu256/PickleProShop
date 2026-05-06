@@ -103,8 +103,8 @@ export default function CreatePromotionPage() {
     if (!name) return toast.error("Vui lòng nhập tên chương trình");
     if (!noEndDate && !endDate) return toast.error("Vui lòng chọn ngày kết thúc");
     if (!noEndDate && new Date(endDate) <= new Date(startDate)) return toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu");
-    if (conditions.length === 0) return toast.error("Vui lòng chọn ít nhất 1 điều kiện (Mua X)");
-    if (rewards.length === 0) return toast.error("Vui lòng chọn ít nhất 1 quà tặng (Tặng Y)");
+    if (conditions.length === 0) return toast.error("Vui lòng chọn ít nhất 1 điều kiện");
+    if (rewards.length === 0) return toast.error("Vui lòng chọn ít nhất 1 quà tặng");
 
     setSubmitting(true);
     try {
@@ -135,7 +135,7 @@ export default function CreatePromotionPage() {
     <div className="fade-in pb-20">
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
         <Link href="/admin" style={{ color: "#8a98ac" }}><ArrowLeft size={20} /></Link>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: "#323b4b" }}>Tạo Chương Trình Khuyến Mãi (Mua X Tặng Y)</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: "#323b4b" }}>Tạo Combo Khuyến Mãi</h1>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -174,7 +174,7 @@ export default function CreatePromotionPage() {
 
           {/* Block 2: Conditions (Buy X) */}
           <div className="card" style={{ padding: 24 }}>
-            <h2 className="section-title"><PackageOpen size={18} color="#eab308" /> 2. Điều kiện áp dụng (Mua X)</h2>
+            <h2 className="section-title"><PackageOpen size={18} color="#eab308" /> 2. Điều kiện áp dụng</h2>
             <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Chọn các sản phẩm hoặc danh mục sản phẩm mà khách hàng cần mua để nhận quà.</p>
             
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
@@ -241,7 +241,7 @@ export default function CreatePromotionPage() {
 
           {/* Block 3: Rewards (Get Y) */}
           <div className="card" style={{ padding: 24, border: "2px solid #fce7f3" }}>
-            <h2 className="section-title" style={{ color: "#db2777" }}><Gift size={18} color="#ec4899" /> 3. Quà tặng kèm (Tặng Y)</h2>
+            <h2 className="section-title" style={{ color: "#db2777" }}><Gift size={18} color="#ec4899" /> 3. Quà tặng kèm</h2>
             <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Khách hàng sẽ nhận được các sản phẩm dưới đây (Sẽ tự động trừ kho khi có đơn hàng).</p>
             
             {/* Reward Search */}

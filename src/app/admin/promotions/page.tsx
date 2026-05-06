@@ -112,7 +112,7 @@ export default function AdminPromotionsPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
         <div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#323b4b" }}>Khuyến mãi</h1>
-          <p style={{ fontSize: 13, color: "#8a98ac", marginTop: 2 }}>Quản lý banner khuyến mãi và chiến dịch Mua X Tặng Y</p>
+          <p style={{ fontSize: 13, color: "#8a98ac", marginTop: 2 }}>Quản lý banner khuyến mãi và Combo khuyến mãi</p>
         </div>
       </div>
 
@@ -122,7 +122,7 @@ export default function AdminPromotionsPage() {
           <ImageIcon size={16} style={{ display: "inline", marginBottom: -3, marginRight: 6 }} /> Banner Khuyến Mãi
         </button>
         <button style={tabStyle("campaigns")} onClick={() => setActiveTab("campaigns")}>
-          <Gift size={16} style={{ display: "inline", marginBottom: -3, marginRight: 6 }} /> Mua X Tặng Y
+          <Gift size={16} style={{ display: "inline", marginBottom: -3, marginRight: 6 }} /> Combo khuyến mãi
         </button>
       </div>
 
@@ -238,7 +238,7 @@ export default function AdminPromotionsPage() {
         </div>
       )}
 
-      {/* ═══ TAB 2: CAMPAIGNS (Mua X Tặng Y) ═══ */}
+      {/* ═══ TAB 2: CAMPAIGNS (Combo khuyến mãi) ═══ */}
       {activeTab === "campaigns" && (
         <div>
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
@@ -263,7 +263,7 @@ export default function AdminPromotionsPage() {
                   {loadingCampaigns ? (
                     <tr><td colSpan={5} style={{ textAlign: "center", padding: 40, color: "#8a98ac" }}>Đang tải...</td></tr>
                   ) : campaigns.length === 0 ? (
-                    <tr><td colSpan={5} style={{ textAlign: "center", padding: 40, color: "#8a98ac" }}>Chưa có chiến dịch Mua X Tặng Y nào.</td></tr>
+                    <tr><td colSpan={5} style={{ textAlign: "center", padding: 40, color: "#8a98ac" }}>Chưa có Combo khuyến mãi nào.</td></tr>
                   ) : campaigns.map((p) => (
                     <tr key={p.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <td style={{ padding: "16px 20px" }}>
