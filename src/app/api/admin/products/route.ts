@@ -7,17 +7,22 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
+    const categoryId = searchParams.get("category") || "";
 
-    const where = search
-      ? {
-          OR: [
-            { name: { contains: search, mode: "insensitive" as const } },
-            { category: { name: { contains: search, mode: "insensitive" as const } } },
-          ],
-        }
-      : {};
+    const where: Record<string, unknown> = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" as const } },
+        { category: { name: { contains: search, mode: "insensitive" as const } } },
+      ];
+    }
+
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
 
     const [products, total] = await Promise.all([
       prisma.product.findMany({
@@ -27,7 +32,7 @@ export async function GET(req: NextRequest) {
           brand:    { select: { id: true, name: true } },
           _count:   { select: { variants: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { name: "asc" },
         skip: (page - 1) * limit,
         take: limit,
       }),

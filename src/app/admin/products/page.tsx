@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Search, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { PickleballIcon } from "@/components/common/Icons";
@@ -23,21 +23,42 @@ interface Product {
   createdAt: string;
 }
 
+interface CategoryItem {
+  id: string;
+  name: string;
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const { confirm, ConfirmDialog } = useConfirm();
 
+  // Load categories for filter
+  useEffect(() => {
+    fetch("/api/categories")
+      .then(r => r.json())
+      .then(d => { if (d.success) setCategories(d.data); })
+      .catch(() => {});
+  }, []);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/products?page=${page}&search=${encodeURIComponent(search)}`);
+      const params = new URLSearchParams({ page: String(page), limit: "10" });
+      if (search) params.set("search", search);
+      if (selectedCategory) params.set("category", selectedCategory);
+
+      const res = await fetch(`/api/admin/products?${params}`);
       const data = await res.json();
       if (data.success) {
         setProducts(data.data);
+        setTotal(data.pagination.total);
         setTotalPages(data.pagination.totalPages);
       }
     } catch {
@@ -45,7 +66,7 @@ export default function AdminProductsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search]);
+  }, [page, search, selectedCategory]);
 
   useEffect(() => {
     fetchProducts();
@@ -99,17 +120,33 @@ export default function AdminProductsPage() {
         </Link>
       </div>
 
-      {/* Search */}
-      <div style={{ marginBottom: 20, maxWidth: 400, position: "relative" }}>
-        <Search size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#8a98ac" }} />
-        <input
-          type="text"
+      {/* Search + Category Filter */}
+      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ position: "relative", flex: "1 1 300px", maxWidth: 400 }}>
+          <Search size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#8a98ac" }} />
+          <input
+            type="text"
+            className="input"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            style={{ paddingLeft: 40, background: "#f8f9fb", border: "1.5px solid #eef2f7", color: "#323b4b", width: "100%" }}
+          />
+        </div>
+        <select
           className="input"
-          placeholder="Tìm kiếm sản phẩm..."
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          style={{ paddingLeft: 40, background: "#f8f9fb", border: "1.5px solid #eef2f7", color: "#323b4b" }}
-        />
+          value={selectedCategory}
+          onChange={(e) => { setSelectedCategory(e.target.value); setPage(1); }}
+          style={{ background: "#f8f9fb", border: "1.5px solid #eef2f7", color: "#323b4b", width: "auto", minWidth: 180, cursor: "pointer" }}
+        >
+          <option value="">Tất cả danh mục</option>
+          {categories.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+        <div style={{ fontSize: 13, color: "#8a98ac", fontWeight: 600 }}>
+          {total} sản phẩm
+        </div>
       </div>
 
       {/* Table */}
@@ -213,16 +250,43 @@ export default function AdminProductsPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 20 }}>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPage(p)}
-              className={p === page ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm"}
-            >
-              {p}
-            </button>
-          ))}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, marginTop: 20 }}>
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="btn btn-secondary btn-sm"
+            style={{ opacity: page === 1 ? 0.4 : 1 }}
+          >
+            <ChevronLeft size={14} />
+          </button>
+          {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+            let p;
+            if (totalPages <= 7) p = i + 1;
+            else if (page <= 4) p = i + 1;
+            else if (page >= totalPages - 3) p = totalPages - 6 + i;
+            else p = page - 3 + i;
+            return (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={p === page ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm"}
+                style={{ minWidth: 36 }}
+              >
+                {p}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="btn btn-secondary btn-sm"
+            style={{ opacity: page === totalPages ? 0.4 : 1 }}
+          >
+            <ChevronRight size={14} />
+          </button>
+          <span style={{ fontSize: 12, color: "#8a98ac", marginLeft: 8 }}>
+            Trang {page}/{totalPages}
+          </span>
         </div>
       )}
       <ConfirmDialog />
