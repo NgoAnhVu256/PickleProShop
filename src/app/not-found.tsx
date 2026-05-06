@@ -21,7 +21,7 @@ export default function NotFound() {
         
         {/* Left Side: Illustration */}
         <div className="relative group w-full lg:w-1/2 flex justify-center">
-          <div className="absolute inset-0 bg-[#a757ff]/20 blur-[100px] rounded-full animate-pulse" />
+          <div className="absolute inset-0 bg-[#7DAACB]/20 blur-[100px] rounded-full animate-pulse" />
           <img 
             src="/404-char.png" 
             alt="Lost Pickleball Character" 
@@ -32,7 +32,7 @@ export default function NotFound() {
         {/* Right Side: Text & Actions */}
         <div className="w-full lg:w-1/2 text-center lg:text-left text-white">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6 border border-white/10">
-            <HelpCircle size={16} className="text-[#a757ff]" />
+            <HelpCircle size={16} className="text-[#7DAACB]" />
             <span className="text-xs font-black uppercase tracking-widest">404 Error</span>
           </div>
           
@@ -48,7 +48,7 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
             <Link 
               href="/" 
-              className="group flex items-center gap-3 bg-white text-gray-900 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-[#a757ff] hover:text-white transition-all shadow-xl hover:shadow-[#a757ff]/40"
+              className="group flex items-center gap-3 bg-white text-gray-900 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-[#7DAACB] hover:text-white transition-all shadow-xl hover:shadow-[#7DAACB]/40"
             >
               <MoveLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
               Quay lại trang chủ
@@ -59,7 +59,7 @@ export default function NotFound() {
 
       {/* Floating Decorative Elements */}
       <div className="absolute top-10 left-10 w-20 h-20 bg-white/5 rounded-full blur-xl" />
-      <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#a757ff]/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#7DAACB]/10 rounded-full blur-3xl animate-pulse" />
 
     </div>
   );

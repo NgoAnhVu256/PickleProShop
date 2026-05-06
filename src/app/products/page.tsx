@@ -154,7 +154,7 @@ function ProductListingContent() {
             <input
               type="text"
               placeholder="Tìm kiếm sản phẩm..."
-              className="w-full pl-11 pr-4 py-3 bg-gray-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#a757ff]/20 focus:bg-white transition-all border border-transparent focus:border-[#a757ff]/30"
+              className="w-full pl-11 pr-4 py-3 bg-gray-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/20 focus:bg-white transition-all border border-transparent focus:border-[#7DAACB]/30"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -165,7 +165,7 @@ function ProductListingContent() {
             <select
               value={sortBy}
               onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#a757ff]/30 focus:outline-none cursor-pointer"
+              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
             >
               <option value="newest">Mới nhất</option>
               <option value="price_asc">Giá tăng dần</option>
@@ -177,7 +177,7 @@ function ProductListingContent() {
             <select
               value={selectedCategory}
               onChange={(e) => { setSelectedCategory(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#a757ff]/30 focus:outline-none cursor-pointer"
+              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
             >
               <option value="">Tất cả danh mục</option>
               {categories.map(c => (
@@ -189,7 +189,7 @@ function ProductListingContent() {
             <select
               value={selectedBrand}
               onChange={(e) => { setSelectedBrand(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#a757ff]/30 focus:outline-none cursor-pointer"
+              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
             >
               <option value="">Tất cả thương hiệu</option>
               {brands.map(b => (
@@ -201,7 +201,7 @@ function ProductListingContent() {
             <select
               value={priceRange}
               onChange={(e) => { setPriceRange(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#a757ff]/30 focus:outline-none cursor-pointer"
+              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
             >
               <option value="">Tất cả mức giá</option>
               <option value="0-500000">Dưới 500.000₫</option>
@@ -261,7 +261,7 @@ function ProductListingContent() {
                       onClick={() => setPage(p)}
                       className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
                         p === page
-                          ? "bg-[#a757ff] text-white shadow-lg shadow-[#a757ff]/30"
+                          ? "bg-[#7DAACB] text-white shadow-lg shadow-[#7DAACB]/30"
                           : "border border-gray-200 text-gray-600 hover:bg-gray-50"
                       }`}
                     >
@@ -288,7 +288,7 @@ function ProductListingContent() {
             <p className="text-gray-500 text-sm font-medium">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc của bạn.</p>
             <button
               onClick={clearFilters}
-              className="mt-8 text-sm font-bold text-[#a757ff] underline underline-offset-4"
+              className="mt-8 text-sm font-bold text-[#7DAACB] underline underline-offset-4"
             >
               Thiết lập lại tất cả
             </button>
@@ -325,7 +325,7 @@ function ProductCard({ product }: { product: Product }) {
         )}
       </div>
       <div>
-        <h3 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#a757ff] transition-colors leading-snug">
+        <h3 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#7DAACB] transition-colors leading-snug">
           {product.name}
         </h3>
         <div className="flex items-center gap-2">

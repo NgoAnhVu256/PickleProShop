@@ -101,7 +101,7 @@ export default function MapSelector({ onLocationSelect }: MapSelectorProps) {
     <div className="flex flex-col gap-3">
       <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-200">
         <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-          <MapPin size={16} className="text-[#a757ff]" />
+          <MapPin size={16} className="text-[#7DAACB]" />
           <span>Vị trí giao hàng</span>
         </div>
         <button 
@@ -132,7 +132,7 @@ export default function MapSelector({ onLocationSelect }: MapSelectorProps) {
         {!position && !loading && (
           <div className="absolute inset-0 bg-black/5 pointer-events-none flex items-center justify-center z-[400]">
             <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg text-xs font-bold text-gray-700 flex items-center gap-2 pointer-events-auto">
-              <Search size={14} className="text-[#a757ff]" />
+              <Search size={14} className="text-[#7DAACB]" />
               Nhấn vào bản đồ để chọn vị trí
             </div>
           </div>

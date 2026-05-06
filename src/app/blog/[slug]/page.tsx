@@ -88,7 +88,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
               <ArrowLeft size={14} /> Quay lại
             </Link>
             <div className="flex items-center gap-3 mb-4">
-              <span className="bg-[#a757ff] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
+              <span className="bg-[#7DAACB] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
                 {post.category.name}
               </span>
               <div className="flex items-center gap-2 text-white/60 text-xs font-medium">
@@ -107,7 +107,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           
           {/* Article Page */}
           <article className="lg:col-span-8">
-            <p className="text-xl text-gray-500 font-medium italic border-l-4 border-[#a757ff] pl-6 mb-10 leading-relaxed">
+            <p className="text-xl text-gray-500 font-medium italic border-l-4 border-[#7DAACB] pl-6 mb-10 leading-relaxed">
               {post.excerpt}
             </p>
 
@@ -129,7 +129,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                   <button className="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-800 hover:text-white transition-all"><LinkIcon size={18} /></button>
                 </div>
               </div>
-              <button className="flex items-center gap-2 text-sm font-bold text-[#a757ff] hover:underline underline-offset-4">
+              <button className="flex items-center gap-2 text-sm font-bold text-[#7DAACB] hover:underline underline-offset-4">
                 <Share2 size={16} /> Sao chép liên kết
               </button>
             </div>
@@ -152,7 +152,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                       className="w-24 h-24 rounded-2xl object-cover shrink-0"
                     />
                     <div className="flex flex-col justify-center">
-                      <h5 className="text-[14px] font-bold text-gray-900 group-hover:text-[#a757ff] transition-colors line-clamp-2 leading-snug">
+                      <h5 className="text-[14px] font-bold text-gray-900 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-snug">
                         {rp.title}
                       </h5>
                       <p className="text-[11px] text-gray-400 mt-2 font-medium">
@@ -166,7 +166,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
             {/* Right Banners */}
             {sideBanners.map((banner) => (
-              <Link key={banner.id} href={banner.link || '#'} className="block rounded-[32px] overflow-hidden group shadow-xl hover:shadow-[#a757ff]/20 transition-all duration-500">
+              <Link key={banner.id} href={banner.link || '#'} className="block rounded-[32px] overflow-hidden group shadow-xl hover:shadow-[#7DAACB]/20 transition-all duration-500">
                 <img 
                   src={banner.image} 
                   alt={banner.title} 

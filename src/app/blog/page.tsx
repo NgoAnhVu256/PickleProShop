@@ -49,7 +49,7 @@ export default async function BlogListPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
                   />
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#a757ff] shadow-sm">
+                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#7DAACB] shadow-sm">
                     {post.category?.name}
                   </div>
                 </div>
@@ -57,7 +57,7 @@ export default async function BlogListPage() {
                   <div className="text-[10px] md:text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-2">
                     {new Date(post.publishedAt).toLocaleDateString('vi-VN')}
                   </div>
-                  <h3 className="text-base md:text-lg font-black mb-2 group-hover:text-[#a757ff] transition-colors line-clamp-2 leading-tight uppercase tracking-tight">
+                  <h3 className="text-base md:text-lg font-black mb-2 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-tight uppercase tracking-tight">
                     {post.title}
                   </h3>
                   <p className="text-xs md:text-sm text-gray-400 line-clamp-2 leading-relaxed font-medium">

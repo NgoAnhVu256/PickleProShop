@@ -107,9 +107,9 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
             onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
-            className="w-full h-10 md:h-12 bg-gray-50 border border-gray-200 rounded-full pl-6 pr-14 text-sm md:text-[15px] focus:outline-none focus:ring-2 focus:ring-[#a757ff]/20 focus:border-[#a757ff] transition-all"
+            className="w-full h-10 md:h-12 bg-gray-50 border border-gray-200 rounded-full pl-6 pr-14 text-sm md:text-[15px] focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/20 focus:border-[#7DAACB] transition-all"
           />
-          <button onClick={handleSearchSubmit} className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-[#a757ff] transition-colors">
+          <button onClick={handleSearchSubmit} className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-[#7DAACB] transition-colors">
             <Search className="w-4 h-4 md:w-4.5 md:h-4.5" />
           </button>
 
@@ -130,14 +130,14 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900 truncate">{highlightMatch(p.name, searchQuery)}</p>
-                        <p className="text-xs font-bold text-[#a757ff]">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
+                        <p className="text-xs font-bold text-[#7DAACB]">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
                       </div>
                     </Link>
                   ))}
                   <Link
                     href={`/products?search=${encodeURIComponent(searchQuery)}`}
                     onClick={() => setShowDropdown(false)}
-                    className="block text-center py-3 text-sm font-bold text-[#a757ff] border-t border-gray-100 hover:bg-gray-50"
+                    className="block text-center py-3 text-sm font-bold text-[#7DAACB] border-t border-gray-100 hover:bg-gray-50"
                   >
                     Xem tất cả kết quả →
                   </Link>
@@ -169,7 +169,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#4f46e5] to-[#a757ff] flex items-center justify-center text-white font-bold text-xs">
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#5a93b5] to-[#7DAACB] flex items-center justify-center text-white font-bold text-xs">
                   {user.image ? (
                     <img src={user.image} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -212,7 +212,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
           ) : (
             /* Not logged in */
             <div className="hidden lg:flex items-center gap-4 text-xs xl:text-sm font-bold">
-              <Link href="/login" className="bg-gradient-to-r from-[#4f46e5] to-[#a757ff] text-white px-6 py-2 rounded-full shadow-sm hover:shadow-md transition-all">Đăng nhập</Link>
+              <Link href="/login" className="bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white px-6 py-2 rounded-full shadow-sm hover:shadow-md transition-all">Đăng nhập</Link>
             </div>
           )}
 
@@ -240,7 +240,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
               placeholder="Bạn tìm gì hôm nay?" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-12 text-sm focus:outline-none focus:border-[#a757ff]"
+              className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-12 text-sm focus:outline-none focus:border-[#7DAACB]"
               autoFocus
             />
             <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -257,7 +257,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate">{p.name}</p>
-                    <p className="text-xs font-bold text-[#a757ff]">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
+                    <p className="text-xs font-bold text-[#7DAACB]">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
                   </div>
                 </Link>
               ))}
@@ -285,11 +285,11 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
                 key={item.name}
                 href={item.href}
                 className={`relative py-1 shrink-0 transition-colors duration-200 ${
-                  isActive ? "text-[#a757ff]" : "text-gray-600 md:text-gray-900 hover:text-[#a757ff]"
+                  isActive ? "text-[#7DAACB]" : "text-gray-600 md:text-gray-900 hover:text-[#7DAACB]"
                 }`}
               >
                 {item.name}
-                <div className={`absolute -bottom-1 left-0 w-full h-0.5 bg-[#a757ff] transition-transform duration-300 origin-left ${
+                <div className={`absolute -bottom-1 left-0 w-full h-0.5 bg-[#7DAACB] transition-transform duration-300 origin-left ${
                   isActive ? "scale-x-100" : "scale-x-0"
                 }`} />
               </Link>

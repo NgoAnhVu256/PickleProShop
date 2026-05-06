@@ -45,7 +45,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Danh mục không tồn tại</h1>
-          <Link href="/" className="text-[#a757ff] font-bold">Quay lại trang chủ</Link>
+          <Link href="/" className="text-[#7DAACB] font-bold">Quay lại trang chủ</Link>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-6 md:mb-8">
-          <Link href="/" className="hover:text-[#a757ff]">Trang chủ</Link>
+          <Link href="/" className="hover:text-[#7DAACB]">Trang chủ</Link>
           <ChevronRight size={12} />
           <span className="text-gray-900">{category.name}</span>
         </div>

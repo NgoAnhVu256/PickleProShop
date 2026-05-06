@@ -205,12 +205,12 @@ async function LatestPostsSection() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-[#a757ff]">
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-[#7DAACB]">
                   {post.category?.name}
                 </div>
               </div>
               <div>
-                <h3 className="text-[15px] md:text-base font-bold mb-2 group-hover:text-[#a757ff] transition-colors line-clamp-2 leading-snug">
+                <h3 className="text-[15px] md:text-base font-bold mb-2 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-snug">
                   {post.title}
                 </h3>
                 <p className="text-xs md:text-sm text-gray-500 line-clamp-2 leading-relaxed font-medium">

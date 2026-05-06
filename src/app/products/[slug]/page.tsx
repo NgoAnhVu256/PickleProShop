@@ -189,7 +189,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-[#fcfcfc]">
         <Header settings={settings} />
         <div className="flex items-center justify-center py-40">
-          <Loader2 className="w-8 h-8 text-[#a757ff] animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#7DAACB] animate-spin" />
         </div>
       </div>
     );
@@ -201,7 +201,7 @@ export default function ProductDetailPage() {
         <Header settings={settings} />
         <div className="flex flex-col items-center justify-center py-40">
           <h1 className="text-2xl font-bold mb-4">Sản phẩm không tồn tại</h1>
-          <Link href="/products" className="text-[#a757ff] font-bold">← Quay lại cửa hàng</Link>
+          <Link href="/products" className="text-[#7DAACB] font-bold">← Quay lại cửa hàng</Link>
         </div>
       </div>
     );
@@ -275,11 +275,11 @@ export default function ProductDetailPage() {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-8 flex-wrap">
-          <Link href="/" className="hover:text-[#a757ff]">Trang chủ</Link>
+          <Link href="/" className="hover:text-[#7DAACB]">Trang chủ</Link>
           <ChevronRight size={12} />
-          <Link href="/products" className="hover:text-[#a757ff]">Sản phẩm</Link>
+          <Link href="/products" className="hover:text-[#7DAACB]">Sản phẩm</Link>
           <ChevronRight size={12} />
-          <Link href={`/category/${product.category.slug}`} className="hover:text-[#a757ff]">{product.category.name}</Link>
+          <Link href={`/category/${product.category.slug}`} className="hover:text-[#7DAACB]">{product.category.name}</Link>
           <ChevronRight size={12} />
           <span className="text-gray-900 line-clamp-1">{product.name}</span>
         </div>
@@ -297,7 +297,7 @@ export default function ProductDetailPage() {
                     key={i}
                     onClick={() => setMainImage(img)}
                     className={`w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all ${
-                      mainImage === img ? "border-[#a757ff] shadow-lg" : "border-gray-100 hover:border-gray-300"
+                      mainImage === img ? "border-[#7DAACB] shadow-lg" : "border-gray-100 hover:border-gray-300"
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
@@ -310,7 +310,7 @@ export default function ProductDetailPage() {
           {/* Product Info */}
           <div className="space-y-6">
             {product.brand && (
-              <span className="text-xs font-black text-[#a757ff] uppercase tracking-widest">{product.brand.name}</span>
+              <span className="text-xs font-black text-[#7DAACB] uppercase tracking-widest">{product.brand.name}</span>
             )}
             <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">{product.name}</h1>
 
@@ -326,7 +326,7 @@ export default function ProductDetailPage() {
             {colorOptions.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-bold text-gray-700">
-                  Chọn [Màu sắc]: <span className="text-[#a757ff]">{selectedColor}</span>
+                  Chọn [Màu sắc]: <span className="text-[#7DAACB]">{selectedColor}</span>
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {colorOptions.map(color => {
@@ -338,7 +338,7 @@ export default function ProductDetailPage() {
                         onClick={() => handleColorSelect(color)}
                         className={`relative flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all min-w-[80px] ${
                           isSelected
-                            ? "border-[#a757ff] bg-[#f5f0ff] shadow-md"
+                            ? "border-[#7DAACB] bg-[#FFFDEB] shadow-md"
                             : "border-gray-200 bg-white hover:border-gray-400"
                         }`}
                       >
@@ -349,7 +349,7 @@ export default function ProductDetailPage() {
                         )}
                         <span className="text-xs font-semibold text-gray-700">{color}</span>
                         {isSelected && (
-                          <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#a757ff] rounded-full flex items-center justify-center">
+                          <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#7DAACB] rounded-full flex items-center justify-center">
                             <Check size={12} className="text-white" />
                           </div>
                         )}
@@ -364,7 +364,7 @@ export default function ProductDetailPage() {
             {sizeOptions.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-bold text-gray-700">
-                  Chọn [Size]: <span className="text-[#a757ff]">{selectedSize}</span>
+                  Chọn [Size]: <span className="text-[#7DAACB]">{selectedSize}</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {sizeOptions.map(size => {
@@ -378,7 +378,7 @@ export default function ProductDetailPage() {
                         disabled={outOfStock}
                         className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
                           isSelected
-                            ? "border-[#a757ff] bg-[#a757ff]/5 text-[#a757ff]"
+                            ? "border-[#7DAACB] bg-[#7DAACB]/5 text-[#7DAACB]"
                             : outOfStock
                               ? "border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed line-through"
                               : "border-gray-200 text-gray-700 hover:border-gray-400"
@@ -412,7 +412,7 @@ export default function ProductDetailPage() {
                         disabled={v.stock === 0}
                         className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
                           isSelected
-                            ? "border-[#a757ff] bg-[#a757ff]/5 text-[#a757ff]"
+                            ? "border-[#7DAACB] bg-[#7DAACB]/5 text-[#7DAACB]"
                             : v.stock === 0
                               ? "border-gray-100 text-gray-300 cursor-not-allowed"
                               : "border-gray-200 text-gray-700 hover:border-gray-400"
@@ -446,7 +446,7 @@ export default function ProductDetailPage() {
             <div className="flex gap-3 pt-2">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 py-4 bg-gradient-to-r from-[#4f46e5] to-[#a757ff] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#a757ff]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
                 <ShoppingCart size={18} />
                 THÊM VÀO GIỎ HÀNG
@@ -461,7 +461,7 @@ export default function ProductDetailPage() {
                 { icon: Shield, label: "Bảo hành tốt nhất" },
               ].map(({ icon: Icon, label }) => (
                 <div key={label} className="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-xl text-center">
-                  <Icon size={18} className="text-[#a757ff]" />
+                  <Icon size={18} className="text-[#7DAACB]" />
                   <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{label}</span>
                 </div>
               ))}
@@ -493,7 +493,7 @@ export default function ProductDetailPage() {
                         <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-md">Sale</div>
                       )}
                     </div>
-                    <h3 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-[#a757ff]">{p.name}</h3>
+                    <h3 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-[#7DAACB]">{p.name}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-sm font-black">{price.toLocaleString()}₫</span>
                       {hasSale && <span className="text-xs text-gray-400 line-through">{p.basePrice.toLocaleString()}₫</span>}

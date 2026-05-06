@@ -91,7 +91,7 @@ export default function CheckoutPage() {
           <ShoppingBag size={48} className="text-gray-200 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Vui lòng đăng nhập</h1>
           <p className="text-gray-500 mb-6">Bạn cần đăng nhập để tiếp tục đặt hàng.</p>
-          <Link href="/login?callbackUrl=/checkout" className="inline-block bg-[#a757ff] text-white px-8 py-3 rounded-xl font-bold">
+          <Link href="/login?callbackUrl=/checkout" className="inline-block bg-[#7DAACB] text-white px-8 py-3 rounded-xl font-bold">
             Đăng nhập
           </Link>
         </div>
@@ -107,7 +107,7 @@ export default function CheckoutPage() {
           <ShoppingBag size={48} className="text-gray-200 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Giỏ hàng trống</h1>
           <p className="text-gray-500 mb-6">Hãy thêm sản phẩm trước khi đặt hàng.</p>
-          <Link href="/products" className="inline-block bg-[#a757ff] text-white px-8 py-3 rounded-xl font-bold">
+          <Link href="/products" className="inline-block bg-[#7DAACB] text-white px-8 py-3 rounded-xl font-bold">
             Mua sắm
           </Link>
         </div>
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/products" className="bg-[#a757ff] text-white px-8 py-3 rounded-xl font-bold">
+            <Link href="/products" className="bg-[#7DAACB] text-white px-8 py-3 rounded-xl font-bold">
               Tiếp tục mua sắm
             </Link>
             <Link href="/" className="border border-gray-200 px-8 py-3 rounded-xl font-bold text-gray-700">
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-10">
-        <Link href="/products" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#a757ff] mb-8">
+        <Link href="/products" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#7DAACB] mb-8">
           <ArrowLeft size={16} /> Tiếp tục mua sắm
         </Link>
 
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3 space-y-6">
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
               <h2 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
-                <MapPin size={18} className="text-[#a757ff]" />
+                <MapPin size={18} className="text-[#7DAACB]" />
                 Thông tin giao hàng
               </h2>
 
@@ -317,7 +317,7 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="0901234567"
-                      className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#a757ff] focus:ring-2 focus:ring-[#a757ff]/10 outline-none transition-all"
+                      className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all"
                       required
                     />
                   </div>
@@ -338,7 +338,7 @@ export default function CheckoutPage() {
                         setDistrict("");
                         setWard("");
                       }}
-                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#a757ff] focus:ring-2 focus:ring-[#a757ff]/10 outline-none transition-all appearance-none cursor-pointer"
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all appearance-none cursor-pointer"
                       required
                     >
                       <option value="" disabled>Chọn Tỉnh/Thành phố</option>
@@ -354,7 +354,7 @@ export default function CheckoutPage() {
                         setWard("");
                       }}
                       disabled={!province || !getMatchedProvince(province)}
-                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#a757ff] focus:ring-2 focus:ring-[#a757ff]/10 outline-none transition-all appearance-none disabled:bg-gray-50 cursor-pointer"
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all appearance-none disabled:bg-gray-50 cursor-pointer"
                       required
                     >
                       <option value="" disabled>Chọn Quận/Huyện</option>
@@ -367,7 +367,7 @@ export default function CheckoutPage() {
                       value={ward}
                       onChange={(e) => setWard(e.target.value)}
                       disabled={!district || !getMatchedDistrict(getMatchedProvince(province), district)}
-                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#a757ff] focus:ring-2 focus:ring-[#a757ff]/10 outline-none transition-all appearance-none disabled:bg-gray-50 cursor-pointer"
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all appearance-none disabled:bg-gray-50 cursor-pointer"
                       required
                     >
                       <option value="" disabled>Chọn Phường/Xã</option>
@@ -384,7 +384,7 @@ export default function CheckoutPage() {
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="Số nhà, tên đường chi tiết..."
                       rows={2}
-                      className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#a757ff] focus:ring-2 focus:ring-[#a757ff]/10 outline-none transition-all resize-none"
+                      className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all resize-none"
                       required
                     />
                   </div>
@@ -399,7 +399,7 @@ export default function CheckoutPage() {
                       onChange={(e) => setNote(e.target.value)}
                       placeholder="Ghi chú cho đơn hàng..."
                       rows={2}
-                      className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#a757ff] focus:ring-2 focus:ring-[#a757ff]/10 outline-none transition-all resize-none"
+                      className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -410,7 +410,7 @@ export default function CheckoutPage() {
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mt-6">
               <h2 className="text-lg font-bold text-gray-900 mb-5">Phương thức thanh toán</h2>
               <div className="space-y-3">
-                <label className={`block border rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-[#a757ff] bg-[#a757ff]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                <label className={`block border rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-[#7DAACB] bg-[#7DAACB]/5' : 'border-gray-200 hover:border-gray-300'}`}>
                   <div className="flex items-center gap-3">
                     <input 
                       type="radio" 
@@ -418,7 +418,7 @@ export default function CheckoutPage() {
                       value="COD" 
                       checked={paymentMethod === 'COD'}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4 text-[#a757ff] border-gray-300 focus:ring-[#a757ff]"
+                      className="w-4 h-4 text-[#7DAACB] border-gray-300 focus:ring-[#7DAACB]"
                     />
                     <div className="flex-1">
                       <span className="block text-sm font-bold text-gray-900">Thanh toán khi nhận hàng (COD)</span>
@@ -427,7 +427,7 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
-                <label className={`block border rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'BANK' ? 'border-[#a757ff] bg-[#a757ff]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                <label className={`block border rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'BANK' ? 'border-[#7DAACB] bg-[#7DAACB]/5' : 'border-gray-200 hover:border-gray-300'}`}>
                   <div className="flex items-center gap-3">
                     <input 
                       type="radio" 
@@ -435,7 +435,7 @@ export default function CheckoutPage() {
                       value="BANK" 
                       checked={paymentMethod === 'BANK'}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4 text-[#a757ff] border-gray-300 focus:ring-[#a757ff]"
+                      className="w-4 h-4 text-[#7DAACB] border-gray-300 focus:ring-[#7DAACB]"
                     />
                     <div className="flex-1">
                       <span className="block text-sm font-bold text-gray-900">Chuyển khoản VietQR Tự Động</span>
@@ -476,7 +476,7 @@ export default function CheckoutPage() {
                     onChange={(e) => setCouponCode(e.target.value)}
                     disabled={!!appliedCoupon || isCheckingCoupon}
                     placeholder="Nhập mã..."
-                    className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-[#a757ff] focus:ring-1 focus:ring-[#a757ff] disabled:bg-gray-50 disabled:text-gray-400 uppercase outline-none"
+                    className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-[#7DAACB] focus:ring-1 focus:ring-[#7DAACB] disabled:bg-gray-50 disabled:text-gray-400 uppercase outline-none"
                   />
                   {appliedCoupon ? (
                     <button onClick={handleRemoveCoupon} className="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors">
@@ -511,14 +511,14 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-lg font-black pt-3 border-t border-gray-100">
                   <span>Tổng cộng</span>
-                  <span className="text-[#a757ff]">{finalOrderTotal.toLocaleString()}₫</span>
+                  <span className="text-[#7DAACB]">{finalOrderTotal.toLocaleString()}₫</span>
                 </div>
               </div>
 
               <button
                 onClick={handleSubmitOrder}
                 disabled={isSubmitting}
-                className="w-full mt-6 py-4 bg-gradient-to-r from-[#4f46e5] to-[#a757ff] text-white rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full mt-6 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
