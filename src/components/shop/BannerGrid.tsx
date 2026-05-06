@@ -65,6 +65,8 @@ function AutoSlider({ items = [], interval }: { items: any[]; interval: number }
           <img
             src={item.image}
             alt={item.title || 'Banner'}
+            width={400}
+            height={300}
             className="w-full h-full object-cover"
             loading="lazy"
             decoding="async"
@@ -122,8 +124,12 @@ function HeroSlider({ items = [] }: { items: any[] }) {
           <img
             src={item.image}
             alt={item.title || 'Hero Banner'}
+            width={800}
+            height={400}
             className="w-full h-full object-cover"
             fetchPriority={i === 0 ? "high" : "auto"}
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding={i === 0 ? "sync" : "async"}
           />
         );
 

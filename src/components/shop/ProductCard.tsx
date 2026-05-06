@@ -11,6 +11,8 @@ export default function ProductCard({ product }: { product: any }) {
         <img 
           src={product.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
           alt={product.name} 
+          width={400}
+          height={500}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
           loading="lazy"
           decoding="async"

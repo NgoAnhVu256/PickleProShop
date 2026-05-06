@@ -49,7 +49,11 @@ export default function PromotionCarousel({ promotions = [] }: { promotions: any
             <img 
               src={item.image} 
               alt={item.title || "Promotion"} 
+              width={190}
+              height={304}
               className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+              loading="lazy"
+              decoding="async"
             />
             
             {/* Overlay Gradient as shown in screenshot */}

@@ -148,7 +148,7 @@ async function CategorySection() {
           {categories.map((cat) => (
             <Link key={cat.id} href={`/category/${cat.slug}`} className="flex flex-col items-center gap-4 group w-[130px] md:w-[160px]">
               <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100 group-hover:shadow-md transition-shadow">
-                <img src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                <img src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} width={400} height={400} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
               </div>
               <span className="text-sm font-semibold text-gray-800">{cat.name}</span>
             </Link>
@@ -202,6 +202,8 @@ async function LatestPostsSection() {
                 <img
                   src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=600'}
                   alt={post.title}
+                  width={600}
+                  height={338}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                   decoding="async"
@@ -241,8 +243,11 @@ async function BottomBannerSection() {
           <img
             src={b.image}
             alt={b.title}
+            width={1200}
+            height={400}
             className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
             loading="lazy"
+            decoding="async"
           />
         </Link>
       ))}
@@ -260,8 +265,15 @@ export default async function HomePage() {
     getCachedPromotions(),
   ]);
 
+  // Preload the LCP image (first hero banner) so browser fetches it immediately
+  const lcpImage = banners?.HERO?.[0]?.image;
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Preload LCP hero banner image */}
+      {lcpImage && (
+        <link rel="preload" as="image" href={lcpImage} fetchPriority="high" />
+      )}
       {/* ABOVE THE FOLD — renders immediately */}
       <TopBanner banners={banners?.FIXED_TOP} />
       <HomeHeader settings={settings} />

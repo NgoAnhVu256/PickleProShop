@@ -46,8 +46,11 @@ export default async function BlogListPage() {
                   <img 
                     src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=800'} 
                     alt={post.title} 
+                    width={800}
+                    height={500}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#7DAACB] shadow-sm">
                     {post.category?.name}
