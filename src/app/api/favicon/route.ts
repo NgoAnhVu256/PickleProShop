@@ -12,9 +12,11 @@ export const dynamic = "force-dynamic";
  */
 export async function GET() {
   try {
-    const setting = await prisma.setting.findUnique({
-      where: { key: "store_favicon" },
-    });
+    // Prefer store_logo for consistency with the site header logo.
+    // Fall back to store_favicon if store_logo is not set.
+    const logoSetting = await prisma.setting.findUnique({ where: { key: "store_logo" } });
+    const faviconSetting = await prisma.setting.findUnique({ where: { key: "store_favicon" } });
+    const setting = logoSetting?.value ? logoSetting : faviconSetting;
 
     let faviconPath: string;
 
