@@ -283,7 +283,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
             { name: "Vợt Pickleball", href: "/category/vot-pickleball" },
             { name: "Giày Pickleball", href: "/category/giay-pickleball" },
             { name: "Trang Phục", href: "/category/trang-phuc" },
-            { name: "Balo & Túi", href: "/category/balo-tui" },
+            { name: "Balo & Túi", href: "/category/balo-tui-pickleball" },
             { name: "Phụ kiện", href: "/category/phu-kien" },
             { name: "Tin tức", href: "/blog" },
           ].map((item) => {
