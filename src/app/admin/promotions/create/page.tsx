@@ -120,7 +120,7 @@ export default function CreatePromotionPage() {
       const data = await res.json();
       if (data.success) {
         toast.success("Tạo chương trình thành công!");
-        // router.push("/admin/promotions"); // we don't have list page yet, let's just show success
+        router.push("/admin/promotions");
       } else {
         toast.error(data.error);
       }
