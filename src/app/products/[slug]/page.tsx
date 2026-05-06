@@ -427,12 +427,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Stock info */}
-            {matchedVariant && (
-              <p className="text-xs text-gray-400 font-medium">
-                SKU: {matchedVariant.sku} • Tồn kho: {matchedVariant.stock}
-              </p>
-            )}
 
             {/* Quantity */}
             <div className="flex items-center gap-4">
