@@ -276,7 +276,7 @@ export default function ProductDetailPage() {
     if (metaDesc) metaDesc.setAttribute("content", product.description?.slice(0, 160) || `Mua ${product.name} chính hãng tại PicklePro`);
   }, [product]);
 
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
 
   // JSON-LD Product Schema for Google Rich Snippets
   const productJsonLd = product ? {
