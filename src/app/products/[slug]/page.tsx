@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight, ShoppingCart, Minus, Plus, Package, Truck, Shield, Loader2 } from "lucide-react";
+import { ChevronRight, ShoppingCart, Minus, Plus, Package, Truck, Shield, Loader2, Check } from "lucide-react";
 import Header from "@/components/shop/Header";
 import { useCart } from "@/components/shop/CartContext";
 import toast from "react-hot-toast";
@@ -45,7 +45,8 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedVariant, setSelectedVariant] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState<string>("");
   const [settings, setSettings] = useState<any>(null);
@@ -67,14 +68,121 @@ export default function ProductDetailPage() {
         if (data.success) {
           setProduct(data.data);
           setMainImage(data.data.thumbnail || data.data.images?.[0] || "");
-          if (data.data.variants.length > 0) {
-            setSelectedVariant(data.data.variants[0].id);
-          }
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [slug]);
+
+  // ─── Extract color and size options from variants ───
+  const { colorOptions, sizeOptions, colorImageMap } = useMemo(() => {
+    if (!product || product.variants.length === 0) {
+      return { colorOptions: [] as string[], sizeOptions: [] as string[], colorImageMap: {} as Record<string, string> };
+    }
+
+    const colors = new Set<string>();
+    const sizes = new Set<string>();
+    const imgMap: Record<string, string> = {};
+
+    product.variants.forEach(v => {
+      v.attrValues.forEach(av => {
+        const attrName = av.attribute.name.toLowerCase();
+        if (attrName === "color" || attrName === "mau_sac" || attrName === "màu sắc" || attrName.includes("color") || attrName.includes("mau")) {
+          colors.add(av.value);
+          // Map the first variant image of this color
+          if (!imgMap[av.value] && v.images?.length > 0) {
+            imgMap[av.value] = v.images[0];
+          }
+        }
+        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich")) {
+          sizes.add(av.value);
+        }
+      });
+    });
+
+    return {
+      colorOptions: Array.from(colors),
+      sizeOptions: Array.from(sizes),
+      colorImageMap: imgMap,
+    };
+  }, [product]);
+
+  // Auto-select first color/size when product loads
+  useEffect(() => {
+    if (colorOptions.length > 0 && !selectedColor) {
+      setSelectedColor(colorOptions[0]);
+      // Update main image to match
+      if (colorImageMap[colorOptions[0]]) {
+        setMainImage(colorImageMap[colorOptions[0]]);
+      }
+    }
+    if (sizeOptions.length > 0 && !selectedSize) {
+      setSelectedSize(sizeOptions[0]);
+    }
+  }, [colorOptions, sizeOptions, colorImageMap, selectedColor, selectedSize]);
+
+  // Find matching variant based on selected color + size
+  const matchedVariant = useMemo(() => {
+    if (!product) return null;
+    
+    // If no color/size options, check if there's only a flat variant list
+    if (colorOptions.length === 0 && sizeOptions.length === 0) {
+      return product.variants.length > 0 ? product.variants[0] : null;
+    }
+
+    return product.variants.find(v => {
+      let colorMatch = true;
+      let sizeMatch = true;
+
+      v.attrValues.forEach(av => {
+        const attrName = av.attribute.name.toLowerCase();
+        if (attrName === "color" || attrName === "mau_sac" || attrName === "màu sắc" || attrName.includes("color") || attrName.includes("mau")) {
+          colorMatch = av.value === selectedColor;
+        }
+        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich")) {
+          sizeMatch = av.value === selectedSize;
+        }
+      });
+
+      return colorMatch && sizeMatch;
+    }) || null;
+  }, [product, selectedColor, selectedSize, colorOptions, sizeOptions]);
+
+  // Handle color selection
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
+    // Switch main image to match selected color
+    if (colorImageMap[color]) {
+      setMainImage(colorImageMap[color]);
+    }
+  };
+
+  // Build image gallery for current color
+  const allImages = useMemo(() => {
+    if (!product) return [];
+    
+    const imgs: string[] = [];
+
+    // If a color is selected, prioritize that color's variant images
+    if (selectedColor) {
+      const colorVariants = product.variants.filter(v =>
+        v.attrValues.some(av => {
+          const n = av.attribute.name.toLowerCase();
+          return (n === "color" || n === "mau_sac" || n === "màu sắc" || n.includes("color") || n.includes("mau")) && av.value === selectedColor;
+        })
+      );
+      colorVariants.forEach(v => {
+        if (v.images) imgs.push(...v.images);
+      });
+    }
+
+    // Fallback: product thumbnail + gallery
+    if (product.thumbnail && !imgs.includes(product.thumbnail)) imgs.unshift(product.thumbnail);
+    product.images.forEach(img => { if (!imgs.includes(img)) imgs.push(img); });
+    product.gallery.forEach(g => { if (!imgs.includes(g.url)) imgs.push(g.url); });
+
+    return imgs.filter(Boolean);
+  }, [product, selectedColor]);
 
   if (loading) {
     return (
@@ -99,43 +207,36 @@ export default function ProductDetailPage() {
     );
   }
 
-  const variant = product.variants.find(v => v.id === selectedVariant);
-  const displayPrice = variant?.price || product.salePrice || product.basePrice;
-  const allImages = [
-    product.thumbnail,
-    ...product.images,
-    ...product.gallery.map(g => g.url),
-    ...(variant?.images || []),
-  ].filter(Boolean) as string[];
+  const hasOptionMatrix = colorOptions.length > 0 || sizeOptions.length > 0;
+  const displayPrice = matchedVariant?.price || product.salePrice || product.basePrice;
 
   const handleAddToCart = () => {
-    if (product.variants.length > 0 && !variant) {
-      toast.error("Vui lòng chọn phân loại sản phẩm");
+    if (hasOptionMatrix && !matchedVariant) {
+      toast.error("Vui lòng chọn đầy đủ phân loại sản phẩm");
       return;
     }
 
-    if (variant) {
-      // Product WITH variants
-      if (variant.stock < quantity) {
+    if (matchedVariant) {
+      if (matchedVariant.stock < quantity) {
         toast.error("Số lượng vượt quá tồn kho");
         return;
       }
 
-      const variantLabel = variant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || variant.sku;
+      const variantLabel = matchedVariant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || matchedVariant.sku;
 
       addToCart({
-        variantId: variant.id,
+        variantId: matchedVariant.id,
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
-        variantSku: variant.sku,
+        variantSku: matchedVariant.sku,
         variantLabel,
-        price: variant.price,
+        price: matchedVariant.price,
         quantity,
-        image: variant.images?.[0] || product.thumbnail || "",
+        image: matchedVariant.images?.[0] || product.thumbnail || "",
       });
     } else {
-      // Product WITHOUT variants — use base/sale price
+      // Product WITHOUT variants
       addToCart({
         variantId: product.id,
         productId: product.id,
@@ -150,6 +251,21 @@ export default function ProductDetailPage() {
     }
 
     toast.success("Đã thêm vào giỏ hàng! 🛒");
+  };
+
+  // Check variant availability for a specific size+color combo
+  const getVariantStock = (color: string, size: string) => {
+    const v = product.variants.find(v => {
+      let cMatch = !color;
+      let sMatch = !size;
+      v.attrValues.forEach(av => {
+        const n = av.attribute.name.toLowerCase();
+        if ((n === "color" || n === "mau_sac" || n === "màu sắc" || n.includes("color") || n.includes("mau")) && av.value === color) cMatch = true;
+        if ((n === "size" || n === "kich_thuoc" || n === "kích thước" || n.includes("size") || n.includes("kich")) && av.value === size) sMatch = true;
+      });
+      return cMatch && sMatch;
+    });
+    return v?.stock ?? 0;
   };
 
   return (
@@ -176,7 +292,7 @@ export default function ProductDetailPage() {
             </div>
             {allImages.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
-                {allImages.slice(0, 6).map((img, i) => (
+                {allImages.slice(0, 8).map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setMainImage(img)}
@@ -206,19 +322,91 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Variants */}
-            {product.variants.length > 0 && (
+            {/* ─── COLOR SELECTOR (with images) ─── */}
+            {colorOptions.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-gray-700">
+                  Chọn [Màu sắc]: <span className="text-[#a757ff]">{selectedColor}</span>
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {colorOptions.map(color => {
+                    const colorImg = colorImageMap[color];
+                    const isSelected = color === selectedColor;
+                    return (
+                      <button
+                        key={color}
+                        onClick={() => handleColorSelect(color)}
+                        className={`relative flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all min-w-[80px] ${
+                          isSelected
+                            ? "border-[#a757ff] bg-[#f5f0ff] shadow-md"
+                            : "border-gray-200 bg-white hover:border-gray-400"
+                        }`}
+                      >
+                        {colorImg && (
+                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-50">
+                            <img src={colorImg} alt={color} className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                        <span className="text-xs font-semibold text-gray-700">{color}</span>
+                        {isSelected && (
+                          <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#a757ff] rounded-full flex items-center justify-center">
+                            <Check size={12} className="text-white" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ─── SIZE SELECTOR ─── */}
+            {sizeOptions.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-gray-700">
+                  Chọn [Size]: <span className="text-[#a757ff]">{selectedSize}</span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {sizeOptions.map(size => {
+                    const isSelected = size === selectedSize;
+                    const stock = selectedColor ? getVariantStock(selectedColor, size) : 1;
+                    const outOfStock = stock === 0;
+                    return (
+                      <button
+                        key={size}
+                        onClick={() => !outOfStock && setSelectedSize(size)}
+                        disabled={outOfStock}
+                        className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
+                          isSelected
+                            ? "border-[#a757ff] bg-[#a757ff]/5 text-[#a757ff]"
+                            : outOfStock
+                              ? "border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed line-through"
+                              : "border-gray-200 text-gray-700 hover:border-gray-400"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ─── FLAT VARIANT LIST (no color/size attributes) ─── */}
+            {!hasOptionMatrix && product.variants.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-bold text-gray-700">Phân loại:</p>
                 <div className="flex flex-wrap gap-2">
                   {product.variants.map(v => {
                     const label = v.attrValues.map(a => a.value).join(" / ") || v.sku;
-                    const isSelected = v.id === selectedVariant;
+                    const isSelected = matchedVariant?.id === v.id;
                     return (
                       <button
                         key={v.id}
                         onClick={() => {
-                          setSelectedVariant(v.id);
+                          // For flat list, set as matched directly — we'll handle via selectedColor/Size being empty
+                          setSelectedColor("");
+                          setSelectedSize("");
                           if (v.images?.length > 0) setMainImage(v.images[0]);
                         }}
                         disabled={v.stock === 0}
@@ -236,12 +424,14 @@ export default function ProductDetailPage() {
                     );
                   })}
                 </div>
-                {variant && (
-                  <p className="text-xs text-gray-400 font-medium">
-                    SKU: {variant.sku} • Tồn kho: {variant.stock}
-                  </p>
-                )}
               </div>
+            )}
+
+            {/* Stock info */}
+            {matchedVariant && (
+              <p className="text-xs text-gray-400 font-medium">
+                SKU: {matchedVariant.sku} • Tồn kho: {matchedVariant.stock}
+              </p>
             )}
 
             {/* Quantity */}
