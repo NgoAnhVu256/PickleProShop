@@ -94,7 +94,7 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between gap-4 md:gap-8">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0">
-          <img src={logo || '/favicon.ico'} alt={siteName} className="h-8 md:h-10 w-auto object-contain" />
+          <img src={logo || '/api/favicon'} alt={siteName} className="h-8 md:h-10 w-auto object-contain" />
           <span className="font-extrabold text-base md:text-xl tracking-tighter">{siteName}</span>
         </Link>
 
@@ -267,25 +267,25 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
       )}
 
       {/* CATEGORY NAV */}
-      <nav className="bg-[#1a1a1a]">
+      <nav className="bg-[#2b2b2b]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-center gap-2 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
           {/* Home icon */}
           <Link
             href="/"
             className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
-              pathname === "/" ? "bg-[#7DAACB] text-white" : "bg-white/10 text-white hover:bg-white/20"
+              pathname === "/" ? "bg-[#E8DBB3] text-[#2b2b2b]" : "bg-white/10 text-white hover:bg-white/20"
             }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </Link>
           {[
-            { name: "Sản phẩm", href: "/products", color: "#7DAACB" },
-            { name: "Vợt Pickleball", href: "/category/vot-pickleball", color: "#E8DBB3" },
-            { name: "Giày Pickleball", href: "/category/giay-pickleball", color: "#FFFDEB" },
-            { name: "Trang Phục", href: "/category/trang-phuc", color: "#7DAACB" },
-            { name: "Balo & Túi", href: "/category/balo-tui", color: "#E8DBB3" },
-            { name: "Phụ kiện", href: "/category/phu-kien", color: "#CE2626" },
-            { name: "Tin tức", href: "/blog", color: "#FFFDEB" },
+            { name: "Sản phẩm", href: "/products" },
+            { name: "Vợt Pickleball", href: "/category/vot-pickleball" },
+            { name: "Giày Pickleball", href: "/category/giay-pickleball" },
+            { name: "Trang Phục", href: "/category/trang-phuc" },
+            { name: "Balo & Túi", href: "/category/balo-tui" },
+            { name: "Phụ kiện", href: "/category/phu-kien" },
+            { name: "Tin tức", href: "/blog" },
           ].map((item) => {
             const isActive = pathname.startsWith(item.href);
             return (
@@ -300,11 +300,9 @@ export default function Header({ settings, cartCount = 0, onCartClick }: { setti
                   fontWeight: 700,
                   letterSpacing: "0.02em",
                   textTransform: "uppercase" as const,
-                  background: isActive ? item.color : "rgba(255,255,255,0.08)",
-                  color: isActive
-                    ? (item.color === "#CE2626" || item.color === "#7DAACB" ? "#fff" : "#1a1a1a")
-                    : "rgba(255,255,255,0.7)",
-                  border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
+                  background: isActive ? "#E8DBB3" : "transparent",
+                  color: isActive ? "#2b2b2b" : "rgba(255,255,255,0.75)",
+                  border: isActive ? "none" : "1px solid rgba(255,255,255,0.12)",
                 }}
               >
                 {item.name}
