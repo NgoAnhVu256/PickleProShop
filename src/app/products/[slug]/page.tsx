@@ -183,6 +183,15 @@ export default function ProductDetailPage() {
     return imgs; // No hard limit so all variant images show
   }, [product]);
 
+  // ─── Dynamic SEO: title + JSON-LD structured data ───
+  useEffect(() => {
+    if (!product) return;
+    document.title = `${product.name} | PicklePro`;
+    // Meta description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", product.description?.slice(0, 160) || `Mua ${product.name} chính hãng tại PicklePro`);
+  }, [product]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fcfcfc]">
@@ -267,14 +276,6 @@ export default function ProductDetailPage() {
     return v?.stock ?? 0;
   };
 
-  // ─── Dynamic SEO: title + JSON-LD structured data ───
-  useEffect(() => {
-    if (!product) return;
-    document.title = `${product.name} | PicklePro`;
-    // Meta description
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute("content", product.description?.slice(0, 160) || `Mua ${product.name} chính hãng tại PicklePro`);
-  }, [product]);
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
 
