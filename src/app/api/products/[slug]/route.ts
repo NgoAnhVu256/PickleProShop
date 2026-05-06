@@ -12,7 +12,31 @@ export async function GET(
     const product = await prisma.product.findUnique({
       where: { slug },
       include: {
-        category: { select: { id: true, name: true, slug: true } },
+        category: { 
+          select: { 
+            id: true, 
+            name: true, 
+            slug: true,
+            promotionConditions: {
+              include: {
+                promotion: {
+                  include: {
+                    rewards: {
+                      include: {
+                        productVariant: {
+                          include: {
+                            product: { select: { id: true, name: true, slug: true, thumbnail: true } },
+                            attrValues: { include: { attribute: { select: { name: true, label: true } } } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } 
+        },
         brand: { select: { id: true, name: true, slug: true, logo: true } },
         variants: {
           where: { isActive: true },
@@ -22,6 +46,24 @@ export async function GET(
                 attribute: { select: { name: true, label: true } },
               },
             },
+            promotionConditions: {
+              include: {
+                promotion: {
+                  include: {
+                    rewards: {
+                      include: {
+                        productVariant: {
+                          include: {
+                            product: { select: { id: true, name: true, slug: true, thumbnail: true } },
+                            attrValues: { include: { attribute: { select: { name: true, label: true } } } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           orderBy: { price: "asc" },
         },

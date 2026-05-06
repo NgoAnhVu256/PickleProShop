@@ -107,6 +107,21 @@ export default function AdminPromotionsPage() {
     transition: "all 0.2s",
   });
 
+  const toggleCampaignActive = async (c: any) => {
+    try {
+      const res = await fetch(`/api/admin/promotions/${c.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isActive: !c.isActive }) });
+      const data = await res.json();
+      if (data.success) { toast.success(c.isActive ? "Đã tạm dừng" : "Đã kích hoạt"); fetchCampaigns(); }
+    } catch { toast.error("Lỗi cập nhật"); }
+  };
+
+  const handleDeleteCampaign = async (id: string) => {
+    const ok = await confirm({ title: "Xóa chiến dịch", message: "Bạn có chắc muốn xóa chiến dịch này không?", confirmText: "Xóa", variant: "danger" });
+    if (!ok) return;
+    try { const res = await fetch(`/api/admin/promotions/${id}`, { method: "DELETE" }); const data = await res.json(); if (data.success) { toast.success("Đã xóa!"); fetchCampaigns(); } }
+    catch { toast.error("Lỗi xóa chiến dịch"); }
+  };
+
   return (
     <div className="fade-in">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
@@ -257,6 +272,7 @@ export default function AdminPromotionsPage() {
                     <th style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Điều kiện</th>
                     <th style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Quà tặng</th>
                     <th style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Trạng thái</th>
+                    <th style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -279,6 +295,13 @@ export default function AdminPromotionsPage() {
                       <td style={{ padding: "16px 20px", textAlign: "center" }}><span style={{ fontWeight: 600, color: "#3b82f6" }}>{p.conditions?.length || 0}</span></td>
                       <td style={{ padding: "16px 20px", textAlign: "center" }}><span style={{ fontWeight: 600, color: "#ec4899" }}>{p.rewards?.length || 0}</span></td>
                       <td style={{ padding: "16px 20px", textAlign: "center" }}>{p.isActive ? <span style={{ padding: "4px 10px", borderRadius: 999, background: "#dcfce7", color: "#166534", fontSize: 11, fontWeight: 700 }}>Đang chạy</span> : <span style={{ padding: "4px 10px", borderRadius: 999, background: "#f1f5f9", color: "#64748b", fontSize: 11, fontWeight: 700 }}>Tạm dừng</span>}</td>
+                      <td style={{ padding: "16px 20px", textAlign: "center" }}>
+                        <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+                          <button onClick={() => toggleCampaignActive(p)} style={actBtn} title={p.isActive ? "Tạm dừng" : "Kích hoạt"}>{p.isActive ? <EyeOff size={15} color="#8a98ac" /> : <Eye size={15} color="#58d68d" />}</button>
+                          <Link href={`/admin/promotions/${p.id}`} style={{ ...actBtn, textDecoration: 'none' }} title="Sửa/Chi tiết"><Pencil size={15} color="#3498db" /></Link>
+                          <button onClick={() => handleDeleteCampaign(p.id)} style={{ ...actBtn, background: "rgba(239,68,68,0.08)" }} title="Xóa"><Trash2 size={15} color="#ef4444" /></button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

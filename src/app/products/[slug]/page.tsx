@@ -17,7 +17,28 @@ interface ProductDetail {
   images: string[];
   basePrice: number;
   salePrice: number | null;
-  category: { id: string; name: string; slug: string };
+  category: { 
+    id: string; 
+    name: string; 
+    slug: string;
+    promotionConditions?: {
+      promotion: {
+        id: string;
+        name: string;
+        rewards: {
+          id: string;
+          quantity: number;
+          promoPrice: number;
+          productVariant: {
+            sku: string;
+            price: number;
+            product: { id: string; name: string; slug: string; thumbnail: string | null };
+            attrValues: { value: string; attribute: { name: string; label: string } }[];
+          };
+        }[];
+      };
+    }[];
+  };
   brand: { id: string; name: string; slug: string; logo: string | null } | null;
   variants: {
     id: string;
@@ -26,6 +47,23 @@ interface ProductDetail {
     stock: number;
     images: string[];
     attrValues: { value: string; attribute: { name: string; label: string } }[];
+    promotionConditions?: {
+      promotion: {
+        id: string;
+        name: string;
+        rewards: {
+          id: string;
+          quantity: number;
+          promoPrice: number;
+          productVariant: {
+            sku: string;
+            price: number;
+            product: { id: string; name: string; slug: string; thumbnail: string | null };
+            attrValues: { value: string; attribute: { name: string; label: string } }[];
+          };
+        }[];
+      };
+    }[];
   }[];
   gallery: { id: string; url: string; alt: string | null }[];
   relatedProducts: {
@@ -476,6 +514,60 @@ export default function ProductDetailPage() {
               </div>
             )}
 
+            {/* ─── PROMOTIONS & GIFTS ─── */}
+            {(() => {
+              const variantPromos = matchedVariant?.promotionConditions || [];
+              const categoryPromos = product.category.promotionConditions || [];
+              
+              const allPromoMap = new Map();
+              [...variantPromos, ...categoryPromos].forEach(pc => {
+                if (pc.promotion && !allPromoMap.has(pc.promotion.id)) {
+                  allPromoMap.set(pc.promotion.id, pc);
+                }
+              });
+              
+              const allPromotions = Array.from(allPromoMap.values());
+
+              if (allPromotions.length === 0) return null;
+
+              return (
+                <div className="space-y-3 p-4 bg-[#7DAACB]/5 border border-[#7DAACB]/20 rounded-2xl mt-4">
+                  <div className="flex items-center gap-2 text-[#5a93b5] font-black text-sm uppercase">
+                    <Package size={16} /> Quà Tặng Kèm
+                  </div>
+                  {allPromotions.map(pc => (
+                    <div key={pc.promotion.id} className="space-y-2">
+                      <div className="text-xs font-bold text-[#5a93b5] bg-white px-2 py-1 rounded inline-block border border-[#7DAACB]/20">
+                        🎁 {pc.promotion.name}
+                      </div>
+                      {pc.promotion.rewards.map((r: any) => {
+                      const variantName = r.productVariant.attrValues.map(a => a.value).join(" / ");
+                      const fullName = variantName ? `${r.productVariant.product.name} - ${variantName}` : r.productVariant.product.name;
+                      return (
+                        <div key={r.id} className="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-50">
+                            <img src={r.productVariant.product.thumbnail || 'https://placehold.co/100x100/f8fafc/94a3b8?text=Gift'} alt={fullName} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-gray-900 truncate">{fullName}</p>
+                            <p className="text-[10px] font-bold text-gray-400 mt-0.5">Số lượng: <span className="text-[#7DAACB]">x{r.quantity}</span></p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            {r.promoPrice === 0 ? (
+                              <span className="text-xs font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Tặng miễn phí</span>
+                            ) : (
+                              <span className="text-xs font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full">+{r.promoPrice.toLocaleString()}₫</span>
+                            )}
+                            <p className="text-[10px] font-medium text-gray-400 line-through mt-1">{r.productVariant.price.toLocaleString()}₫</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+              );
+            })()}
 
             {/* Quantity */}
             <div className="flex items-center gap-4">
