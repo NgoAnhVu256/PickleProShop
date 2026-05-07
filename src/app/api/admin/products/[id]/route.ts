@@ -109,12 +109,19 @@ export async function PUT(
           select: { id: true, sku: true }
         });
 
-        const newSkus = variants.map((v: any) => v.sku);
-        const variantsToDelete = existingVariants.filter(v => !newSkus.includes(v.sku));
+        const existingIds = existingVariants.map(v => v.id);
+        // IDs that were submitted (existing variants being updated)
+        const submittedIds = variants.filter((v: any) => v.id).map((v: any) => v.id);
+        // Delete variants that are no longer in the submitted list
+        const idsToDelete = existingIds.filter(eid => !submittedIds.includes(eid));
 
-        if (variantsToDelete.length > 0) {
+        if (idsToDelete.length > 0) {
+          // First delete related attr values to avoid FK constraint errors
+          await tx.variantAttributeValue.deleteMany({
+            where: { variantId: { in: idsToDelete } }
+          });
           await tx.productVariant.deleteMany({
-            where: { id: { in: variantsToDelete.map(v => v.id) } }
+            where: { id: { in: idsToDelete } }
           });
         }
 
@@ -127,29 +134,41 @@ export async function PUT(
             isActive: v.isActive !== undefined ? v.isActive : true,
           };
 
-          await tx.productVariant.upsert({
-            where: { sku: v.sku },
-            create: {
-              ...variantData,
-              productId: id,
-              attrValues: v.attrValues ? {
-                create: v.attrValues.map((av: any) => ({
-                  attributeId: av.attributeId,
-                  value: av.value
-                }))
-              } : undefined
-            },
-            update: {
-              ...variantData,
-              attrValues: v.attrValues ? {
-                deleteMany: {},
-                create: v.attrValues.map((av: any) => ({
-                  attributeId: av.attributeId,
-                  value: av.value
-                }))
-              } : undefined
+          if (v.id && existingIds.includes(v.id)) {
+            // UPDATE existing variant
+            await tx.variantAttributeValue.deleteMany({ where: { variantId: v.id } });
+            await tx.productVariant.update({
+              where: { id: v.id },
+              data: {
+                ...variantData,
+                attrValues: v.attrValues ? {
+                  create: v.attrValues.map((av: any) => ({
+                    attributeId: av.attributeId,
+                    value: av.value
+                  }))
+                } : undefined
+              }
+            });
+          } else {
+            // CREATE new variant
+            // Check SKU uniqueness first
+            const existingSku = await tx.productVariant.findUnique({ where: { sku: v.sku } });
+            if (existingSku) {
+              throw new Error(`SKU "${v.sku}" đã tồn tại. Vui lòng dùng SKU khác.`);
             }
-          });
+            await tx.productVariant.create({
+              data: {
+                ...variantData,
+                productId: id,
+                attrValues: v.attrValues ? {
+                  create: v.attrValues.map((av: any) => ({
+                    attributeId: av.attributeId,
+                    value: av.value
+                  }))
+                } : undefined
+              }
+            });
+          }
         }
       }
 
