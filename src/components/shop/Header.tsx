@@ -1,5 +1,5 @@
 "use client";
-import { Search, ShoppingCart, User, Menu, X, LogOut, Shield, ChevronDown, Package } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, LogOut, Shield, ChevronDown, Package, UserCircle } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
@@ -232,6 +232,11 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
                     </Link>
                   )}
                   
+                  <Link href="/account" onClick={() => setShowUserMenu(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                    <UserCircle size={16} className="text-[#7DAACB]" />
+                    Tài khoản
+                  </Link>
+
                   <Link href="/orders" onClick={() => setShowUserMenu(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">
                     <Package size={16} className="text-gray-400" />
                     Đơn hàng của tôi

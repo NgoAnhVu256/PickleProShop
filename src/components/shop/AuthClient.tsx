@@ -134,7 +134,7 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
     }
   };
 
-  const logo = settings?.logo || '/api/favicon';
+  const favicon = '/api/favicon';
   const siteName = settings?.name || "PicklePro";
 
   return (
@@ -227,7 +227,7 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
           {/* Overlay Login Mode => Prompts to Register */}
           <div className={`absolute inset-0 flex flex-col items-center justify-center p-12 text-center transition-opacity duration-300 delay-200 ${mode === 'login' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             <div className="h-28 w-28 rounded-full overflow-hidden flex items-center justify-center mb-8 shrink-0">
-              <img src={logo} className="w-full h-full object-cover drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]" alt="logo" />
+              <img src={favicon} className="w-full h-full object-cover drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]" alt="logo" />
             </div>
             <h2 className="text-4xl font-black text-white mb-6 leading-tight">Chào bạn mới!</h2>
             <p className="text-white/90 font-medium mb-10 leading-relaxed text-sm">Hãy tạo ngay một tài khoản để thỏa sức mua sắm hàng ngàn món đồ Pickleball và tận hưởng khuyến mãi riêng biệt.</p>
@@ -239,7 +239,7 @@ export default function AuthClient({ settings, initialMode = "login" }: { settin
           {/* Overlay Register Mode => Prompts to Login */}
           <div className={`absolute inset-0 flex flex-col items-center justify-center p-12 text-center transition-opacity duration-300 delay-200 ${mode === 'register' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             <div className="h-28 w-28 rounded-full overflow-hidden flex items-center justify-center mb-8 shrink-0">
-              <img src={logo} className="w-full h-full object-cover drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]" alt="logo" />
+              <img src={favicon} className="w-full h-full object-cover drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]" alt="logo" />
             </div>
             <h2 className="text-4xl font-black text-white mb-6 leading-tight">Chào mừng trở lại!</h2>
             <p className="text-white/90 font-medium mb-10 leading-relaxed text-sm">Đăng nhập để xem trạng thái đơn hàng, giỏ hàng đang lưu và nhiều thông tin hấp dẫn khác từ PicklePro.</p>
