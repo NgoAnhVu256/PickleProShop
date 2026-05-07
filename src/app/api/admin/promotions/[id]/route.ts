@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     // Full update requires deleting existing conditions/rewards and recreating them
-    const { name, isActive, startDate, endDate, conditions, rewards } = body;
+    const { name, isActive, startDate, endDate, conditions, rewards, priority, description, stackable } = body;
     
     await prisma.$transaction(async (tx) => {
       await tx.promotionCondition.deleteMany({ where: { promotionId: id } });
@@ -62,7 +62,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       await tx.promotion.update({
         where: { id },
         data: {
-          name, isActive, startDate: new Date(startDate), endDate: endDate ? new Date(endDate) : null,
+          name, isActive,
+          description: description || null,
+          startDate: new Date(startDate),
+          endDate: endDate ? new Date(endDate) : null,
+          priority: parseInt(priority) || 0,
+          stackable: !!stackable,
           conditions: {
             create: conditions.map((c: any) => ({
               productVariantId: c.productVariantId || null,
@@ -74,6 +79,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
               productVariantId: r.productVariantId,
               quantity: r.quantity || 1,
               promoPrice: r.promoPrice || 0,
+              discountType: r.discountType || "FREE",
+              discountValue: parseFloat(r.discountValue) || 0,
             })),
           },
         },

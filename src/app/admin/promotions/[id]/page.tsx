@@ -19,6 +19,9 @@ export default function EditPromotionPage() {
   const [noEndDate, setNoEndDate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [priority, setPriority] = useState(0);
+  const [description, setDescription] = useState("");
+  const [stackable, setStackable] = useState(false);
 
   // Conditions (Buy X)
   const [searchX, setSearchX] = useState("");
@@ -60,6 +63,9 @@ export default function EditPromotionPage() {
           } else {
             setNoEndDate(true);
           }
+          setPriority(promo.priority || 0);
+          setDescription(promo.description || "");
+          setStackable(promo.stackable || false);
 
           const conds = promo.conditions.map((c: any) => {
             if (c.categoryId && c.category) {
@@ -78,7 +84,7 @@ export default function EditPromotionPage() {
             const pv = r.productVariant;
             const variantName = pv.attrValues?.map((a: any) => a.value).join(" / ") || pv.sku;
             const fullName = variantName ? `${pv.product.name} - ${variantName}` : pv.product.name;
-            return { productVariantId: pv.id, name: fullName, sku: pv.sku, image: pv.product.thumbnail, quantity: r.quantity, promoPrice: r.promoPrice };
+            return { productVariantId: pv.id, name: fullName, sku: pv.sku, image: pv.product.thumbnail, quantity: r.quantity, promoPrice: r.promoPrice, discountType: r.discountType || "FREE", discountValue: r.discountValue || 0 };
           });
           setRewards(rews);
         } else {
@@ -136,7 +142,7 @@ export default function EditPromotionPage() {
 
   const addReward = (v: any) => {
     if (rewards.find(r => r.productVariantId === v.id)) return;
-    setRewards([...rewards, { productVariantId: v.id, name: v.name, sku: v.sku, image: v.image, quantity: 1, promoPrice: 0 }]);
+    setRewards([...rewards, { productVariantId: v.id, name: v.name, sku: v.sku, image: v.image, quantity: 1, promoPrice: 0, discountType: "FREE", discountValue: 0 }]);
     setSearchY(""); setResultsY([]);
   };
 
@@ -163,8 +169,9 @@ export default function EditPromotionPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name, isActive, startDate, endDate: noEndDate ? null : endDate,
+          priority, description, stackable,
           conditions: conditions.map(c => ({ productVariantId: c.productVariantId, categoryId: c.categoryId })),
-          rewards: rewards.map(r => ({ productVariantId: r.productVariantId, quantity: Number(r.quantity), promoPrice: Number(r.promoPrice) }))
+          rewards: rewards.map(r => ({ productVariantId: r.productVariantId, quantity: Number(r.quantity), promoPrice: Number(r.promoPrice), discountType: r.discountType || "FREE", discountValue: Number(r.discountValue) || 0 }))
         })
       });
       const data = await res.json();
@@ -210,6 +217,18 @@ export default function EditPromotionPage() {
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <input type="checkbox" id="isActive" checked={isActive} onChange={e => setIsActive(e.target.checked)} style={{ width: 18, height: 18 }} />
                 <label htmlFor="isActive" style={{ fontWeight: 600, color: "#334155" }}>Kích hoạt chương trình (Đang hoạt động)</label>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <input type="checkbox" id="stackable" checked={stackable} onChange={e => setStackable(e.target.checked)} style={{ width: 18, height: 18 }} />
+                <label htmlFor="stackable" style={{ fontWeight: 600, color: "#334155" }}>Cho phép cộng dồn với KM khác</label>
+              </div>
+              <div>
+                <label className="input-label">Mô tả (tuỳ chọn)</label>
+                <textarea className="input" value={description} onChange={e => setDescription(e.target.value)} placeholder="Mô tả chi tiết chương trình..." rows={2} style={{ resize: "vertical" }} />
+              </div>
+              <div>
+                <label className="input-label">Độ ưu tiên (số lớn = ưu tiên cao)</label>
+                <input className="input" type="number" min="0" value={priority} onChange={e => setPriority(parseInt(e.target.value) || 0)} style={{ maxWidth: 200 }} />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, background: "#f8fafc", padding: 16, borderRadius: 10, border: "1px solid #e2e8f0" }}>
                 <div>
@@ -328,11 +347,11 @@ export default function EditPromotionPage() {
             {/* List Y */}
             {rewards.length > 0 && (
               <div style={{ border: "1px solid #fbcfe8", borderRadius: 10, overflow: "hidden" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr 1fr auto", gap: 12, padding: "10px 16px", background: "#fdf2f8", borderBottom: "1px solid #fbcfe8", fontSize: 12, fontWeight: 700, color: "#be185d" }}>
-                  <span>Sản phẩm Quà tặng</span><span>Số lượng tặng</span><span>Giá ưu đãi (VNĐ)</span><span></span>
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: 12, padding: "10px 16px", background: "#fdf2f8", borderBottom: "1px solid #fbcfe8", fontSize: 12, fontWeight: 700, color: "#be185d" }}>
+                  <span>Sản phẩm Quà tặng</span><span>Số lượng</span><span>Loại giảm</span><span>Giá trị</span><span></span>
                 </div>
                 {rewards.map((r, i) => (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "3fr 1fr 1fr auto", gap: 12, padding: "12px 16px", borderBottom: "1px solid #fdf2f8", alignItems: "center" }}>
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: 12, padding: "12px 16px", borderBottom: "1px solid #fdf2f8", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       {r.image && <img src={r.image} style={{ width: 32, height: 32, borderRadius: 4, objectFit: "cover" }} alt="" />}
                       <div>
@@ -341,7 +360,16 @@ export default function EditPromotionPage() {
                       </div>
                     </div>
                     <div><input className="input" type="number" min="1" value={r.quantity} onChange={e => updateReward(i, "quantity", e.target.value)} style={{ padding: "6px 10px" }} /></div>
-                    <div><input className="input" type="number" min="0" value={r.promoPrice} onChange={e => updateReward(i, "promoPrice", e.target.value)} style={{ padding: "6px 10px" }} /></div>
+                    <div>
+                      <select className="input" value={r.discountType || "FREE"} onChange={e => updateReward(i, "discountType", e.target.value)} style={{ padding: "6px 10px" }}>
+                        <option value="FREE">Tặng miễn phí</option>
+                        <option value="FIXED">Giá cố định</option>
+                        <option value="PERCENTAGE">Giảm %</option>
+                      </select>
+                    </div>
+                    <div>
+                      <input className="input" type="number" min="0" value={(r.discountType === "FREE") ? 0 : (r.discountValue || r.promoPrice || 0)} onChange={e => updateReward(i, "discountValue", e.target.value)} disabled={r.discountType === "FREE"} style={{ padding: "6px 10px" }} placeholder={r.discountType === "PERCENTAGE" ? "%" : "VNĐ"} />
+                    </div>
                     <button type="button" onClick={() => removeReward(i)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}><X size={16} /></button>
                   </div>
                 ))}
