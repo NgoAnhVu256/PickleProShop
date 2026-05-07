@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "@/components/shop/CartContext";
 import Header from "@/components/shop/Header";
+import ClientFooter from "@/components/shop/ClientFooter";
 
 interface Product {
   id: string;
@@ -286,6 +287,8 @@ function ProductListingContent() {
           </div>
         )}
       </div>
+
+      <ClientFooter />
     </div>
   );
 }

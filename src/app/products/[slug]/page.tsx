@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, ShoppingCart, Minus, Plus, Package, Truck, Shield, Loader2, Check } from "lucide-react";
 import Header from "@/components/shop/Header";
+import ClientFooter from "@/components/shop/ClientFooter";
 import { useCart } from "@/components/shop/CartContext";
 import toast from "react-hot-toast";
 
@@ -672,6 +673,8 @@ export default function ProductDetailPage() {
           </section>
         )}
       </main>
+
+      <ClientFooter />
     </div>
   );
 }
