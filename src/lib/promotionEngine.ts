@@ -67,7 +67,7 @@ export async function calculateCart(cartInputItems: CartInputItem[]): Promise<Ca
   const variants = await prisma.productVariant.findMany({
     where: { id: { in: variantIds }, isActive: true },
     include: {
-      product: { select: { id: true, name: true, slug: true, thumbnail: true, categoryId: true } },
+      product: { select: { id: true, name: true, slug: true, thumbnail: true, categoryId: true, salePrice: true, saleStartAt: true, saleEndAt: true, basePrice: true } },
       attrValues: { include: { attribute: { select: { name: true, label: true } } } },
     },
   });
@@ -81,6 +81,15 @@ export async function calculateCart(cartInputItems: CartInputItem[]): Promise<Ca
     if (!v) continue; // Skip invalid variants
 
     const label = v.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || v.sku;
+
+    // Effective price: use product salePrice if active, otherwise variant.price
+    const now = new Date();
+    const isSaleActive = v.product.salePrice != null
+      && v.product.salePrice < v.product.basePrice
+      && (!v.product.saleStartAt || new Date(v.product.saleStartAt) <= now)
+      && (!v.product.saleEndAt || new Date(v.product.saleEndAt) >= now);
+    const effectivePrice = isSaleActive ? v.product.salePrice! : v.price;
+
     hydratedItems.push({
       variantId: v.id,
       productId: v.product.id,
@@ -88,8 +97,8 @@ export async function calculateCart(cartInputItems: CartInputItem[]): Promise<Ca
       productSlug: v.product.slug,
       variantSku: v.sku,
       variantLabel: label,
-      price: v.price,
-      finalPrice: v.price,
+      price: effectivePrice,
+      finalPrice: effectivePrice,
       quantity: input.quantity,
       image: v.images?.[0] || v.product.thumbnail || "",
       stock: v.stock,

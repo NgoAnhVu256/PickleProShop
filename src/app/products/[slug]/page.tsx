@@ -254,7 +254,28 @@ export default function ProductDetailPage() {
   }
 
   const hasOptionMatrix = colorOptions.length > 0 || sizeOptions.length > 0;
-  const displayPrice = matchedVariant?.price || product.salePrice || product.basePrice;
+
+  // Determine if product-level sale is active
+  const now = new Date();
+  const isSaleActive = product.salePrice != null
+    && product.salePrice < product.basePrice
+    && (!product.saleStartAt || new Date(product.saleStartAt) <= now)
+    && (!product.saleEndAt || new Date(product.saleEndAt) >= now);
+
+  // Effective price: for variants, use salePrice (if active) otherwise variant.price
+  const getEffectivePrice = (variant: any) => {
+    if (isSaleActive && product.salePrice != null) {
+      // If salePrice is a percentage-like discount or absolute price
+      return product.salePrice;
+    }
+    return variant.price;
+  };
+
+  const displayPrice = matchedVariant
+    ? getEffectivePrice(matchedVariant)
+    : (isSaleActive ? product.salePrice! : product.basePrice);
+  const originalPrice = matchedVariant?.price || product.basePrice;
+  const isDiscounted = displayPrice < originalPrice;
 
   const handleAddToCart = () => {
     if (hasOptionMatrix && !matchedVariant) {
@@ -277,7 +298,7 @@ export default function ProductDetailPage() {
         productSlug: product.slug,
         variantSku: matchedVariant.sku,
         variantLabel,
-        price: matchedVariant.price,
+        price: getEffectivePrice(matchedVariant),
         quantity,
         image: matchedVariant.images?.[0] || product.thumbnail || "",
       });
@@ -329,7 +350,7 @@ export default function ProductDetailPage() {
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "VND",
-      lowPrice: matchedVariant?.price || product.salePrice || product.basePrice,
+      lowPrice: displayPrice,
       highPrice: product.basePrice,
       availability: "https://schema.org/InStock",
       seller: { "@type": "Organization", name: "PicklePro" },
@@ -404,8 +425,13 @@ export default function ProductDetailPage() {
             {/* Price */}
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-black text-gray-900">{displayPrice.toLocaleString()}₫</span>
-              {product.salePrice && product.salePrice < product.basePrice && (
-                <span className="text-lg text-gray-400 line-through">{product.basePrice.toLocaleString()}₫</span>
+              {isDiscounted && (
+                <span className="text-lg text-gray-400 line-through">{originalPrice.toLocaleString()}₫</span>
+              )}
+              {isDiscounted && (
+                <span className="text-sm font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full">
+                  -{Math.round((1 - displayPrice / originalPrice) * 100)}%
+                </span>
               )}
             </div>
 
