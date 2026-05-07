@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   }
   try {
     const body = await request.json();
-    const { name, isActive, startDate, endDate, conditions, rewards } = body;
+    const { name, isActive, startDate, endDate, conditions, rewards, priority, description, stackable } = body;
 
     if (!name || conditions.length === 0 || rewards.length === 0) {
       return NextResponse.json({ success: false, error: "Thiếu dữ liệu bắt buộc" });
@@ -37,9 +37,12 @@ export async function POST(request: Request) {
     const promotion = await prisma.promotion.create({
       data: {
         name,
+        description: description || null,
         isActive,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
+        priority: parseInt(priority) || 0,
+        stackable: !!stackable,
         conditions: {
           create: conditions.map((c: any) => ({
             productVariantId: c.productVariantId || null,
@@ -50,7 +53,9 @@ export async function POST(request: Request) {
           create: rewards.map((r: any) => ({
             productVariantId: r.productVariantId,
             quantity: parseInt(r.quantity) || 1,
-            promoPrice: parseFloat(r.promoPrice) || 0
+            promoPrice: parseFloat(r.promoPrice) || 0,
+            discountType: r.discountType || "FREE",
+            discountValue: parseFloat(r.discountValue) || 0,
           }))
         }
       }

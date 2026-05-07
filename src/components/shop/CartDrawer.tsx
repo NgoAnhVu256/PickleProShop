@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "./CartContext";
-import { X, Plus, Minus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, Loader2, Gift, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -9,7 +9,12 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export default function CartDrawer() {
-  const { items, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice, isCartOpen, setIsCartOpen } = useCart();
+  const {
+    items, removeFromCart, updateQuantity, clearCart, totalItems,
+    isCartOpen, setIsCartOpen,
+    // Promotion-aware
+    giftItems, appliedPromotions, subTotal, discountTotal, finalTotal, isCalculating,
+  } = useCart();
   const { data: session } = useSession();
   const [isOrdering, setIsOrdering] = useState(false);
   const router = useRouter();
@@ -65,43 +70,107 @@ export default function CartDrawer() {
               </Link>
             </div>
           ) : (
-            items.map((item) => (
-              <div key={item.variantId} className="flex gap-3 p-3 bg-gray-50 rounded-2xl">
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-white shrink-0">
-                  <img src={item.image || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt={item.productName} className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Link href={`/products/${item.productSlug}`} onClick={() => setIsCartOpen(false)} className="text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#7DAACB]">
-                    {item.productName}
-                  </Link>
-                  <p className="text-[11px] text-gray-400 font-medium mt-0.5">{item.variantLabel}</p>
-                  <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center gap-1.5 bg-white rounded-lg border border-gray-200">
-                      <button onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900">
-                        <Minus size={12} />
-                      </button>
-                      <span className="text-sm font-bold w-8 text-center">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900">
-                        <Plus size={12} />
-                      </button>
-                    </div>
-                    <span className="text-sm font-black text-gray-900">{(item.price * item.quantity).toLocaleString()}₫</span>
+            <>
+              {/* Regular Cart Items */}
+              {items.map((item) => (
+                <div key={item.variantId} className="flex gap-3 p-3 bg-gray-50 rounded-2xl">
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-white shrink-0">
+                    <img src={item.image || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt={item.productName} className="w-full h-full object-cover" />
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/products/${item.productSlug}`} onClick={() => setIsCartOpen(false)} className="text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#7DAACB]">
+                      {item.productName}
+                    </Link>
+                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">{item.variantLabel}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-1.5 bg-white rounded-lg border border-gray-200">
+                        <button onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900">
+                          <Minus size={12} />
+                        </button>
+                        <span className="text-sm font-bold w-8 text-center">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900">
+                          <Plus size={12} />
+                        </button>
+                      </div>
+                      <span className="text-sm font-black text-gray-900">{(item.price * item.quantity).toLocaleString()}₫</span>
+                    </div>
+                  </div>
+                  <button onClick={() => removeFromCart(item.variantId)} className="self-start p-1.5 text-gray-300 hover:text-red-500 transition-colors">
+                    <Trash2 size={14} />
+                  </button>
                 </div>
-                <button onClick={() => removeFromCart(item.variantId)} className="self-start p-1.5 text-gray-300 hover:text-red-500 transition-colors">
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))
+              ))}
+
+              {/* ─── Gift Items (Auto-injected by Promotion Engine) ─── */}
+              {giftItems.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center gap-2 text-[#ec4899] font-black text-xs uppercase tracking-wider">
+                    <Gift size={14} />
+                    <span>Quà tặng kèm</span>
+                    <Sparkles size={12} className="text-yellow-400" />
+                  </div>
+                  {giftItems.map((gift) => (
+                    <div key={`gift-${gift.variantId}-${gift.promotionId}`} className="flex gap-3 p-3 bg-gradient-to-r from-pink-50/80 to-purple-50/60 rounded-2xl border border-pink-100/80 relative overflow-hidden">
+                      {/* Gift badge */}
+                      <div className="absolute top-0 right-0 bg-gradient-to-bl from-red-500 to-pink-500 text-white text-[8px] font-black px-3 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                        {gift.finalPrice === 0 ? "Miễn phí" : `${gift.finalPrice.toLocaleString()}₫`}
+                      </div>
+                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 border border-pink-100">
+                        <img src={gift.image || 'https://placehold.co/64x64/fdf2f8/ec4899?text=🎁'} alt={gift.productName} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-gray-900 line-clamp-1">{gift.productName}</p>
+                        <p className="text-[10px] text-gray-400 font-medium mt-0.5">{gift.variantLabel}</p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="text-[10px] font-bold text-pink-600 bg-pink-100/80 px-2 py-0.5 rounded-full">🎁 x{gift.quantity}</span>
+                          {gift.discountAmount > 0 && (
+                            <span className="text-[10px] font-medium text-gray-400 line-through">{gift.price.toLocaleString()}₫</span>
+                          )}
+                        </div>
+                        <p className="text-[9px] text-pink-400 font-semibold mt-1 truncate">{gift.promotionName}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="p-5 border-t border-gray-100 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-500">Tạm tính</span>
-              <span className="text-xl font-black text-gray-900">{totalPrice.toLocaleString()}₫</span>
+          <div className="p-5 border-t border-gray-100 space-y-3">
+            {/* Promotion banner */}
+            {appliedPromotions.length > 0 && (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-xl px-3 py-2 flex items-center gap-2">
+                <Sparkles size={14} className="text-green-600 shrink-0" />
+                <p className="text-[11px] font-bold text-green-700 line-clamp-1">
+                  {appliedPromotions.length === 1
+                    ? appliedPromotions[0].name
+                    : `${appliedPromotions.length} chương trình KM đang áp dụng`
+                  }
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-gray-400">Tạm tính</span>
+                <span className="text-sm font-bold text-gray-600">{subTotal.toLocaleString()}₫</span>
+              </div>
+              {discountTotal > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-green-600">Quà tặng KM</span>
+                  <span className="text-sm font-bold text-green-600">-{discountTotal.toLocaleString()}₫</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between pt-1.5 border-t border-gray-100">
+                <span className="text-sm font-bold text-gray-700">Tổng cộng</span>
+                <div className="flex items-center gap-2">
+                  {isCalculating && <Loader2 size={14} className="text-gray-300 animate-spin" />}
+                  <span className="text-xl font-black text-gray-900">{finalTotal.toLocaleString()}₫</span>
+                </div>
+              </div>
             </div>
             <button
               onClick={handleCheckout}

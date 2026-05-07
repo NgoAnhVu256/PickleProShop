@@ -16,7 +16,7 @@ const MapSelector = dynamic(() => import("@/components/shop/MapSelector"), {
 });
 
 export default function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, clearCart, subTotal, discountTotal, finalTotal: cartFinalTotal, giftItems, appliedPromotions } = useCart();
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -209,7 +209,7 @@ export default function CheckoutPage() {
       const res = await fetch("/api/coupons/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponCode, orderValue: totalPrice })
+        body: JSON.stringify({ code: couponCode, orderValue: subTotal })
       });
       const data = await res.json();
       if (data.success) {
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
     setAppliedCoupon(null);
   };
 
-  const finalOrderTotal = totalPrice - (appliedCoupon?.discountAmount || 0);
+  const finalOrderTotal = cartFinalTotal - (appliedCoupon?.discountAmount || 0);
 
   const handleSubmitOrder = async () => {
     if (!phone.trim()) {
@@ -467,6 +467,26 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Gift Items from Promotions */}
+              {giftItems.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-dashed border-pink-200 space-y-3">
+                  <p className="text-xs font-black text-pink-600 uppercase tracking-wider flex items-center gap-1.5">
+                    🎁 Quà tặng kèm
+                  </p>
+                  {giftItems.map(gift => (
+                    <div key={`gift-${gift.variantId}-${gift.promotionId}`} className="flex gap-3 bg-pink-50/50 p-2 rounded-lg">
+                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-white shrink-0 border border-pink-100">
+                        <img src={gift.image || ''} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-gray-900 line-clamp-1">{gift.productName}</p>
+                        <p className="text-[10px] text-pink-500 font-bold">x{gift.quantity} • {gift.finalPrice === 0 ? 'Miễn phí' : `${gift.finalPrice.toLocaleString()}₫`}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="mt-4 mb-4 border-t border-gray-100 pt-4">
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Mã Khuyến Mãi</label>
                 <div className="flex gap-2">
@@ -497,8 +517,14 @@ export default function CheckoutPage() {
               <div className="border-t border-gray-100 pt-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Tạm tính</span>
-                  <span className="font-semibold">{totalPrice.toLocaleString()}₫</span>
+                  <span className="font-semibold">{subTotal.toLocaleString()}₫</span>
                 </div>
+                {discountTotal > 0 && (
+                  <div className="flex justify-between text-sm text-green-600 font-medium">
+                    <span>Quà tặng KM</span>
+                    <span>-{discountTotal.toLocaleString()}₫</span>
+                  </div>
+                )}
                 {appliedCoupon && (
                   <div className="flex justify-between text-sm text-green-600 font-medium">
                     <span>Mã ưu đãi ({appliedCoupon.code})</span>

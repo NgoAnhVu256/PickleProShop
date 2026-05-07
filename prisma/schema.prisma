@@ -414,9 +414,12 @@ enum FeedbackStatus {
 model Promotion {
   id          String   @id @default(cuid())
   name        String
+  description String?  @db.Text
   isActive    Boolean  @default(true)
   startDate   DateTime @default(now())
   endDate     DateTime?
+  priority    Int      @default(0)   // Higher = evaluated first
+  stackable   Boolean  @default(false) // Can stack with other promos?
 
   conditions  PromotionCondition[]
   rewards     PromotionReward[]
@@ -425,6 +428,7 @@ model Promotion {
   updatedAt   DateTime @updatedAt
 
   @@index([isActive])
+  @@index([priority])
 }
 
 model PromotionCondition {
@@ -438,6 +442,8 @@ model PromotionCondition {
   categoryId       String?
   category         Category? @relation(fields: [categoryId], references: [id])
 
+  minQuantity      Int      @default(1) // Min qty in cart to trigger
+
   @@index([promotionId])
 }
 
@@ -449,8 +455,16 @@ model PromotionReward {
   productVariantId String
   productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
   
-  quantity         Int      @default(1)
-  promoPrice       Float    @default(0) // 0 means free
+  quantity         Int           @default(1)
+  promoPrice       Float         @default(0) // 0 means free
+  discountType     DiscountType  @default(FREE)  // FREE, FIXED, PERCENTAGE
+  discountValue    Float         @default(0) // Value for FIXED or PERCENTAGE
 
   @@index([promotionId])
+}
+
+enum DiscountType {
+  FREE
+  FIXED
+  PERCENTAGE
 }
