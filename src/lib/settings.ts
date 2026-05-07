@@ -45,6 +45,15 @@ export const getSiteSettings = unstable_cache(
         messenger: config.social_messenger || "",
         ga4MeasurementId: config.ga4_measurement_id || "G-K6CQGHX7LV",
         chatbotAvatar: config.chatbot_avatar || "",
+        // SEO fields
+        seoTitle: config.seo_title || "",
+        seoDescription: config.seo_description || "",
+        seoKeywords: config.seo_keywords || "",
+        seoCanonicalUrl: config.seo_canonical_url || "",
+        ogTitle: config.og_title || "",
+        ogDescription: config.og_description || "",
+        ogImage: config.og_image || "",
+        ogType: config.og_type || "website",
       };
     } catch (error) {
       return {
@@ -66,6 +75,14 @@ export const getSiteSettings = unstable_cache(
         messenger: "",
         ga4MeasurementId: "G-K6CQGHX7LV",
         chatbotAvatar: "",
+        seoTitle: "",
+        seoDescription: "",
+        seoKeywords: "",
+        seoCanonicalUrl: "",
+        ogTitle: "",
+        ogDescription: "",
+        ogImage: "",
+        ogType: "website",
       };
     }
   },

@@ -10,14 +10,25 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  
+  const siteUrl = settings.seoCanonicalUrl || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  // SEO fields from admin — fallback to store name/slogan
+  const seoTitle = settings.seoTitle || settings.name;
+  const seoDescription = settings.seoDescription || settings.slogan;
+  const seoKeywords = settings.seoKeywords
+    ? settings.seoKeywords.split(",").map((k: string) => k.trim())
+    : ["Pickleball", "PicklePro", "Vợt Pickleball", "Giày Pickleball", "Phụ kiện Pickleball chính hãng", "Pickleball Vietnam"];
+  const ogTitle = settings.ogTitle || seoTitle;
+  const ogDescription = settings.ogDescription || seoDescription;
+  const ogImage = settings.ogImage || settings.logo || "/api/favicon";
+
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+    metadataBase: new URL(siteUrl),
     title: {
-      default: settings.name,
+      default: seoTitle,
       template: `%s | ${settings.name}`,
     },
-    description: settings.slogan,
+    description: seoDescription,
     icons: {
       icon: [
         { url: "/api/favicon", type: "image/x-icon" },
@@ -26,19 +37,19 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: "/api/favicon",
       apple: "/api/favicon",
     },
-    keywords: ["Pickleball", "PicklePro", "Vợt Pickleball", "Giày Pickleball", "Phụ kiện Pickleball chính hãng", "Pickleball Vietnam"],
+    keywords: seoKeywords,
     openGraph: {
-      type: "website",
+      type: (settings.ogType || "website") as "website",
       siteName: settings.name,
-      title: settings.name,
-      description: settings.slogan,
-      images: [settings.logo || "/api/favicon"],
+      title: ogTitle,
+      description: ogDescription,
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
-      title: settings.name,
-      description: settings.slogan,
-      images: [settings.logo || "/api/favicon"],
+      title: ogTitle,
+      description: ogDescription,
+      images: [ogImage],
     },
     // Full SEO access for all bots
     robots: {
@@ -52,6 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": -1,
       },
     },
+    alternates: settings.seoCanonicalUrl ? { canonical: settings.seoCanonicalUrl } : undefined,
   };
 }
 
