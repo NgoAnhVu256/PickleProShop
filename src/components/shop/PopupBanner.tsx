@@ -10,20 +10,23 @@ interface PopupBannerData {
   link: string | null;
 }
 
-export default function PopupBanner({ onClose }: { onClose?: () => void }) {
+export default function PopupBanner() {
   const [banner, setBanner] = useState<PopupBannerData | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Check if popup was already dismissed in this session
     if (typeof window === "undefined") return;
     const dismissed = sessionStorage.getItem("popup_banner_dismissed");
     if (dismissed) return;
 
+    // Fetch POPUP banners from API
     fetch("/api/banners?position=POPUP")
       .then((r) => r.json())
       .then((data) => {
         if (data.success && data.data && data.data.length > 0) {
           setBanner(data.data[0]);
+          // Small delay so the animation feels natural
           setTimeout(() => setVisible(true), 500);
         }
       })
@@ -33,11 +36,12 @@ export default function PopupBanner({ onClose }: { onClose?: () => void }) {
   const handleClose = () => {
     setVisible(false);
     sessionStorage.setItem("popup_banner_dismissed", "true");
-    // Remove from DOM after animation, then fire onClose → triggers chatbot
+    // Remove from DOM after animation
     setTimeout(() => {
       setBanner(null);
-      onClose?.();
-    }, 350);
+      // Notify ChatWidget to open
+      window.dispatchEvent(new Event("openChatbot"));
+    }, 300);
   };
 
   if (!banner) return null;
@@ -113,8 +117,12 @@ export default function PopupBanner({ onClose }: { onClose?: () => void }) {
           <X size={18} color="#333" />
         </button>
 
+        {/* Banner image — clickable link or plain image */}
         {banner.link ? (
-          <a href={banner.link} style={{ display: "block", cursor: "pointer" }}>
+          <a
+            href={banner.link}
+            style={{ display: "block", cursor: "pointer" }}
+          >
             {content}
           </a>
         ) : (

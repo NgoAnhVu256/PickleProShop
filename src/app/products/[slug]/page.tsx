@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, ShoppingCart, Minus, Plus, Package, Truck, Shield, Loader2, Check } from "lucide-react";
@@ -89,7 +89,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState<string>("");
   const [settings, setSettings] = useState<any>(null);
-  const [recentlyViewed, setRecentlyViewed] = useState<{ id: string; name: string; slug: string; thumbnail: string | null; basePrice: number; salePrice: number | null }[]>([]);
+  const [recentProducts, setRecentProducts] = useState<any[]>([]);
 
   // Load settings
   useEffect(() => {
@@ -99,37 +99,15 @@ export default function ProductDetailPage() {
       .catch(() => {});
   }, []);
 
-  // Load recently viewed from localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("recently_viewed");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setRecentlyViewed(parsed.filter((p: any) => p.slug !== slug));
-      }
-    } catch {}
-  }, [slug]);
-
-  // Load product + save to recently viewed
+  // Load product
   useEffect(() => {
     setLoading(true);
     fetch(`/api/products/${slug}`)
       .then(r => r.json())
       .then(data => {
         if (data.success) {
-          const p = data.data;
-          setProduct(p);
-          setMainImage(p.thumbnail || p.images?.[0] || "");
-          // Save to recently viewed localStorage
-          try {
-            const stored = localStorage.getItem("recently_viewed");
-            const existing: any[] = stored ? JSON.parse(stored) : [];
-            const entry = { id: p.id, name: p.name, slug: p.slug, thumbnail: p.thumbnail, basePrice: p.basePrice, salePrice: p.salePrice };
-            const filtered = existing.filter((x: any) => x.slug !== p.slug);
-            const updated = [entry, ...filtered].slice(0, 8);
-            localStorage.setItem("recently_viewed", JSON.stringify(updated));
-            setRecentlyViewed(filtered.slice(0, 7)); // show others (not current)
-          } catch {}
+          setProduct(data.data);
+          setMainImage(data.data.thumbnail || data.data.images?.[0] || "");
         }
       })
       .catch(() => {})
@@ -252,6 +230,30 @@ export default function ProductDetailPage() {
     // Meta description
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute("content", product.description?.slice(0, 160) || `Mua ${product.name} chính hãng tại PicklePro`);
+
+    // Recently viewed logic
+    try {
+      const stored = localStorage.getItem("recently_viewed");
+      let recent = stored ? JSON.parse(stored) : [];
+      // Filter out current product for the display list
+      const others = recent.filter((p: any) => p.id !== product.id);
+      setRecentProducts(others.slice(0, 5)); // show up to 5 recently viewed products
+      
+      // Add current product to the front of the list
+      const currentLite = {
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        thumbnail: product.thumbnail,
+        basePrice: product.basePrice,
+        salePrice: product.salePrice
+      };
+      
+      const newRecent = [currentLite, ...others].slice(0, 10);
+      localStorage.setItem("recently_viewed", JSON.stringify(newRecent));
+    } catch (e) {
+      console.error("Error with recently viewed products", e);
+    }
   }, [product]);
 
   if (loading) {
@@ -416,7 +418,10 @@ export default function ProductDetailPage() {
           <span className="text-gray-900 line-clamp-1">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[5fr_6fr_3fr] gap-8 lg:gap-10 items-start">
+        <div className="flex flex-col xl:flex-row gap-8 lg:gap-12">
+          {/* Main Content Area */}
+          <div className="flex-1 min-w-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Images */}
           <div className="space-y-4">
             <div className="aspect-square rounded-3xl overflow-hidden bg-white border border-gray-100">
@@ -658,49 +663,6 @@ export default function ProductDetailPage() {
               ))}
             </div>
           </div>
-
-          {/* ─── Right Sidebar: Recently Viewed ─── */}
-          <aside className="hidden lg:block">
-            {recentlyViewed.length > 0 && (
-              <div className="sticky top-24">
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                  <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
-                    <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.15em]">Sản phẩm đã xem</h3>
-                  </div>
-                  <div className="flex flex-col divide-y divide-gray-50">
-                    {recentlyViewed.slice(0, 8).map((p) => {
-                      const price = p.salePrice || p.basePrice;
-                      const hasSale = !!p.salePrice && p.salePrice < p.basePrice;
-                      return (
-                        <Link
-                          key={p.id}
-                          href={`/products/${p.slug}`}
-                          className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors group"
-                        >
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
-                            <img
-                              src={p.thumbnail || 'https://placehold.co/60x60/f8fafc/94a3b8?text=SP'}
-                              alt={p.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[12px] font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-[#7DAACB] transition-colors">{p.name}</p>
-                            <div className="flex items-center gap-1.5 mt-1">
-                              <span className="text-[12px] font-black text-[#7DAACB]">{price.toLocaleString()}₫</span>
-                              {hasSale && (
-                                <span className="text-[10px] text-gray-400 line-through">{p.basePrice.toLocaleString()}₫</span>
-                              )}
-                            </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-          </aside>
         </div>
 
         {/* Description */}
@@ -738,6 +700,37 @@ export default function ProductDetailPage() {
             </div>
           </section>
         )}
+          </div>
+
+          {/* Right Sidebar: Recently Viewed Products */}
+          <aside className="w-full xl:w-[280px] shrink-0 space-y-6">
+            {recentProducts.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-24">
+                <div className="bg-gray-50 border-b border-gray-100 p-4">
+                  <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Sản phẩm đã xem</h3>
+                </div>
+                <div className="p-4 space-y-4">
+                  {recentProducts.map(p => {
+                    const price = p.salePrice || p.basePrice;
+                    const hasSale = !!p.salePrice && p.salePrice < p.basePrice;
+                    return (
+                      <Link key={p.id} href={`/products/${p.slug}`} className="flex gap-3 group">
+                        <div className="w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
+                          <img src={p.thumbnail || 'https://placehold.co/100x120/f8fafc/94a3b8?text=SP'} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                          <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-[#7DAACB] mb-1 leading-snug">{p.name}</h4>
+                          <span className="text-sm font-black text-[#7DAACB]">{price.toLocaleString()}₫</span>
+                          {hasSale && <span className="text-[10px] text-gray-400 line-through">{p.basePrice.toLocaleString()}₫</span>}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </aside>
+        </div>
       </main>
 
       <ClientFooter />

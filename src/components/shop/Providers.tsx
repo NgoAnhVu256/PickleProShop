@@ -4,10 +4,12 @@ import dynamic from "next/dynamic";
 import { SessionProvider } from "next-auth/react";
 import { CartProvider } from "@/components/shop/CartContext";
 import CartDrawer from "@/components/shop/CartDrawer";
-import React, { createContext, useContext, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 const ChatWidget = dynamic(() => import("@/components/shop/ChatWidget"), { ssr: false });
 const PopupBanner = dynamic(() => import("@/components/shop/PopupBanner"), { ssr: false });
+
+import React, { createContext, useContext } from "react";
 
 const SiteSettingsContext = createContext<any>(null);
 
@@ -20,30 +22,23 @@ export default function Providers({
   children: React.ReactNode;
   settings?: any;
 }) {
-  // When PopupBanner closes → autoOpen ChatWidget
-  const [chatAutoOpen, setChatAutoOpen] = useState(false);
-
-  const handleBannerClose = useCallback(() => {
-    setChatAutoOpen(true);
-  }, []);
-
-  const handleAutoOpenHandled = useCallback(() => {
-    setChatAutoOpen(false);
-  }, []);
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
 
   return (
     <SiteSettingsContext.Provider value={settings}>
       <SessionProvider>
         <CartProvider>
           {children}
-          <CartDrawer />
-          <PopupBanner onClose={handleBannerClose} />
-          <ChatWidget
-            zaloLink={settings?.zalo}
-            chatbotAvatar={settings?.chatbotAvatar}
-            autoOpen={chatAutoOpen}
-            onAutoOpenHandled={handleAutoOpenHandled}
-          />
+          {!isAdmin && <CartDrawer />}
+          {!isAdmin && <PopupBanner />}
+          {!isAdmin && (
+            <ChatWidget
+              zaloLink={settings?.zalo}
+              messengerLink={settings?.messenger}
+              chatbotAvatar={settings?.chatbotAvatar}
+            />
+          )}
         </CartProvider>
       </SessionProvider>
     </SiteSettingsContext.Provider>
