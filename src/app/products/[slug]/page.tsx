@@ -639,6 +639,25 @@ export default function ProductDetailPage() {
               );
             })()}
 
+            {/* ─── Variant Specs (Thickness, Weight, etc.) ─── */}
+            {matchedVariant && (() => {
+              const specs = matchedVariant.attrValues.filter(av => {
+                const n = av.attribute.name.toLowerCase();
+                return n === "thickness" || n === "weight" || n === "grip_size";
+              });
+              if (specs.length === 0) return null;
+              return (
+                <div className="flex flex-wrap gap-3">
+                  {specs.map(spec => (
+                    <div key={spec.attribute.name} className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl border border-gray-100">
+                      <span className="text-xs font-bold text-gray-400 uppercase">{spec.attribute.label}:</span>
+                      <span className="text-sm font-bold text-gray-800">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
             {/* Quantity */}
             <div className="flex items-center gap-4">
               <p className="text-sm font-bold text-gray-700">Số lượng:</p>
