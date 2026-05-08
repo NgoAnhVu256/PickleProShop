@@ -83,10 +83,10 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           
           <div className="absolute inset-x-0 bottom-0 max-w-4xl mx-auto px-6 pb-12">
             <Link 
-              href="/"
-              className="inline-flex items-center gap-2 text-white/70 text-xs font-bold uppercase tracking-widest hover:text-white mb-6 transition-colors"
+              href="/blog"
+              className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white text-sm font-bold px-4 py-2 rounded-full hover:bg-white/30 mb-6 transition-all"
             >
-              <ArrowLeft size={14} /> Quay lại
+              <ArrowLeft size={16} /> Quay lại tin tức
             </Link>
             <div className="flex items-center gap-3 mb-4">
               <span className="bg-[#7DAACB] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
@@ -113,8 +113,8 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             </p>
 
             <div 
-              className="prose prose-lg max-w-none text-gray-700 leading-relaxed
-                prose-headings:text-gray-900 prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
+              className="blog-content prose prose-lg max-w-none text-gray-700 leading-relaxed
+                prose-headings:text-gray-900 prose-headings:font-black prose-headings:tracking-tight
                 prose-p:mb-6 prose-strong:text-gray-900
                 prose-img:rounded-3xl prose-img:shadow-2xl prose-img:my-10"
               dangerouslySetInnerHTML={{ __html: post.content }}
