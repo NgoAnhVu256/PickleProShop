@@ -47,10 +47,22 @@ const getCachedProducts = unstable_cache(
   async () => prisma.product.findMany({
     take: 10,
     where: { isActive: true },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      thumbnail: true,
+      basePrice: true,
+      salePrice: true,
+      saleStartAt: true,
+      saleEndAt: true,
+      stock: true,
       category: { select: { name: true, slug: true } },
       brand: { select: { name: true, slug: true } },
-      _count: { select: { variants: true } },
+      variants: {
+        where: { isActive: true },
+        select: { stock: true },
+      },
     },
     orderBy: { createdAt: 'desc' },
   }),

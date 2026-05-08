@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
     const search = searchParams.get("search") || "";
     const categoryId = searchParams.get("category") || "";
 
@@ -16,7 +16,6 @@ export async function GET(req: NextRequest) {
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" as const } },
-        { category: { name: { contains: search, mode: "insensitive" as const } } },
         { variants: { some: { sku: { contains: search, mode: "insensitive" as const } } } },
       ];
     }
@@ -28,7 +27,16 @@ export async function GET(req: NextRequest) {
     const [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
-        include: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basePrice: true,
+          salePrice: true,
+          thumbnail: true,
+          isActive: true,
+          stock: true,
+          createdAt: true,
           category: { select: { id: true, name: true } },
           brand:    { select: { id: true, name: true } },
           _count:   { select: { variants: true } },

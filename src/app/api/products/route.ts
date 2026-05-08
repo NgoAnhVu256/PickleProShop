@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "12");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "12"), 48);
     const category = searchParams.get("category");
     const brand = searchParams.get("brand");
     const search = searchParams.get("search");
@@ -24,11 +24,10 @@ export async function GET(req: NextRequest) {
       where.brand = { slug: brand };
     }
 
+    // Optimized: removed description search (heavy text scan)
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-        { brand: { name: { contains: search, mode: "insensitive" } } },
         { variants: { some: { sku: { contains: search, mode: "insensitive" } } } },
       ];
     }
@@ -57,19 +56,23 @@ export async function GET(req: NextRequest) {
     const [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
-        include: {
+        // Use select instead of include — fetch only what ProductCard needs
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          thumbnail: true,
+          basePrice: true,
+          salePrice: true,
+          saleStartAt: true,
+          saleEndAt: true,
+          stock: true,
           category: { select: { name: true, slug: true } },
           brand: { select: { name: true, slug: true } },
+          // Only fetch stock from variants — no attrValues, no images
           variants: {
             where: { isActive: true },
-            include: {
-              attrValues: {
-                include: {
-                  attribute: { select: { name: true, label: true } },
-                },
-              },
-            },
-            take: 3,
+            select: { stock: true },
           },
         },
         orderBy,
