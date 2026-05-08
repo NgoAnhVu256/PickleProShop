@@ -64,7 +64,8 @@ const getCachedProducts = unstable_cache(
         select: { stock: true },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    // Popular first (by sales count), then newest
+    orderBy: [{ totalSold: 'desc' }, { createdAt: 'desc' }],
   }),
   ['home-products'],
   { revalidate: 60 }

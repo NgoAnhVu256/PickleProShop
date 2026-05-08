@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       if (maxPrice) (where.basePrice as Record<string, number>).lte = parseInt(maxPrice);
     }
 
-    let orderBy: Record<string, string>;
+    let orderBy: Record<string, string> | Record<string, string>[];
     switch (sort) {
       case "price_asc":
         orderBy = { basePrice: "asc" };
@@ -49,8 +49,12 @@ export async function GET(req: NextRequest) {
       case "name_asc":
         orderBy = { name: "asc" };
         break;
-      default:
+      case "newest":
         orderBy = { createdAt: "desc" };
+        break;
+      default:
+        // Default: popular first, then newest
+        orderBy = [{ totalSold: "desc" }, { createdAt: "desc" }];
     }
 
     const [products, total] = await Promise.all([

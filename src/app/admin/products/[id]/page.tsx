@@ -125,10 +125,11 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
     return 0;
   })();
 
-  const addColorGroup = () => setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: basePrice || "0", stock: "0" }] }]);
+  const defaultVariantPrice = salePrice || basePrice || "0";
+  const addColorGroup = () => setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: defaultVariantPrice, stock: "0" }] }]);
   const removeColorGroup = (idx: number) => setColorGroups(colorGroups.filter((_, i) => i !== idx));
   const updateColorGroup = (idx: number, field: string, val: any) => { const u = [...colorGroups]; (u[idx] as any)[field] = val; setColorGroups(u); };
-  const addSizeToColor = (cIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes.push({ size: "", sku: "", price: basePrice || "0", stock: "0" }); setColorGroups(u); };
+  const addSizeToColor = (cIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes.push({ size: "", sku: "", price: defaultVariantPrice, stock: "0" }); setColorGroups(u); };
   const removeSizeFromColor = (cIdx: number, sIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes = u[cIdx].sizes.filter((_, i) => i !== sIdx); setColorGroups(u); };
   const updateSize = (cIdx: number, sIdx: number, field: string, val: string) => { const u = [...colorGroups]; (u[cIdx].sizes[sIdx] as any)[field] = val; setColorGroups(u); };
 

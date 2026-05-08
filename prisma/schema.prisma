@@ -143,6 +143,7 @@ model Product {
   saleEndAt   DateTime?
   brandId     String?
   stock       Int              @default(0)
+  totalSold   Int              @default(0) // Tracks total units sold — for popular sorting
   brand       Brand?           @relation(fields: [brandId], references: [id])
   category    Category         @relation(fields: [categoryId], references: [id])
   gallery     ProductImage[]
@@ -151,6 +152,7 @@ model Product {
   @@index([slug])
   @@index([categoryId])
   @@index([brandId])
+  @@index([isActive, totalSold]) // For popular products query
 }
 
 model ProductImage {

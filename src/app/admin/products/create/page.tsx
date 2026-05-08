@@ -77,9 +77,11 @@ export default function AdminCreateProduct() {
     return 0;
   })();
 
+  const defaultVariantPrice = salePrice || basePrice || "0";
+
   // ─── Color Group helpers ───
   const addColorGroup = () => {
-    setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: basePrice || "0", stock: "0" }] }]);
+    setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: defaultVariantPrice, stock: "0" }] }]);
   };
   const removeColorGroup = (idx: number) => setColorGroups(colorGroups.filter((_, i) => i !== idx));
   const updateColorGroup = (idx: number, field: string, val: any) => {
@@ -87,7 +89,7 @@ export default function AdminCreateProduct() {
   };
   const addSizeToColor = (cIdx: number) => {
     const u = [...colorGroups];
-    u[cIdx].sizes.push({ size: "", sku: "", price: basePrice || "0", stock: "0" });
+    u[cIdx].sizes.push({ size: "", sku: "", price: defaultVariantPrice, stock: "0" });
     setColorGroups(u);
   };
   const removeSizeFromColor = (cIdx: number, sIdx: number) => {
@@ -147,7 +149,7 @@ export default function AdminCreateProduct() {
         }),
       });
       const data = await res.json();
-      if (data.success) { toast.success("Tạo sản phẩm thành công!"); router.push("/admin/products"); }
+      if (data.success) { toast.success("Tạo sản phẩm thành công!"); router.push(`/admin/products?category=${categoryId}`); }
       else toast.error(data.error);
     } catch { toast.error("Lỗi tạo sản phẩm"); }
     finally { setSubmitting(false); }
