@@ -166,7 +166,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           categoryId, brandId: brandId || null, thumbnail, images: galleryImages, isActive,
           gallery: galleryImages.map(url => ({ url })),
           variants: buildVariants(),
-          stock: !hasVariants ? (parseInt(stock) || 0) : undefined,
+          stock: colorGroups.length === 0 ? (parseInt(stock) || 0) : undefined,
         }),
       });
       const data = await res.json();
@@ -247,10 +247,11 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                 <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
               </div>
 
-              {categoryId && !hasVariants && (
-                <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8 }}>
+              {/* Stock input — shows when product has NO actual variants */}
+              {categoryId && colorGroups.length === 0 && (
+                <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, marginBottom: 16 }}>
                   <p style={{ color: "#0369a1", fontSize: 13, marginBottom: 16 }}>
-                    Danh mục chưa có thuộc tính biến thể. Nhập số lượng tồn kho trực tiếp.
+                    Sản phẩm chưa có biến thể. Nhập số lượng tồn kho trực tiếp.
                   </p>
                   <div>
                     <label className="input-label">Số lượng tồn kho *</label>

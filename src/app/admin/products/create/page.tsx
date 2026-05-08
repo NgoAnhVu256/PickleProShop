@@ -143,7 +143,7 @@ export default function AdminCreateProduct() {
           images: galleryImages,
           gallery: galleryImages.map(url => ({ url })),
           variants,
-          stock: !hasVariants ? (parseInt(stock) || 0) : undefined,
+          stock: colorGroups.length === 0 ? (parseInt(stock) || 0) : undefined,
         }),
       });
       const data = await res.json();
@@ -249,16 +249,14 @@ export default function AdminCreateProduct() {
                 </div>
               )}
 
-              {categoryId && !hasVariants && (
-                <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8 }}>
+              {categoryId && colorGroups.length === 0 && (
+                <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, marginBottom: hasVariants ? 16 : 0 }}>
                   <p style={{ color: "#0369a1", fontSize: 13, marginBottom: 16 }}>
-                    Danh mục này chưa có thuộc tính biến thể. Sản phẩm sẽ được tạo không có biến thể.
+                    Sản phẩm chưa có biến thể. Nhập số lượng tồn kho trực tiếp.
                   </p>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-                    <div>
-                      <label className="input-label">Số lượng tồn kho *</label>
-                      <input className="input" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" min="0" />
-                    </div>
+                  <div>
+                    <label className="input-label">Số lượng tồn kho *</label>
+                    <input className="input" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" min="0" />
                   </div>
                 </div>
               )}
