@@ -303,7 +303,16 @@ export default function ProductDetailPage() {
   const originalPrice = matchedVariant?.price || product.basePrice;
   const isDiscounted = displayPrice < originalPrice;
 
+  // Check total stock across all variants
+  const totalStock = product.variants.reduce((sum: number, v: any) => sum + (v.stock || 0), 0);
+  const isOutOfStock = product.variants.length > 0 && totalStock === 0;
+  const currentVariantOutOfStock = matchedVariant ? matchedVariant.stock === 0 : isOutOfStock;
+
   const handleAddToCart = () => {
+    if (currentVariantOutOfStock) {
+      toast.error("Sản phẩm này hiện đã hết hàng");
+      return;
+    }
     if (hasOptionMatrix && !matchedVariant) {
       toast.error("Vui lòng chọn đầy đủ phân loại sản phẩm");
       return;
@@ -627,7 +636,7 @@ export default function ProductDetailPage() {
             {/* Quantity */}
             <div className="flex items-center gap-4">
               <p className="text-sm font-bold text-gray-700">Số lượng:</p>
-              <div className="flex items-center gap-0 bg-gray-50 rounded-xl border border-gray-200">
+              <div className={`flex items-center gap-0 bg-gray-50 rounded-xl border border-gray-200 ${currentVariantOutOfStock ? 'opacity-40 pointer-events-none' : ''}`}>
                 <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900">
                   <Minus size={16} />
                 </button>
@@ -636,17 +645,27 @@ export default function ProductDetailPage() {
                   <Plus size={16} />
                 </button>
               </div>
+              {matchedVariant && matchedVariant.stock > 0 && (
+                <span className="text-xs text-gray-400 font-medium">Còn {matchedVariant.stock} sản phẩm</span>
+              )}
             </div>
 
             {/* Add to Cart */}
             <div className="flex gap-3 pt-2">
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
-              >
-                <ShoppingCart size={18} />
-                THÊM VÀO GIỎ HÀNG
-              </button>
+              {currentVariantOutOfStock ? (
+                <div className="flex-1 py-4 bg-gray-200 text-gray-500 rounded-2xl font-black text-sm flex items-center justify-center gap-2 cursor-not-allowed">
+                  <Package size={18} />
+                  HẾT HÀNG
+                </div>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <ShoppingCart size={18} />
+                  THÊM VÀO GIỎ HÀNG
+                </button>
+              )}
             </div>
 
             {/* Trust badges */}

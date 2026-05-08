@@ -15,10 +15,14 @@ export default function PopupBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Check if popup was already dismissed in this session
+    // Only show popup ONCE — persist across tabs using localStorage with 24h expiry
     if (typeof window === "undefined") return;
-    const dismissed = sessionStorage.getItem("popup_banner_dismissed");
-    if (dismissed) return;
+    const dismissedAt = localStorage.getItem("popup_banner_dismissed_at");
+    if (dismissedAt) {
+      const elapsed = Date.now() - parseInt(dismissedAt, 10);
+      // Don't show again for 24 hours
+      if (elapsed < 24 * 60 * 60 * 1000) return;
+    }
 
     // Fetch POPUP banners from API
     fetch("/api/banners?position=POPUP")
@@ -35,7 +39,7 @@ export default function PopupBanner() {
 
   const handleClose = () => {
     setVisible(false);
-    sessionStorage.setItem("popup_banner_dismissed", "true");
+    localStorage.setItem("popup_banner_dismissed_at", String(Date.now()));
     // Remove from DOM after animation
     setTimeout(() => {
       setBanner(null);
