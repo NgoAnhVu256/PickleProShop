@@ -93,6 +93,7 @@ export default async function BlogListPage({
                       ? "bg-[#7DAACB] text-white border-[#7DAACB] shadow-md shadow-[#7DAACB]/20" 
                       : "bg-white text-gray-600 border-gray-200 hover:border-[#7DAACB] hover:text-[#7DAACB]"
                   }`}
+                >
                   {cat.name}
                 </Link>
               ))}
