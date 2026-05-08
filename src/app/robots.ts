@@ -8,9 +8,15 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api/admin", "/login", "/register"],
+        disallow: ["/admin", "/api/admin", "/login", "/register", "/account", "/checkout", "/orders"],
+      },
+      // Block AI scrapers from stealing content
+      {
+        userAgent: ["GPTBot", "ChatGPT-User", "CCBot", "anthropic-ai"],
+        disallow: "/",
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   };
 }

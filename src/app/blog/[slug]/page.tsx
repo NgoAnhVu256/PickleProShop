@@ -3,9 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
 import Footer from '@/components/shop/Footer';
-import { ChevronRight, Calendar, ArrowLeft } from 'lucide-react';
+import { Calendar, ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import ClientShare from '@/components/shop/ClientShare';
+import type { Metadata } from 'next';
 
 // ISR: revalidate every 120s
 export const revalidate = 120;
@@ -55,6 +56,42 @@ async function getSideBanners() {
   }
 }
 
+// ─── SEO: Dynamic Metadata per blog post ───
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostData(slug);
+  if (!post) return { title: "Bài viết không tồn tại" };
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
+  const title = post.seoTitle || post.title;
+  const description = post.metaDescription || post.excerpt || `Đọc bài viết "${post.title}" trên PicklePro`;
+  const ogImage = post.ogImage || post.image || `${siteUrl}/api/favicon`;
+
+  return {
+    title,
+    description,
+    keywords: post.metaKeywords || undefined,
+    alternates: {
+      canonical: post.canonicalUrl || `${siteUrl}/blog/${post.slug}`,
+    },
+    openGraph: {
+      type: "article",
+      title: post.ogTitle || title,
+      description: post.ogDescription || description,
+      images: [ogImage],
+      publishedTime: post.publishedAt.toISOString(),
+      authors: ["PicklePro"],
+      section: post.category.name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.ogTitle || title,
+      description: post.ogDescription || description,
+      images: [ogImage],
+    },
+  };
+}
+
 export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = await params;
   const post = await getPostData(slug);
@@ -64,11 +101,53 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
     notFound();
   }
 
-  const relatedPosts = await getRelatedPosts(post.categoryId, post.id);
-  const sideBanners = await getSideBanners();
+  const [relatedPosts, sideBanners] = await Promise.all([
+    getRelatedPosts(post.categoryId, post.id),
+    getSideBanners(),
+  ]);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
+
+  // JSON-LD Article Schema for Google Rich Snippets
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": post.schemaType || "Article",
+    headline: post.title,
+    image: post.image ? (post.image.startsWith("http") ? post.image : `${siteUrl}${post.image}`) : undefined,
+    datePublished: post.publishedAt.toISOString(),
+    dateModified: post.updatedAt.toISOString(),
+    author: { "@type": "Organization", name: "PicklePro" },
+    publisher: {
+      "@type": "Organization",
+      name: "PicklePro",
+      logo: { "@type": "ImageObject", url: `${siteUrl}/api/favicon` },
+    },
+    description: post.excerpt || post.title,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/blog/${post.slug}`,
+    },
+    articleSection: post.category.name,
+  };
+
+  // BreadcrumbList Schema
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Trang chủ", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Tin tức", item: `${siteUrl}/blog` },
+      { "@type": "ListItem", position: 3, name: post.category.name, item: `${siteUrl}/blog?category=${post.category.slug}` },
+      { "@type": "ListItem", position: 4, name: post.title },
+    ],
+  };
 
   return (
     <div className="min-h-screen bg-white">
+      {/* JSON-LD Structured Data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+
       <HomeHeader />
 
       <main className="pb-20">
@@ -78,6 +157,8 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=1200'} 
             className="w-full h-full object-cover object-top opacity-80"
             alt={post.title}
+            loading="eager"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
           
@@ -86,7 +167,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
               href="/blog"
               className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white text-sm font-bold px-4 py-2 rounded-full hover:bg-white/30 mb-6 transition-all"
             >
-              <ArrowLeft size={16} /> Quay lại tin tức
+              <ArrowLeft size={16} /> Quay lại
             </Link>
             <div className="flex items-center gap-3 mb-4">
               <span className="bg-[#7DAACB] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
@@ -106,11 +187,13 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
         {/* --- CONTENT AREA --- */}
         <div className="max-w-7xl mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-16">
           
-          {/* Article Page */}
+          {/* Article */}
           <article className="lg:col-span-8">
-            <p className="text-xl text-gray-500 font-medium italic border-l-4 border-[#7DAACB] pl-6 mb-10 leading-relaxed">
-              {post.excerpt}
-            </p>
+            {post.excerpt && (
+              <p className="text-xl text-gray-500 font-medium italic border-l-4 border-[#7DAACB] pl-6 mb-10 leading-relaxed">
+                {post.excerpt}
+              </p>
+            )}
 
             <div 
               className="blog-content prose prose-lg max-w-none text-gray-700 leading-relaxed
@@ -120,38 +203,41 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
-            {/* Tags/Share Section */}
-            <ClientShare url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://picklepro.vn'}/blog/${post.slug}`} title={post.title} />
+            {/* Share Section */}
+            <ClientShare url={`${siteUrl}/blog/${post.slug}`} title={post.title} />
           </article>
 
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-12">
             
             {/* Related Posts */}
-            <div>
-              <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6 pb-2 border-b-2 border-gray-900 inline-block">
-                Bài viết liên quan
-              </h4>
-              <div className="space-y-6">
-                {relatedPosts.map((rp) => (
-                  <Link key={rp.id} href={`/blog/${rp.slug}`} className="group flex gap-4">
-                    <img 
-                      src={rp.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=200'}
-                      alt={rp.title}
-                      className="w-24 h-24 rounded-2xl object-cover shrink-0"
-                    />
-                    <div className="flex flex-col justify-center">
-                      <h5 className="text-[14px] font-bold text-gray-900 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-snug">
-                        {rp.title}
-                      </h5>
-                      <p className="text-[11px] text-gray-400 mt-2 font-medium">
-                        {new Date(rp.publishedAt).toLocaleDateString('vi-VN')}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+            {relatedPosts.length > 0 && (
+              <div>
+                <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6 pb-2 border-b-2 border-gray-900 inline-block">
+                  Bài viết liên quan
+                </h4>
+                <div className="space-y-6">
+                  {relatedPosts.map((rp) => (
+                    <Link key={rp.id} href={`/blog/${rp.slug}`} className="group flex gap-4">
+                      <img 
+                        src={rp.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=200'}
+                        alt={rp.title}
+                        className="w-24 h-24 rounded-2xl object-cover shrink-0"
+                        loading="lazy"
+                      />
+                      <div className="flex flex-col justify-center">
+                        <h5 className="text-[14px] font-bold text-gray-900 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-snug">
+                          {rp.title}
+                        </h5>
+                        <p className="text-[11px] text-gray-400 mt-2 font-medium">
+                          {new Date(rp.publishedAt).toLocaleDateString('vi-VN')}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Right Banners */}
             {sideBanners.map((banner) => (
@@ -159,7 +245,8 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                 <img 
                   src={banner.image} 
                   alt={banner.title} 
-                  className="w-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                  className="w-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  loading="lazy"
                 />
               </Link>
             ))}
@@ -172,5 +259,3 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
     </div>
   );
 }
-
-

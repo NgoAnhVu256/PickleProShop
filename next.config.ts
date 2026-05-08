@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "50mb",
     },
     middlewareClientMaxBodySize: "50mb",
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["lucide-react", "react-hot-toast"],
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 31536000, // Cache optimized images for 1 year
   },
   // Security + Performance headers
   async headers() {
@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Cache static assets aggressively
+      // Cache static assets aggressively (1 year)
       {
         source: "/uploads/:path*",
         headers: [
@@ -76,6 +76,26 @@ const nextConfig: NextConfig = {
         source: "/fonts/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      // Cache API responses with stale-while-revalidate for fast loads
+      {
+        source: "/api/categories",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=600" },
+        ],
+      },
+      {
+        source: "/api/products",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=120, stale-while-revalidate=300" },
+        ],
+      },
+      // Cache favicon API  
+      {
+        source: "/api/favicon",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
         ],
       },
     ];
