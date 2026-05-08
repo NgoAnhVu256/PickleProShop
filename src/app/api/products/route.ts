@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
         { name: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
         { brand: { name: { contains: search, mode: "insensitive" } } },
+        { variants: { some: { sku: { contains: search, mode: "insensitive" } } } },
       ];
     }
 

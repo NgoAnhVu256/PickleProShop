@@ -127,7 +127,7 @@ export default function AdminProductsPage() {
           <input
             type="text"
             className="input"
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder="Tìm kiếm sản phẩm, mã SKU..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             style={{ paddingLeft: 40, background: "#f8f9fb", border: "1.5px solid #eef2f7", color: "#323b4b", width: "100%" }}

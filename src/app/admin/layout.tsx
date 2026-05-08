@@ -141,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => clearInterval(interval);
   }, [fetchNewOrders]);
 
-  // Admin search (products, orders)
+  // Admin search (products by name or SKU)
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
@@ -150,10 +150,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/products?search=${encodeURIComponent(searchQuery)}&limit=5`);
+        const res = await fetch(`/api/admin/products?search=${encodeURIComponent(searchQuery)}&limit=5`);
         const data = await res.json();
         if (data.success) {
-          setSearchResults(data.data.map((p: any) => ({ type: 'product', id: p.id, label: p.name, href: `/admin/products/${p.id}`, sub: `SKU: ${p.slug}` })));
+          setSearchResults(data.data.map((p: any) => ({
+            type: 'product',
+            id: p.id,
+            label: p.name,
+            href: `/admin/products/${p.id}`,
+            sub: p._count?.variants > 0 ? `${p._count.variants} biến thể` : p.slug,
+          })));
           setShowSearchResults(true);
         }
       } catch { /* ignore */ }
@@ -290,7 +296,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Search size={15} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#b0bac9" }} />
               <input
                 type="text"
-                placeholder="Tìm kiếm..."
+                placeholder="Tìm sản phẩm, SKU..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchResults.length > 0 && setShowSearchResults(true)}
