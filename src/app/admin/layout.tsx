@@ -57,11 +57,12 @@ const navGroups = [
   {
     label: "NỘI DUNG",
     items: [
-      { href: "/admin/posts",         label: "Bài viết",     icon: FileText },
-      { href: "/admin/banners",       label: "Banners",     icon: ImageIcon },
-      { href: "/admin/announcements", label: "Thông báo",   icon: Megaphone },
-      { href: "/admin/feedbacks",     label: "Góp ý",       icon: MessageSquare },
-      { href: "/admin/settings",      label: "Cài đặt",     icon: Settings },
+      { href: "/admin/posts",           label: "Bài viết",          icon: FileText },
+      { href: "/admin/post-categories", label: "Danh mục bài viết", icon: Layers },
+      { href: "/admin/banners",         label: "Banners",           icon: ImageIcon },
+      { href: "/admin/announcements",   label: "Thông báo",         icon: Megaphone },
+      { href: "/admin/feedbacks",       label: "Góp ý",             icon: MessageSquare },
+      { href: "/admin/settings",        label: "Cài đặt",           icon: Settings },
     ],
   },
 ];

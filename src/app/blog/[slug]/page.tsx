@@ -3,8 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
 import Footer from '@/components/shop/Footer';
-import { ChevronRight, Calendar, User, Share2, Facebook, Twitter, Link as LinkIcon, ArrowLeft } from 'lucide-react';
+import { ChevronRight, Calendar, ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import ClientShare from '@/components/shop/ClientShare';
 
 // ISR: revalidate every 120s
 export const revalidate = 120;
@@ -72,10 +73,10 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
       <main className="pb-20">
         {/* --- HERO HEADER --- */}
-        <div className="relative w-full h-[300px] md:h-[450px] overflow-hidden">
+        <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden bg-gray-900">
           <img 
             src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=1200'} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top opacity-80"
             alt={post.title}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
@@ -120,19 +121,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             />
 
             {/* Tags/Share Section */}
-            <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Chia sẻ:</span>
-                <div className="flex gap-2">
-                  <button className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><Facebook size={18} /></button>
-                  <button className="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all"><Twitter size={18} /></button>
-                  <button className="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-800 hover:text-white transition-all"><LinkIcon size={18} /></button>
-                </div>
-              </div>
-              <button className="flex items-center gap-2 text-sm font-bold text-[#7DAACB] hover:underline underline-offset-4">
-                <Share2 size={16} /> Sao chép liên kết
-              </button>
-            </div>
+            <ClientShare url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://picklepro.vn'}/blog/${post.slug}`} title={post.title} />
           </article>
 
           {/* Sidebar */}
