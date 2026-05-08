@@ -56,9 +56,10 @@ echo "   ✅ Dependencies OK"
 
 # ─── 5. Generate Prisma ──────────────────────
 echo ""
-echo "🔧 [5/7] Generate Prisma Client..."
+echo "🔧 [5/7] Sync database & Generate Prisma Client..."
+npx prisma db push --skip-generate
 npx prisma generate
-echo "   ✅ Prisma Client OK"
+echo "   ✅ Database & Prisma Client OK"
 
 # ─── 6. Build ────────────────────────────────
 echo ""
