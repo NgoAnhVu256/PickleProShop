@@ -16,7 +16,7 @@ interface Brand { id: string; name: string; }
 interface ColorGroup {
   color: string;
   images: string[];
-  sizes: { size: string; sku: string; price: string; stock: string; thickness?: string; id?: string }[];
+  sizes: { size: string; sku: string; price: string; stock: string; id?: string }[];
 }
 
 export default function AdminEditProduct({ params }: { params: Promise<{ id: string }> }) {
@@ -69,7 +69,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           const cat = cData.data?.find((c: any) => c.id === p.categoryId);
           const attrs = cat?.categoryAttrs?.map((ca: any) => ca.attribute) || [];
           let pAttr = attrs.find((a: any) => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-          let sAttr = attrs.find((a: any) => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
+          let sAttr = attrs.find((a: any) => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich") || a.name.toLowerCase() === "thickness");
 
           if (!pAttr && attrs.length > 0) {
             pAttr = attrs[0];
@@ -80,21 +80,17 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
              pAttr = attrs.find((a: any) => a.id !== sAttr?.id);
           }
 
-          // Find thickness attribute
-          const tAttr = attrs.find((a: any) => a.name.toLowerCase() === "thickness");
-
           if (attrs.length > 0 && p.variants?.length > 0) {
             const groups: Record<string, ColorGroup> = {};
             p.variants.forEach((v: any) => {
-              let color = "", size = "", thickness = "";
+              let color = "", size = "";
               v.attrValues.forEach((av: any) => {
                 if (av.attributeId === pAttr?.id) color = av.value;
                 if (av.attributeId === sAttr?.id) size = av.value;
-                if (tAttr && av.attributeId === tAttr.id) thickness = av.value;
               });
               const groupKey = color || "Mặc định";
               if (!groups[groupKey]) groups[groupKey] = { color, images: v.images || [], sizes: [] };
-              groups[groupKey].sizes.push({ size, sku: v.sku, price: String(v.price), stock: String(v.stock), thickness, id: v.id });
+              groups[groupKey].sizes.push({ size, sku: v.sku, price: String(v.price), stock: String(v.stock), id: v.id });
               // Use first variant's images for the group
               if (v.images?.length > 0 && groups[groupKey].images.length === 0) groups[groupKey].images = v.images;
             });
@@ -110,16 +106,15 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
   let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
-  const thicknessAttr = categoryAttributes.find(a => a.name.toLowerCase() === "thickness");
+  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich") || a.name.toLowerCase() === "thickness");
   
   if (!primaryAttr && categoryAttributes.length > 0) {
     primaryAttr = categoryAttributes[0];
     if (!secondaryAttr && categoryAttributes.length > 1) secondaryAttr = categoryAttributes[1];
   } else if (primaryAttr && !secondaryAttr && categoryAttributes.length > 1) {
-    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id && a.id !== thicknessAttr?.id);
+    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id);
   } else if (!primaryAttr && secondaryAttr && categoryAttributes.length > 1) {
-     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id && a.id !== thicknessAttr?.id);
+     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id);
   }
 
   const hasVariants = categoryAttributes.length > 0;
@@ -130,10 +125,10 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
     return 0;
   })();
 
-  const addColorGroup = () => setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: basePrice || "0", stock: "0", thickness: "" }] }]);
+  const addColorGroup = () => setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: basePrice || "0", stock: "0" }] }]);
   const removeColorGroup = (idx: number) => setColorGroups(colorGroups.filter((_, i) => i !== idx));
   const updateColorGroup = (idx: number, field: string, val: any) => { const u = [...colorGroups]; (u[idx] as any)[field] = val; setColorGroups(u); };
-  const addSizeToColor = (cIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes.push({ size: "", sku: "", price: basePrice || "0", stock: "0", thickness: "" }); setColorGroups(u); };
+  const addSizeToColor = (cIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes.push({ size: "", sku: "", price: basePrice || "0", stock: "0" }); setColorGroups(u); };
   const removeSizeFromColor = (cIdx: number, sIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes = u[cIdx].sizes.filter((_, i) => i !== sIdx); setColorGroups(u); };
   const updateSize = (cIdx: number, sIdx: number, field: string, val: string) => { const u = [...colorGroups]; (u[cIdx].sizes[sIdx] as any)[field] = val; setColorGroups(u); };
 
@@ -148,7 +143,6 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           attrValues: [
             primaryAttr && cg.color ? { attributeId: primaryAttr.id, value: cg.color } : null,
             secondaryAttr && s.size ? { attributeId: secondaryAttr.id, value: s.size } : null,
-            thicknessAttr && s.thickness ? { attributeId: thicknessAttr.id, value: s.thickness } : null,
           ].filter(Boolean),
         });
       });
@@ -282,22 +276,21 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                           <MultiImageUpload label="Ảnh cho màu này" value={cg.images} onChange={urls => updateColorGroup(cIdx, "images", urls)} onRemove={url => updateColorGroup(cIdx, "images", cg.images.filter(i => i !== url))} folder="products/variants" />
                         </div>
                         <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: thicknessAttr ? "1fr 2fr 1fr 1fr 1fr auto" : "1fr 2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                            <span>Size</span><span>Mã SKU</span><span>Giá (VNĐ)</span>{thicknessAttr && <span>Độ dày</span>}<span>Tồn kho</span><span></span>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+                            <span>{secondaryAttr?.label || "Phân loại"}</span><span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
                           </div>
                           {cg.sizes.map((s, sIdx) => (
-                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: thicknessAttr ? "1fr 2fr 1fr 1fr 1fr auto" : "1fr 2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
-                              <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder="39" style={{ fontSize: 13 }} />
+                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
+                              <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder={secondaryAttr?.name === "thickness" ? "16mm" : "39"} style={{ fontSize: 13 }} />
                               <input className="input" value={s.sku} onChange={e => updateSize(cIdx, sIdx, "sku", e.target.value)} placeholder="SKU" style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.price} onChange={e => updateSize(cIdx, sIdx, "price", e.target.value)} style={{ fontSize: 13 }} />
-                              {thicknessAttr && <input className="input" value={s.thickness || ""} onChange={e => updateSize(cIdx, sIdx, "thickness", e.target.value)} placeholder="16mm" style={{ fontSize: 13 }} />}
                               <input className="input" type="number" value={s.stock} onChange={e => updateSize(cIdx, sIdx, "stock", e.target.value)} style={{ fontSize: 13 }} />
                               <button type="button" onClick={() => removeSizeFromColor(cIdx, sIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}><X size={16} /></button>
                             </div>
                           ))}
                           <div style={{ padding: "8px 12px" }}>
                             <button type="button" onClick={() => addSizeToColor(cIdx)} style={{ width: "100%", padding: 8, border: "1px dashed #cbd5e1", borderRadius: 8, background: "transparent", cursor: "pointer", fontSize: 12, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                              <Plus size={14} /> Thêm size
+                              <Plus size={14} /> Thêm {secondaryAttr?.label?.toLowerCase() || "phân loại"}
                             </button>
                           </div>
                         </div>

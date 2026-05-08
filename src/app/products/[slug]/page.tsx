@@ -135,7 +135,7 @@ export default function ProductDetailPage() {
             imgMap[av.value] = v.images[0];
           }
         }
-        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich")) {
+        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich") || attrName === "thickness") {
           sizes.add(av.value);
         }
       });
@@ -180,7 +180,7 @@ export default function ProductDetailPage() {
         if (attrName === "color" || attrName === "mau_sac" || attrName === "màu sắc" || attrName.includes("color") || attrName.includes("mau")) {
           colorMatch = av.value === selectedColor;
         }
-        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich")) {
+        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich") || attrName === "thickness") {
           sizeMatch = av.value === selectedSize;
         }
       });
@@ -517,11 +517,17 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* ─── SIZE SELECTOR ─── */}
-            {sizeOptions.length > 0 && (
+            {/* ─── SIZE / THICKNESS SELECTOR ─── */}
+            {sizeOptions.length > 0 && (() => {
+              // Detect if this is thickness or size based on the first variant's attribute
+              const sizeAttrLabel = product.variants[0]?.attrValues.find(av => {
+                const n = av.attribute.name.toLowerCase();
+                return n === "thickness" || n.includes("size") || n.includes("kich");
+              })?.attribute.label || "Size";
+              return (
               <div className="space-y-3">
                 <p className="text-sm font-bold text-gray-700">
-                  Chọn [Size]: <span className="text-[#7DAACB]">{selectedSize}</span>
+                  Chọn [{sizeAttrLabel}]: <span className="text-[#7DAACB]">{selectedSize}</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {sizeOptions.map(size => {
@@ -547,7 +553,8 @@ export default function ProductDetailPage() {
                   })}
                 </div>
               </div>
-            )}
+              );
+            })()}
 
             {/* ─── FLAT VARIANT LIST (no color/size attributes) ─── */}
             {!hasOptionMatrix && product.variants.length > 0 && (

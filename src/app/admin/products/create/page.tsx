@@ -17,7 +17,7 @@ interface Brand { id: string; name: string; }
 interface ColorGroup {
   color: string;
   images: string[];
-  sizes: { size: string; sku: string; price: string; stock: string; thickness?: string }[];
+  sizes: { size: string; sku: string; price: string; stock: string }[];
 }
 
 export default function AdminCreateProduct() {
@@ -58,16 +58,15 @@ export default function AdminCreateProduct() {
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
   let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich"));
-  const thicknessAttr = categoryAttributes.find(a => a.name.toLowerCase() === "thickness");
+  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich") || a.name.toLowerCase() === "thickness");
   
   if (!primaryAttr && categoryAttributes.length > 0) {
     primaryAttr = categoryAttributes[0];
     if (!secondaryAttr && categoryAttributes.length > 1) secondaryAttr = categoryAttributes[1];
   } else if (primaryAttr && !secondaryAttr && categoryAttributes.length > 1) {
-    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id && a.id !== thicknessAttr?.id);
+    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id);
   } else if (!primaryAttr && secondaryAttr && categoryAttributes.length > 1) {
-     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id && a.id !== thicknessAttr?.id);
+     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id);
   }
 
   const hasVariants = categoryAttributes.length > 0;
@@ -80,7 +79,7 @@ export default function AdminCreateProduct() {
 
   // ─── Color Group helpers ───
   const addColorGroup = () => {
-    setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: basePrice || "0", stock: "0", thickness: "" }] }]);
+    setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: basePrice || "0", stock: "0" }] }]);
   };
   const removeColorGroup = (idx: number) => setColorGroups(colorGroups.filter((_, i) => i !== idx));
   const updateColorGroup = (idx: number, field: string, val: any) => {
@@ -88,7 +87,7 @@ export default function AdminCreateProduct() {
   };
   const addSizeToColor = (cIdx: number) => {
     const u = [...colorGroups];
-    u[cIdx].sizes.push({ size: "", sku: "", price: basePrice || "0", stock: "0", thickness: "" });
+    u[cIdx].sizes.push({ size: "", sku: "", price: basePrice || "0", stock: "0" });
     setColorGroups(u);
   };
   const removeSizeFromColor = (cIdx: number, sIdx: number) => {
@@ -117,7 +116,6 @@ export default function AdminCreateProduct() {
           attrValues: [
             primaryAttr && cg.color ? { attributeId: primaryAttr.id, value: cg.color } : null,
             secondaryAttr && s.size ? { attributeId: secondaryAttr.id, value: s.size } : null,
-            thicknessAttr && s.thickness ? { attributeId: thicknessAttr.id, value: s.thickness } : null,
           ].filter(Boolean),
         });
       });
@@ -290,15 +288,14 @@ export default function AdminCreateProduct() {
 
                         {/* Secondary Attributes Table */}
                         <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: thicknessAttr ? (secondaryAttr ? "1fr 2fr 1fr 1fr 1fr auto" : "2fr 1fr 1fr 1fr auto") : (secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto"), gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                            {secondaryAttr && <span>{secondaryAttr.label}</span>}<span>Mã SKU</span><span>Giá (VNĐ)</span>{thicknessAttr && <span>Độ dày</span>}<span>Tồn kho</span><span></span>
+                          <div style={{ display: "grid", gridTemplateColumns: secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+                            {secondaryAttr && <span>{secondaryAttr.label}</span>}<span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
                           </div>
                           {cg.sizes.map((s, sIdx) => (
-                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: thicknessAttr ? (secondaryAttr ? "1fr 2fr 1fr 1fr 1fr auto" : "2fr 1fr 1fr 1fr auto") : (secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto"), gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
-                              {secondaryAttr && <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder={`Nhập ${secondaryAttr.label?.toLowerCase()}`} style={{ fontSize: 13 }} />}
+                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
+                              {secondaryAttr && <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder={secondaryAttr.name === "thickness" ? "16mm" : `Nhập ${secondaryAttr.label?.toLowerCase()}`} style={{ fontSize: 13 }} />}
                               <input className="input" value={s.sku} onChange={e => updateSize(cIdx, sIdx, "sku", e.target.value)} placeholder="Mã SKU" style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.price} onChange={e => updateSize(cIdx, sIdx, "price", e.target.value)} style={{ fontSize: 13 }} />
-                              {thicknessAttr && <input className="input" value={s.thickness || ""} onChange={e => updateSize(cIdx, sIdx, "thickness", e.target.value)} placeholder="16mm" style={{ fontSize: 13 }} />}
                               <input className="input" type="number" value={s.stock} onChange={e => updateSize(cIdx, sIdx, "stock", e.target.value)} style={{ fontSize: 13 }} />
                               <button type="button" onClick={() => removeSizeFromColor(cIdx, sIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}><X size={16} /></button>
                             </div>
