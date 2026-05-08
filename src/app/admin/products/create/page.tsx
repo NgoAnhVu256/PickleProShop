@@ -58,7 +58,7 @@ export default function AdminCreateProduct() {
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
   let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich") || a.name.toLowerCase() === "thickness");
+  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase() === "size" || a.name.toLowerCase() === "kich_thuoc" || a.name.toLowerCase() === "thickness");
   
   if (!primaryAttr && categoryAttributes.length > 0) {
     primaryAttr = categoryAttributes[0];

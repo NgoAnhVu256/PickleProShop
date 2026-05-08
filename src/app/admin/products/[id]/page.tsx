@@ -69,7 +69,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           const cat = cData.data?.find((c: any) => c.id === p.categoryId);
           const attrs = cat?.categoryAttrs?.map((ca: any) => ca.attribute) || [];
           let pAttr = attrs.find((a: any) => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-          let sAttr = attrs.find((a: any) => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich") || a.name.toLowerCase() === "thickness");
+          let sAttr = attrs.find((a: any) => a.name.toLowerCase() === "size" || a.name.toLowerCase() === "kich_thuoc" || a.name.toLowerCase() === "thickness");
 
           if (!pAttr && attrs.length > 0) {
             pAttr = attrs[0];
@@ -106,7 +106,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
   let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("size") || a.name.toLowerCase().includes("kich") || a.name.toLowerCase() === "thickness");
+  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase() === "size" || a.name.toLowerCase() === "kich_thuoc" || a.name.toLowerCase() === "thickness");
   
   if (!primaryAttr && categoryAttributes.length > 0) {
     primaryAttr = categoryAttributes[0];

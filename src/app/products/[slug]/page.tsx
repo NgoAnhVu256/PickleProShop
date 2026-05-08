@@ -135,7 +135,7 @@ export default function ProductDetailPage() {
             imgMap[av.value] = v.images[0];
           }
         }
-        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich") || attrName === "thickness") {
+        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "thickness") {
           sizes.add(av.value);
         }
       });
@@ -180,7 +180,7 @@ export default function ProductDetailPage() {
         if (attrName === "color" || attrName === "mau_sac" || attrName === "màu sắc" || attrName.includes("color") || attrName.includes("mau")) {
           colorMatch = av.value === selectedColor;
         }
-        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "kích thước" || attrName.includes("size") || attrName.includes("kich") || attrName === "thickness") {
+        if (attrName === "size" || attrName === "kich_thuoc" || attrName === "thickness") {
           sizeMatch = av.value === selectedSize;
         }
       });
@@ -483,7 +483,7 @@ export default function ProductDetailPage() {
             {colorOptions.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-bold text-gray-700">
-                  Chọn [Màu sắc]: <span className="text-[#7DAACB]">{selectedColor}</span>
+                  Màu sắc: <span className="text-[#7DAACB]">{selectedColor}</span>
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {colorOptions.map(color => {
@@ -527,7 +527,7 @@ export default function ProductDetailPage() {
               return (
               <div className="space-y-3">
                 <p className="text-sm font-bold text-gray-700">
-                  Chọn [{sizeAttrLabel}]: <span className="text-[#7DAACB]">{selectedSize}</span>
+                  {sizeAttrLabel}: <span className="text-[#7DAACB]">{selectedSize}</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {sizeOptions.map(size => {
@@ -650,7 +650,8 @@ export default function ProductDetailPage() {
             {matchedVariant && (() => {
               const specs = matchedVariant.attrValues.filter(av => {
                 const n = av.attribute.name.toLowerCase();
-                return n === "thickness" || n === "weight" || n === "grip_size";
+                // Exclude color (already a selector) and thickness (already a selector)
+                return n !== "color" && n !== "thickness" && n !== "size" && n !== "kich_thuoc";
               });
               if (specs.length === 0) return null;
               return (
