@@ -18,6 +18,7 @@ interface ProductDetail {
   images: string[];
   basePrice: number;
   salePrice: number | null;
+  stock?: number;
   category: { 
     id: string; 
     name: string; 
@@ -303,10 +304,15 @@ export default function ProductDetailPage() {
   const originalPrice = matchedVariant?.price || product.basePrice;
   const isDiscounted = displayPrice < originalPrice;
 
-  // Check total stock across all variants
-  const totalStock = product.variants.reduce((sum: number, v: any) => sum + (v.stock || 0), 0);
-  const isOutOfStock = product.variants.length > 0 && totalStock === 0;
-  const currentVariantOutOfStock = matchedVariant ? matchedVariant.stock === 0 : isOutOfStock;
+  // Check stock: variant-based or product-level
+  const hasAnyVariants = product.variants.length > 0;
+  const totalStock = hasAnyVariants
+    ? product.variants.reduce((sum: number, v: any) => sum + (v.stock || 0), 0)
+    : (product.stock ?? 0);
+  const isOutOfStock = totalStock === 0;
+  const currentVariantOutOfStock = matchedVariant 
+    ? matchedVariant.stock === 0 
+    : (hasAnyVariants ? isOutOfStock : (product.stock ?? 0) === 0);
 
   const handleAddToCart = () => {
     if (currentVariantOutOfStock) {
@@ -647,6 +653,9 @@ export default function ProductDetailPage() {
               </div>
               {matchedVariant && matchedVariant.stock > 0 && (
                 <span className="text-xs text-gray-400 font-medium">Còn {matchedVariant.stock} sản phẩm</span>
+              )}
+              {!hasAnyVariants && !currentVariantOutOfStock && (product.stock ?? 0) > 0 && (
+                <span className="text-xs text-gray-400 font-medium">Còn {product.stock} sản phẩm</span>
               )}
             </div>
 

@@ -36,6 +36,7 @@ export default function AdminCreateProduct() {
   const [brandId, setBrandId] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [stock, setStock] = useState("0");
 
   // Option-Matrix state
   const [colorGroups, setColorGroups] = useState<ColorGroup[]>([]);
@@ -142,6 +143,7 @@ export default function AdminCreateProduct() {
           images: galleryImages,
           gallery: galleryImages.map(url => ({ url })),
           variants,
+          stock: !hasVariants ? (parseInt(stock) || 0) : undefined,
         }),
       });
       const data = await res.json();
@@ -248,8 +250,16 @@ export default function AdminCreateProduct() {
               )}
 
               {categoryId && !hasVariants && (
-                <div style={{ padding: 20, textAlign: "center", background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, color: "#0369a1", fontSize: 13 }}>
-                  Danh mục này chưa có thuộc tính. Sản phẩm sẽ được tạo mặc định không có biến thể. Vào <Link href="/admin/attributes" style={{ fontWeight: 700, textDecoration: "underline" }}>Thuộc tính</Link> để tạo.
+                <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8 }}>
+                  <p style={{ color: "#0369a1", fontSize: 13, marginBottom: 16 }}>
+                    Danh mục này chưa có thuộc tính biến thể. Sản phẩm sẽ được tạo không có biến thể.
+                  </p>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
+                    <div>
+                      <label className="input-label">Số lượng tồn kho *</label>
+                      <input className="input" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" min="0" />
+                    </div>
+                  </div>
                 </div>
               )}
 

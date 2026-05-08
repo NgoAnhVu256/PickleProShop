@@ -54,7 +54,7 @@ export async function PUT(
     const body = await req.json();
     const {
       name, description, basePrice, salePrice, saleStartAt, saleEndAt,
-      categoryId, brandId, thumbnail, images, isActive, gallery, variants
+      categoryId, brandId, thumbnail, images, isActive, gallery, variants, stock
     } = body;
 
     // Pricing validation
@@ -81,6 +81,7 @@ export async function PUT(
       if (thumbnail !== undefined) updateData.thumbnail = thumbnail || null;
       if (images !== undefined) updateData.images = images;
       if (isActive !== undefined) updateData.isActive = isActive;
+      if (stock !== undefined) updateData.stock = parseInt(stock) || 0;
 
       const product = await tx.product.update({
         where: { id },

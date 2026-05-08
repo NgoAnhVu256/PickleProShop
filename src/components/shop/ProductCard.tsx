@@ -5,10 +5,11 @@ export default function ProductCard({ product }: { product: any }) {
   const originalPrice = product.basePrice || 0;
   const hasSale = !!product.salePrice && product.salePrice < originalPrice;
 
-  // Check total stock across all variants
-  const totalStock = product.variants
+  // Check stock: variant-based if variants exist, product-level otherwise
+  const hasVariants = product.variants && product.variants.length > 0;
+  const totalStock = hasVariants
     ? product.variants.reduce((sum: number, v: any) => sum + (v.stock || 0), 0)
-    : null; // null = no variants (don't show out of stock)
+    : (product.stock ?? null);
   const isOutOfStock = totalStock !== null && totalStock === 0;
 
   return (

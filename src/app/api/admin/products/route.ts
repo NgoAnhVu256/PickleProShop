@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       name, description, basePrice, salePrice, saleStartAt, saleEndAt,
-      categoryId, brandId, thumbnail, images, gallery, variants
+      categoryId, brandId, thumbnail, images, gallery, variants, stock
     } = body;
 
     if (!name || !categoryId) {
@@ -113,6 +113,7 @@ export async function POST(req: NextRequest) {
         brandId: brandId || null,
         thumbnail: thumbnail || null,
         images: images || [],
+        stock: stock != null ? parseInt(stock) : 0,
         gallery: gallery && gallery.length > 0
           ? {
               create: gallery.map((g: { url: string; alt?: string }, i: number) => ({

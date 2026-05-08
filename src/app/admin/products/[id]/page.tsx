@@ -36,6 +36,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
   const [thumbnail, setThumbnail] = useState("");
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [isActive, setIsActive] = useState(true);
+  const [stock, setStock] = useState("0");
   const [colorGroups, setColorGroups] = useState<ColorGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -59,6 +60,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           setSaleEndAt(p.saleEndAt ? new Date(p.saleEndAt).toISOString().slice(0, 16) : "");
           setCategoryId(p.categoryId); setBrandId(p.brandId || "");
           setThumbnail(p.thumbnail || ""); setIsActive(p.isActive);
+          setStock(String(p.stock || 0));
           if (p.gallery?.length > 0) setGalleryImages(p.gallery.map((g: any) => g.url));
           else if (p.images?.length > 0) setGalleryImages(p.images);
           if (!p.thumbnail && p.images?.length > 0) setThumbnail(p.images[0]);
@@ -164,6 +166,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           categoryId, brandId: brandId || null, thumbnail, images: galleryImages, isActive,
           gallery: galleryImages.map(url => ({ url })),
           variants: buildVariants(),
+          stock: !hasVariants ? (parseInt(stock) || 0) : undefined,
         }),
       });
       const data = await res.json();
@@ -245,8 +248,14 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
               </div>
 
               {categoryId && !hasVariants && (
-                <div style={{ padding: 20, textAlign: "center", background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, color: "#0369a1", fontSize: 13 }}>
-                  Danh mục chưa có thuộc tính Màu sắc & Size.
+                <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8 }}>
+                  <p style={{ color: "#0369a1", fontSize: 13, marginBottom: 16 }}>
+                    Danh mục chưa có thuộc tính biến thể. Nhập số lượng tồn kho trực tiếp.
+                  </p>
+                  <div>
+                    <label className="input-label">Số lượng tồn kho *</label>
+                    <input className="input" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" min="0" />
+                  </div>
                 </div>
               )}
 
