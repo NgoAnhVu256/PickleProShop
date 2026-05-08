@@ -591,6 +591,26 @@ export default function ProductDetailPage() {
               </div>
             )}
 
+            {/* ─── Variant Specs (Thickness, Weight, etc.) ─── */}
+            {matchedVariant && (() => {
+              const specs = matchedVariant.attrValues.filter(av => {
+                const n = av.attribute.name.toLowerCase();
+                // Exclude color (already a selector) and thickness (already a selector)
+                return n !== "color" && n !== "thickness" && n !== "size" && n !== "kich_thuoc";
+              });
+              if (specs.length === 0) return null;
+              return (
+                <div className="flex flex-wrap gap-3">
+                  {specs.map(spec => (
+                    <div key={spec.attribute.name} className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl border border-gray-100">
+                      <span className="text-xs font-bold text-gray-400 uppercase">{spec.attribute.label}:</span>
+                      <span className="text-sm font-bold text-gray-800">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
             {/* ─── PROMOTIONS & GIFTS ─── */}
             {(() => {
               const variantPromos = matchedVariant?.promotionConditions || [];
@@ -646,25 +666,6 @@ export default function ProductDetailPage() {
               );
             })()}
 
-            {/* ─── Variant Specs (Thickness, Weight, etc.) ─── */}
-            {matchedVariant && (() => {
-              const specs = matchedVariant.attrValues.filter(av => {
-                const n = av.attribute.name.toLowerCase();
-                // Exclude color (already a selector) and thickness (already a selector)
-                return n !== "color" && n !== "thickness" && n !== "size" && n !== "kich_thuoc";
-              });
-              if (specs.length === 0) return null;
-              return (
-                <div className="flex flex-wrap gap-3">
-                  {specs.map(spec => (
-                    <div key={spec.attribute.name} className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl border border-gray-100">
-                      <span className="text-xs font-bold text-gray-400 uppercase">{spec.attribute.label}:</span>
-                      <span className="text-sm font-bold text-gray-800">{spec.value}</span>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
 
             {/* Quantity */}
             <div className="flex items-center gap-4">

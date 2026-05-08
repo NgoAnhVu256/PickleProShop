@@ -75,18 +75,18 @@ model Brand {
 }
 
 model Category {
-  id            String              @id @default(cuid())
-  name          String
-  slug          String              @unique
-  description   String?
-  image         String?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  parentId      String?
-  parent        Category?           @relation("CategoryTree", fields: [parentId], references: [id])
-  children      Category[]          @relation("CategoryTree")
-  categoryAttrs CategoryAttribute[]
-  products      Product[]
+  id                  String               @id @default(cuid())
+  name                String
+  slug                String               @unique
+  description         String?
+  image               String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  parentId            String?
+  parent              Category?            @relation("CategoryTree", fields: [parentId], references: [id])
+  children            Category[]           @relation("CategoryTree")
+  categoryAttrs       CategoryAttribute[]
+  products            Product[]
   promotionConditions PromotionCondition[]
 
   @@index([slug])
@@ -99,9 +99,9 @@ model Attribute {
   label         String
   type          AttributeType           @default(TEXT)
   createdAt     DateTime                @default(now())
+  values        AttributeValue[]
   categoryAttrs CategoryAttribute[]
   variantValues VariantAttributeValue[]
-  values        AttributeValue[]        // Predefined values for SELECT types
 }
 
 model AttributeValue {
@@ -130,65 +130,58 @@ model Product {
   id          String           @id @default(cuid())
   name        String
   slug        String           @unique
-  description String?          @db.Text
+  description String?
   categoryId  String
   thumbnail   String?
   images      String[]
   isActive    Boolean          @default(true)
-  stock       Int              @default(0)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-
-  // Pricing
   basePrice   Float            @default(0)
   salePrice   Float?
   saleStartAt DateTime?
   saleEndAt   DateTime?
-
   brandId     String?
+  stock       Int              @default(0)
   brand       Brand?           @relation(fields: [brandId], references: [id])
   category    Category         @relation(fields: [categoryId], references: [id])
-  variants    ProductVariant[]
   gallery     ProductImage[]
+  variants    ProductVariant[]
 
   @@index([slug])
   @@index([categoryId])
   @@index([brandId])
-  @@index([isActive, createdAt])
-  @@index([isActive, basePrice])
-  @@index([isActive, name])
 }
 
 model ProductImage {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   productId String
   url       String
   alt       String?
-  order     Int      @default(0)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Int     @default(0)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
 }
 
 model ProductVariant {
-  id         String                  @id @default(cuid())
-  productId  String
-  sku        String                  @unique
-  price      Float
-  stock      Int                     @default(0)
-  createdAt  DateTime                @default(now())
-  updatedAt  DateTime                @updatedAt
-  images     String[]
-  isActive   Boolean                 @default(true)
-  orderItems OrderItem[]
-  product    Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
-  attrValues VariantAttributeValue[]
+  id                  String                  @id @default(cuid())
+  productId           String
+  sku                 String                  @unique
+  price               Float
+  stock               Int                     @default(0)
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  images              String[]
+  isActive            Boolean                 @default(true)
+  orderItems          OrderItem[]
+  product             Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
   promotionConditions PromotionCondition[]
-  promotionRewards PromotionReward[]
+  promotionRewards    PromotionReward[]
+  attrValues          VariantAttributeValue[]
 
   @@index([productId])
   @@index([sku])
-  @@index([isActive])
 }
 
 model VariantAttributeValue {
@@ -205,23 +198,23 @@ model VariantAttributeValue {
 }
 
 model Order {
-  id         String      @id @default(cuid())
-  userId     String
-  totalPrice Float
-  status     OrderStatus @default(PENDING)
-  note          String?
-  phone         String?
-  address       String?
-  province      String?
-  district      String?
-  ward          String?
-  paymentMethod  String      @default("COD") // COD, BANK
+  id             String      @id @default(cuid())
+  userId         String
+  totalPrice     Float
+  status         OrderStatus @default(PENDING)
+  note           String?
+  phone          String?
+  address        String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  district       String?
+  paymentMethod  String      @default("COD")
+  province       String?
+  ward           String?
   couponCode     String?
   discountAmount Float       @default(0)
-  createdAt      DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  user          User        @relation(fields: [userId], references: [id])
-  items      OrderItem[]
+  user           User        @relation(fields: [userId], references: [id])
+  items          OrderItem[]
 
   @@index([userId])
   @@index([status])
@@ -240,18 +233,18 @@ model OrderItem {
 }
 
 model Coupon {
-  id              String      @id @default(cuid())
-  code            String      @unique
-  type            CouponType
-  value           Float
-  minOrderValue   Float       @default(0)
-  maxDiscount     Float?
-  limit           Int?
-  usedCount       Int         @default(0)
-  expiryDate      DateTime?
-  isActive        Boolean     @default(true)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id            String     @id @default(cuid())
+  code          String     @unique
+  type          CouponType
+  value         Float
+  minOrderValue Float      @default(0)
+  maxDiscount   Float?
+  limit         Int?
+  usedCount     Int        @default(0)
+  expiryDate    DateTime?
+  isActive      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   @@index([code])
   @@index([isActive])
@@ -268,8 +261,8 @@ model Setting {
 model Announcement {
   id         String    @id @default(cuid())
   content    String
-  image      String?   // optional banner image (displayed behind the text or as a visual)
-  buttonText String?   // optional CTA button text (e.g. "MUA NGAY")
+  image      String?
+  buttonText String?
   link       String?
   isActive   Boolean   @default(true)
   startDate  DateTime  @default(now())
@@ -299,9 +292,9 @@ model PostCategory {
   name        String
   slug        String   @unique
   description String?
-  posts       Post[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  posts       Post[]
 }
 
 model Post {
@@ -309,14 +302,11 @@ model Post {
   title           String
   slug            String       @unique
   excerpt         String?
-  content         String       @db.Text
+  content         String
   image           String?
   categoryId      String
-  category        PostCategory @relation(fields: [categoryId], references: [id])
   isActive        Boolean      @default(true)
   isFeatured      Boolean      @default(false)
-  
-  // SEO Standards 2026
   seoTitle        String?
   metaDescription String?
   metaKeywords    String?
@@ -324,11 +314,11 @@ model Post {
   ogDescription   String?
   ogImage         String?
   canonicalUrl    String?
-  schemaType      String       @default("Article") // Article, NewsArticle, Review, etc.
-  
+  schemaType      String       @default("Article")
   publishedAt     DateTime     @default(now())
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+  category        PostCategory @relation(fields: [categoryId], references: [id])
 
   @@index([slug])
   @@index([categoryId])
@@ -355,7 +345,7 @@ model Feedback {
   email     String?
   phone     String?
   subject   String
-  message   String         @db.Text
+  message   String
   status    FeedbackStatus @default(NEW)
   isRead    Boolean        @default(false)
   createdAt DateTime       @default(now())
@@ -373,6 +363,51 @@ model FeedbackBanner {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Promotion {
+  id          String               @id @default(cuid())
+  name        String
+  isActive    Boolean              @default(true)
+  startDate   DateTime             @default(now())
+  endDate     DateTime?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  description String?
+  priority    Int                  @default(0)
+  stackable   Boolean              @default(false)
+  conditions  PromotionCondition[]
+  rewards     PromotionReward[]
+
+  @@index([isActive])
+  @@index([priority])
+}
+
+model PromotionCondition {
+  id               String          @id @default(cuid())
+  promotionId      String
+  categoryId       String?
+  productVariantId String?
+  minQuantity      Int             @default(1)
+  category         Category?       @relation(fields: [categoryId], references: [id])
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
+  promotion        Promotion       @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@index([promotionId])
+}
+
+model PromotionReward {
+  id               String         @id @default(cuid())
+  promotionId      String
+  quantity         Int            @default(1)
+  productVariantId String
+  promoPrice       Float          @default(0)
+  discountType     DiscountType   @default(FREE)
+  discountValue    Float          @default(0)
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  promotion        Promotion      @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@index([promotionId])
 }
 
 enum Role {
@@ -414,58 +449,6 @@ enum FeedbackStatus {
   NEW
   REVIEWED
   RESOLVED
-}
-
-model Promotion {
-  id          String   @id @default(cuid())
-  name        String
-  description String?  @db.Text
-  isActive    Boolean  @default(true)
-  startDate   DateTime @default(now())
-  endDate     DateTime?
-  priority    Int      @default(0)   // Higher = evaluated first
-  stackable   Boolean  @default(false) // Can stack with other promos?
-
-  conditions  PromotionCondition[]
-  rewards     PromotionReward[]
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([isActive])
-  @@index([priority])
-}
-
-model PromotionCondition {
-  id               String   @id @default(cuid())
-  promotionId      String
-  promotion        Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
-  
-  productVariantId String?
-  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
-  
-  categoryId       String?
-  category         Category? @relation(fields: [categoryId], references: [id])
-
-  minQuantity      Int      @default(1) // Min qty in cart to trigger
-
-  @@index([promotionId])
-}
-
-model PromotionReward {
-  id               String   @id @default(cuid())
-  promotionId      String
-  promotion        Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
-  
-  productVariantId String
-  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
-  
-  quantity         Int           @default(1)
-  promoPrice       Float         @default(0) // 0 means free
-  discountType     DiscountType  @default(FREE)  // FREE, FIXED, PERCENTAGE
-  discountValue    Float         @default(0) // Value for FIXED or PERCENTAGE
-
-  @@index([promotionId])
 }
 
 enum DiscountType {
