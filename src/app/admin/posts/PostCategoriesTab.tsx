@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { Plus, Edit2, Trash2, Search } from "lucide-react";
 
-export default function PostCategoriesPage() {
+export default function PostCategoriesTab() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

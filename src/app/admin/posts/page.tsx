@@ -5,6 +5,7 @@ import { Plus, Edit, Trash2, Calendar, User, Eye, Search, Filter } from "lucide-
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useConfirm } from "@/hooks/useConfirm";
+import PostCategoriesTab from "./PostCategoriesTab";
 
 interface Post {
   id: string;
@@ -17,6 +18,7 @@ interface Post {
 }
 
 export default function AdminPostsPage() {
+  const [activeTab, setActiveTab] = useState<'posts' | 'categories'>('posts');
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,7 +60,26 @@ export default function AdminPostsPage() {
 
   return (
     <div className="fade-in">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+      <div className="flex border-b border-gray-200 mb-6">
+        <button 
+          onClick={() => setActiveTab('posts')}
+          className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'posts' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          Danh sách bài viết
+        </button>
+        <button 
+          onClick={() => setActiveTab('categories')}
+          className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'categories' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          Quản lý danh mục
+        </button>
+      </div>
+
+      {activeTab === 'categories' ? (
+        <PostCategoriesTab />
+      ) : (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#323b4b" }}>Tin tức & Bài viết</h1>
           <p style={{ fontSize: 13, color: "#8a98ac", marginTop: 2 }}>Quản lý nội dung blog, review và tin tức SEO</p>
@@ -144,6 +165,8 @@ export default function AdminPostsPage() {
           </tbody>
         </table>
       </div>
+        </>
+      )}
       <ConfirmDialog />
     </div>
   );
