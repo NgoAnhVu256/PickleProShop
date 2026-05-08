@@ -10,23 +10,20 @@ interface PopupBannerData {
   link: string | null;
 }
 
-export default function PopupBanner() {
+export default function PopupBanner({ onClose }: { onClose?: () => void }) {
   const [banner, setBanner] = useState<PopupBannerData | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Check if popup was already dismissed in this session
     if (typeof window === "undefined") return;
     const dismissed = sessionStorage.getItem("popup_banner_dismissed");
     if (dismissed) return;
 
-    // Fetch POPUP banners from API
     fetch("/api/banners?position=POPUP")
       .then((r) => r.json())
       .then((data) => {
         if (data.success && data.data && data.data.length > 0) {
           setBanner(data.data[0]);
-          // Small delay so the animation feels natural
           setTimeout(() => setVisible(true), 500);
         }
       })
@@ -36,8 +33,11 @@ export default function PopupBanner() {
   const handleClose = () => {
     setVisible(false);
     sessionStorage.setItem("popup_banner_dismissed", "true");
-    // Remove from DOM after animation
-    setTimeout(() => setBanner(null), 300);
+    // Remove from DOM after animation, then fire onClose → triggers chatbot
+    setTimeout(() => {
+      setBanner(null);
+      onClose?.();
+    }, 350);
   };
 
   if (!banner) return null;
@@ -113,12 +113,8 @@ export default function PopupBanner() {
           <X size={18} color="#333" />
         </button>
 
-        {/* Banner image — clickable link or plain image */}
         {banner.link ? (
-          <a
-            href={banner.link}
-            style={{ display: "block", cursor: "pointer" }}
-          >
+          <a href={banner.link} style={{ display: "block", cursor: "pointer" }}>
             {content}
           </a>
         ) : (
