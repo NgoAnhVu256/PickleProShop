@@ -12,7 +12,7 @@ import { getSiteSettings } from '@/lib/settings';
 import { unstable_cache } from 'next/cache';
 
 // Lazy-load below-fold client components to reduce initial JS bundle
-const PromotionCarousel = dynamic(() => import('@/components/shop/PromotionCarousel'), { ssr: false });
+const PromotionCarousel = dynamic(() => import('@/components/shop/PromotionCarousel'));
 
 // ─── CACHED DATA FETCHERS (revalidate every 60s instead of every request) ───
 
