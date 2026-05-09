@@ -49,7 +49,7 @@ export default function CartDrawer() {
             <h2 className="text-lg font-black text-gray-900">Giỏ hàng</h2>
             <span className="bg-[#7DAACB] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{totalItems}</span>
           </div>
-          <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+          <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors" aria-label="Đóng giỏ hàng">
             <X size={20} className="text-gray-500" />
           </button>
         </div>
@@ -84,18 +84,18 @@ export default function CartDrawer() {
                     <p className="text-[11px] text-gray-400 font-medium mt-0.5">{item.variantLabel}</p>
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center gap-1.5 bg-white rounded-lg border border-gray-200">
-                        <button onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900">
+                        <button onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900" aria-label="Giảm số lượng">
                           <Minus size={12} />
                         </button>
                         <span className="text-sm font-bold w-8 text-center">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900">
+                        <button onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-900" aria-label="Tăng số lượng">
                           <Plus size={12} />
                         </button>
                       </div>
                       <span className="text-sm font-black text-gray-900">{(item.price * item.quantity).toLocaleString()}₫</span>
                     </div>
                   </div>
-                  <button onClick={() => removeFromCart(item.variantId)} className="self-start p-1.5 text-gray-300 hover:text-red-500 transition-colors">
+                  <button onClick={() => removeFromCart(item.variantId)} className="self-start p-1.5 text-gray-300 hover:text-red-500 transition-colors" aria-label="Xóa sản phẩm">
                     <Trash2 size={14} />
                   </button>
                 </div>

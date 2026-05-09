@@ -77,6 +77,7 @@ export default function AnnouncementBar({ announcements }: Props) {
           setVisible(false);
           localStorage.setItem("ann-closed", "1");
         }}
+        aria-label="Đóng thông báo"
         className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-sm bg-black bg-opacity-30 hover:bg-opacity-50 text-white flex items-center justify-center transition-colors z-10"
       >
         <X size={16} />

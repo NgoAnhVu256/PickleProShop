@@ -207,6 +207,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center gap-2 text-sm"
+                aria-label="Menu tài khoản"
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#5a93b5] to-[#7DAACB] flex items-center justify-center text-white font-bold text-xs">
                   {user.image ? (

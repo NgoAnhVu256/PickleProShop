@@ -37,15 +37,15 @@ export default function ProductCard({ product }: { product: any }) {
         ) : null}
       </div>
       <div className="flex-1 flex flex-col justify-start">
-        <h3 className="text-[13px] md:text-sm font-semibold text-gray-900 mb-1 md:mb-1.5 line-clamp-2 leading-snug">{product.name}</h3>
+        <h2 className="text-[13px] md:text-sm font-semibold text-gray-900 mb-1 md:mb-1.5 line-clamp-2 leading-snug">{product.name}</h2>
         <div className="flex items-center gap-2 mt-auto pt-1">
           {isOutOfStock ? (
-            <span className="text-sm md:text-base font-bold text-gray-400">Liên hệ</span>
+            <span className="text-sm md:text-base font-bold text-gray-500">Liên hệ</span>
           ) : (
             <>
               <span className="text-sm md:text-base font-bold text-[#7DAACB]">{price.toLocaleString()}đ</span>
               {hasSale && (
-                <span className="text-[10px] md:text-xs text-gray-400 line-through">{(originalPrice).toLocaleString()}đ</span>
+                <span className="text-[10px] md:text-xs text-gray-500 line-through">{(originalPrice).toLocaleString()}đ</span>
               )}
             </>
           )}

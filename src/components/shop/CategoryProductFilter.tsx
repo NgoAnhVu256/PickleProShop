@@ -103,6 +103,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
             <select
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
+              aria-label="Lọc theo thương hiệu"
               className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
             >
               <option value="">Tất cả thương hiệu</option>
@@ -116,6 +117,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
+            aria-label="Sắp xếp sản phẩm"
             className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
           >
             <option value="newest">Mới nhất</option>
@@ -146,7 +148,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
       {/* Price filter panel */}
       {showFilters && (
         <div className="bg-white border border-gray-100 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 shadow-sm">
-          <h4 className="text-sm font-bold text-gray-700 mb-3">Khoảng giá</h4>
+          <div className="text-sm font-bold text-gray-700 mb-3">Khoảng giá</div>
           <div className="flex items-center gap-3 flex-wrap">
             <input
               type="number"
@@ -200,16 +202,16 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
                   )}
                 </div>
                 <div>
-                  <h3 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#7DAACB] transition-colors leading-snug">
+                  <h2 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#7DAACB] transition-colors leading-snug">
                     {product.name}
-                  </h3>
+                  </h2>
                   {product.brand && (
-                    <p className="text-[10px] md:text-xs text-gray-400 font-medium mb-1">{product.brand.name}</p>
+                    <p className="text-[10px] md:text-xs text-gray-500 font-medium mb-1">{product.brand.name}</p>
                   )}
                   <div className="flex items-center gap-2">
                     <span className="text-sm md:text-base font-black text-gray-900">{price.toLocaleString()}₫</span>
                     {hasSale && (
-                      <span className="text-[10px] md:text-xs text-gray-400 line-through font-medium">{product.basePrice.toLocaleString()}₫</span>
+                      <span className="text-[10px] md:text-xs text-gray-500 line-through font-medium">{product.basePrice.toLocaleString()}₫</span>
                     )}
                   </div>
                 </div>

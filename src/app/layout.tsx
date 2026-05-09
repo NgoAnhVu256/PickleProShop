@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   // SEO fields from admin — fallback to store name/slogan
   const seoTitle = settings.seoTitle || settings.name;
-  const seoDescription = settings.seoDescription || settings.slogan;
+  const seoDescription = settings.seoDescription || settings.slogan || "Cửa hàng Pickleball uy tín, cung cấp vợt và phụ kiện chính hãng.";
   const seoKeywords = settings.seoKeywords
     ? settings.seoKeywords.split(",").map((k: string) => k.trim())
     : ["Pickleball", "PicklePro", "Vợt Pickleball", "Giày Pickleball", "Phụ kiện Pickleball chính hãng", "Pickleball Vietnam"];
