@@ -262,7 +262,7 @@ function GoogleButton({ isLoading, onClick, mode }: { isLoading: boolean, onClic
     <>
       <div className="relative my-6 text-center">
         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
-        <span className="relative bg-white px-4 text-[10px] font-black text-gray-300 uppercase tracking-widest">hoặc nhanh hơn</span>
+        <span className="relative bg-white px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">hoặc nhanh hơn</span>
       </div>
       <button onClick={onClick} disabled={isLoading} type="button" className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all">
         {isLoading ? <Loader2 className="w-5 h-5 animate-spin text-gray-400" /> : (

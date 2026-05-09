@@ -1,0 +1,22 @@
+# PicklePro — robots.txt
+# Allow search engines to crawl public pages, block sensitive routes
+
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /category/
+Allow: /blog/
+
+# Block admin, API, auth, and checkout routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /cart
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /orders/
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://picklepro.vn/sitemap.xml
