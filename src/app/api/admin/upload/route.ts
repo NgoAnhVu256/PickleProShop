@@ -2,11 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import sharp from "sharp";
 import { getUploadDir, getUploadFilePath, getPublicUrl } from "@/lib/uploads";
 
 // Next.js 15 App Router: ensure enough time for large uploads
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
+
+// Image extensions that should be converted to WebP
+const CONVERTIBLE_IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif"]);
+
+// Max dimensions for uploaded images (resize if larger)
+const MAX_WIDTH = 1920;
+const MAX_HEIGHT = 1920;
+
+// WebP quality (80 = good balance of quality vs file size, visually lossless)
+const WEBP_QUALITY = 80;
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,17 +30,52 @@ export async function POST(req: NextRequest) {
     }
 
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    let buffer = Buffer.from(bytes);
 
-    // Create unique filename
-    const ext = path.extname(file.name);
-    const filename = `${uuidv4()}${ext}`;
-    
+    const originalExt = path.extname(file.name).toLowerCase();
     const subfolder = folder.replace(/[^a-z0-9]/gi, "_").toLowerCase();
     const uploadDir = getUploadDir(subfolder);
-    
+
     // Ensure directory exists
     await mkdir(uploadDir, { recursive: true });
+
+    let filename: string;
+
+    // Auto-convert images to WebP for massive size reduction
+    if (CONVERTIBLE_IMAGE_EXTS.has(originalExt)) {
+      filename = `${uuidv4()}.webp`;
+
+      // Convert to WebP with sharp:
+      // 1. Resize if larger than MAX dimensions (keeps aspect ratio)
+      // 2. Convert to WebP at configured quality
+      // 3. Strip EXIF/metadata to save even more bytes
+      buffer = await sharp(buffer)
+        .resize(MAX_WIDTH, MAX_HEIGHT, {
+          fit: "inside",       // Keeps aspect ratio, fits within bounds
+          withoutEnlargement: true, // Don't upscale small images
+        })
+        .webp({ quality: WEBP_QUALITY })
+        .toBuffer();
+    } else if (originalExt === ".webp") {
+      // Already WebP — just resize if needed, don't re-encode
+      filename = `${uuidv4()}.webp`;
+      buffer = await sharp(buffer)
+        .resize(MAX_WIDTH, MAX_HEIGHT, {
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: WEBP_QUALITY })
+        .toBuffer();
+    } else if (originalExt === ".gif") {
+      // GIF: keep as-is (animated GIFs lose animation when converted)
+      filename = `${uuidv4()}.gif`;
+    } else if (originalExt === ".svg") {
+      // SVG: keep as-is (vector format, already tiny)
+      filename = `${uuidv4()}.svg`;
+    } else {
+      // Non-image files (PDF, etc.): keep original extension
+      filename = `${uuidv4()}${originalExt}`;
+    }
 
     const filePath = path.join(uploadDir, filename);
     await writeFile(filePath, buffer);

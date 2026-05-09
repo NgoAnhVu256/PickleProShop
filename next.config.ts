@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   // Enable source maps in production for better debugging
   productionBrowserSourceMaps: true,
   // Increase body size limit for admin posts with embedded images
-  serverExternalPackages: [],
+  serverExternalPackages: ["sharp"],
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
