@@ -148,11 +148,49 @@ async function main() {
   // 6. ProductVariants
   console.log("\n🎨 Checking ProductVariants...");
   const variants = await prisma.productVariant.findMany({
-    select: { id: true, image: true },
+    select: { id: true, images: true },
   });
   for (const v of variants) {
-    if (v.image && /\.(jpg|jpeg|png)$/i.test(v.image)) {
-      await updateField("productVariant", v.id, "image", v.image);
+    if (v.images && Array.isArray(v.images)) {
+      const newImages = v.images.map(img => {
+        const webpUrl = toWebpUrl(img);
+        return webpUrl || img;
+      });
+      const hasChanges = newImages.some((img, i) => img !== v.images[i]);
+      if (hasChanges) {
+        // Check that at least one webp file actually exists
+        const firstWebp = getFilePath(newImages[0]);
+        if (firstWebp && await fileExists(firstWebp)) {
+          await prisma.productVariant.update({
+            where: { id: v.id },
+            data: { images: newImages },
+          });
+          console.log(`  ✅ productVariant.images: updated ${newImages.length} URLs`);
+          updated++;
+        }
+      }
+    }
+  }
+
+  // 7. Announcements
+  console.log("\n📢 Checking Announcements...");
+  const announcements = await prisma.announcement.findMany({
+    select: { id: true, image: true },
+  });
+  for (const a of announcements) {
+    if (a.image && /\.(jpg|jpeg|png)$/i.test(a.image)) {
+      await updateField("announcement", a.id, "image", a.image);
+    }
+  }
+
+  // 8. FeedbackBanners
+  console.log("\n💬 Checking FeedbackBanners...");
+  const feedbackBanners = await prisma.feedbackBanner.findMany({
+    select: { id: true, image: true },
+  });
+  for (const f of feedbackBanners) {
+    if (f.image && /\.(jpg|jpeg|png)$/i.test(f.image)) {
+      await updateField("feedbackBanner", f.id, "image", f.image);
     }
   }
 
