@@ -1,20 +1,25 @@
+import Script from "next/script";
+
 /**
  * Google Analytics GA4 component.
- * 
- * Server component that injects GA4 tracking directly into <head>
- * using dangerouslySetInnerHTML so the tag appears in the initial HTML source.
- * This ensures Google's tag checker can detect it.
+ *
+ * Uses next/script with strategy="afterInteractive" to:
+ * 1. Not block the main thread during initial page load
+ * 2. Load GA after hydration is complete
+ * 3. Reduce render-blocking resource impact on FCP/LCP
  */
 export default function GoogleAnalytics({ measurementId }: { measurementId: string }) {
   if (!measurementId) return null;
 
   return (
     <>
-      <script
-        async
+      <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+        strategy="afterInteractive"
       />
-      <script
+      <Script
+        id="google-analytics-config"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];

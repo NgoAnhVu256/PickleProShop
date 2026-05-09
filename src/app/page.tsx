@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import HomeHeader from '@/components/shop/HomeHeader';
 import TopBanner from '@/components/shop/TopBanner';
 import BannerGrid from '@/components/shop/BannerGrid';
-import PromotionCarousel from '@/components/shop/PromotionCarousel';
 import ProductCard from "@/components/shop/ProductCard";
 import Footer from "@/components/shop/Footer";
 import { Globe, Package } from 'lucide-react';
@@ -10,6 +10,9 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 import { unstable_cache } from 'next/cache';
+
+// Lazy-load below-fold client components to reduce initial JS bundle
+const PromotionCarousel = dynamic(() => import('@/components/shop/PromotionCarousel'), { ssr: false });
 
 // ─── CACHED DATA FETCHERS (revalidate every 60s instead of every request) ───
 

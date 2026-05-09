@@ -3,11 +3,12 @@
 import dynamic from "next/dynamic";
 import { SessionProvider } from "next-auth/react";
 import { CartProvider } from "@/components/shop/CartContext";
-import CartDrawer from "@/components/shop/CartDrawer";
 import { usePathname } from "next/navigation";
 
+// Lazy-load heavy components to reduce main-thread blocking time
 const ChatWidget = dynamic(() => import("@/components/shop/ChatWidget"), { ssr: false });
 const PopupBanner = dynamic(() => import("@/components/shop/PopupBanner"), { ssr: false });
+const CartDrawer = dynamic(() => import("@/components/shop/CartDrawer"), { ssr: false });
 
 import React, { createContext, useContext } from "react";
 

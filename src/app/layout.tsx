@@ -130,7 +130,6 @@ export default async function RootLayout({
         {/* Preconnect to critical origins for faster resource loading */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//www.googletagmanager.com" />
-        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -145,6 +144,8 @@ export default async function RootLayout({
           {children}
         </Providers>
         <Toaster position="top-center" />
+        {/* GA loads after hydration — not render-blocking */}
+        <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
       </body>
     </html>
   );
