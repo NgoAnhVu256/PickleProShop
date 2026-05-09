@@ -68,9 +68,9 @@ export default function PromotionCarousel({ promotions = [] }: { promotions: any
                </div>
             </div>
 
-            {item.link && (
+            {item.link ? (
               <a href={item.link} aria-label={item.title || "Xem khuyến mãi"} className="absolute inset-0 z-10" />
-            )}
+            ) : null}
           </div>
         ))}
       </div>

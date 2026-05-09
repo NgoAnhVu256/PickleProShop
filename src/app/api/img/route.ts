@@ -25,7 +25,7 @@ const CACHE_DIR = path.join(process.cwd(), ".next", "cache", "optimized-images")
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const src = searchParams.get("src");
+    const src = searchParams.get("src") || searchParams.get("url");
     const width = parseInt(searchParams.get("w") || "0") || 0;
     const quality = parseInt(searchParams.get("q") || "80") || 80;
 

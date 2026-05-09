@@ -173,8 +173,8 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
       {/* Results count */}
       <p className="text-xs md:text-sm text-gray-500 font-medium mb-4 md:mb-6">
         {filtered.length} / {products.length} sản phẩm
-        {search && <span> cho &quot;{search}&quot;</span>}
-        {selectedBrand && <span> • {brands.find(b => b.id === selectedBrand)?.name}</span>}
+        {search ? <span> cho &quot;{search}&quot;</span> : null}
+        {selectedBrand ? <span> • {brands.find(b => b.id === selectedBrand)?.name}</span> : null}
       </p>
 
       {/* Product Grid */}
