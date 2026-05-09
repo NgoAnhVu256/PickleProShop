@@ -23,6 +23,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const ogDescription = settings.ogDescription || seoDescription;
   const ogImage = settings.ogImage || settings.logo || "/api/favicon";
 
+  // Use admin-uploaded favicon directly — avoids extra API roundtrip per request
+  const faviconUrl = settings.favicon && settings.favicon !== "/favicon.ico"
+    ? settings.favicon
+    : "/api/favicon";
+
   return {
     metadataBase: new URL(siteUrl),
     title: {
@@ -32,11 +37,11 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seoDescription,
     icons: {
       icon: [
-        { url: "/api/favicon", type: "image/x-icon" },
-        { url: "/api/favicon", type: "image/png" }
+        { url: faviconUrl, type: "image/png" },
+        { url: faviconUrl, type: "image/x-icon" }
       ],
-      shortcut: "/api/favicon",
-      apple: "/api/favicon",
+      shortcut: faviconUrl,
+      apple: faviconUrl,
     },
     keywords: seoKeywords,
     openGraph: {

@@ -28,6 +28,8 @@ export default function Footer({ settings }: { settings?: any }) {
               <img
                 src={logo}
                 alt={siteName}
+                width={64}
+                height={64}
                 className="h-16 w-16 rounded-lg object-cover"
               />
             </Link>

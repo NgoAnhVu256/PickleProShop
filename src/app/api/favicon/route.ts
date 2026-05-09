@@ -4,11 +4,13 @@ import { existsSync } from "fs";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
-
 /**
  * GET /api/favicon
  * Serves the favicon dynamically from admin settings.
+ * 
+ * Cached aggressively (1 year) since favicons rarely change.
+ * When admin updates favicon, the URL itself changes (different upload path),
+ * so browser fetches the new file.
  */
 export async function GET() {
   try {
@@ -47,7 +49,8 @@ export async function GET() {
     return new NextResponse(buffer, {
       headers: {
         "Content-Type": contentTypes[ext] || "image/x-icon",
-        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+        // Cache aggressively — favicon changes are rare
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
       },
     });
   } catch (error) {
