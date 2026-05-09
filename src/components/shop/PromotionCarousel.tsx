@@ -23,12 +23,14 @@ export default function PromotionCarousel({ promotions = [] }: { promotions: any
         <div className="hidden md:flex gap-2">
           <button 
             onClick={() => scroll('left')}
+            aria-label="Cuộn trái"
             className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors shadow-sm"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button 
             onClick={() => scroll('right')}
+            aria-label="Cuộn phải"
             className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors shadow-sm"
           >
             <ChevronRight className="w-5 h-5" />
@@ -67,7 +69,7 @@ export default function PromotionCarousel({ promotions = [] }: { promotions: any
             </div>
 
             {item.link && (
-              <a href={item.link} className="absolute inset-0 z-10" />
+              <a href={item.link} aria-label={item.title || "Xem khuyến mãi"} className="absolute inset-0 z-10" />
             )}
           </div>
         ))}

@@ -15,8 +15,13 @@ async function getPostData(slug: string) {
   try {
     const post = await prisma.post.findUnique({
       where: { slug },
-      include: {
-        category: true,
+      select: {
+        id: true, title: true, slug: true, content: true, excerpt: true,
+        image: true, publishedAt: true, updatedAt: true, isActive: true,
+        seoTitle: true, metaDescription: true, metaKeywords: true,
+        canonicalUrl: true, ogTitle: true, ogDescription: true, ogImage: true,
+        schemaType: true, categoryId: true,
+        category: { select: { id: true, name: true, slug: true } },
       },
     });
     return post;
@@ -32,6 +37,9 @@ async function getRelatedPosts(categoryId: string, currentPostId: string) {
         categoryId,
         id: { not: currentPostId },
         isActive: true,
+      },
+      select: {
+        id: true, title: true, slug: true, image: true, excerpt: true, publishedAt: true,
       },
       take: 3,
       orderBy: { publishedAt: 'desc' },

@@ -72,27 +72,27 @@ export default function Footer({ settings }: { settings?: any }) {
             <h4 className="text-[13px] font-black text-[#2d3a45] uppercase tracking-[0.15em] mb-5">Mạng xã hội</h4>
             <div className="flex items-center gap-3">
               {settings?.facebook && (
-                <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="text-[#3d4f5f] hover:text-[#1877F2] transition-colors">
+                <a href={settings.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-[#3d4f5f] hover:text-[#1877F2] transition-colors">
                   <Facebook size={20} />
                 </a>
               )}
               {settings?.instagram && (
-                <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="text-[#3d4f5f] hover:text-[#E4405F] transition-colors">
+                <a href={settings.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-[#3d4f5f] hover:text-[#E4405F] transition-colors">
                   <Instagram size={20} />
                 </a>
               )}
               {settings?.youtube && (
-                <a href={settings.youtube} target="_blank" rel="noopener noreferrer" className="text-[#3d4f5f] hover:text-[#FF0000] transition-colors">
+                <a href={settings.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-[#3d4f5f] hover:text-[#FF0000] transition-colors">
                   <Youtube size={20} />
                 </a>
               )}
               {settings?.tiktok && (
-                <a href={settings.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#3d4f5f] hover:text-black transition-colors">
+                <a href={settings.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-[#3d4f5f] hover:text-black transition-colors">
                   <TikTokIcon size={20} />
                 </a>
               )}
               {settings?.website && (
-                <a href={settings.website} target="_blank" rel="noopener noreferrer" className="text-[#3d4f5f] hover:text-[#2d3a45] transition-colors">
+                <a href={settings.website} target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-[#3d4f5f] hover:text-[#2d3a45] transition-colors">
                   <Globe size={20} />
                 </a>
               )}

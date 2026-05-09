@@ -440,7 +440,7 @@ export default function ProductDetailPage() {
           {/* Images */}
           <div className="space-y-4">
             <div className="aspect-square rounded-3xl overflow-hidden bg-white border border-gray-100">
-              <img src={mainImage || 'https://placehold.co/600x600/f8fafc/94a3b8?text=Product'} alt={product.name} className="w-full h-full object-contain p-4" />
+              <img src={mainImage || 'https://placehold.co/600x600/f8fafc/94a3b8?text=Product'} alt={product.name} width={600} height={600} className="w-full h-full object-contain p-4" />
             </div>
             {allImages.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
@@ -452,7 +452,7 @@ export default function ProductDetailPage() {
                       mainImage === img ? "border-[#7DAACB] shadow-lg" : "border-gray-100 hover:border-gray-300"
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img src={img} alt={`${product.name} - Ảnh ${i + 1}`} width={80} height={80} loading="lazy" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

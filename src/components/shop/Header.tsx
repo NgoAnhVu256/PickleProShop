@@ -147,7 +147,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
             onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
             className="w-full h-10 md:h-12 bg-gray-50 border border-gray-200 rounded-full pl-6 pr-14 text-sm md:text-[15px] focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/20 focus:border-[#7DAACB] transition-all"
           />
-          <button onClick={handleSearchSubmit} className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-[#7DAACB] transition-colors">
+          <button onClick={handleSearchSubmit} aria-label="Tìm kiếm" className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-[#7DAACB] transition-colors">
             <Search className="w-4 h-4 md:w-4.5 md:h-4.5" />
           </button>
 
@@ -195,6 +195,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
           <button 
             className="md:hidden p-2 text-gray-700"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
+            aria-label="Mở tìm kiếm"
           >
             <Search className="w-6 h-6" />
           </button>
@@ -260,12 +261,12 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
           )}
 
           {!user && (
-            <Link href="/login" className="p-1 lg:hidden text-gray-700">
+            <Link href="/login" className="p-1 lg:hidden text-gray-700" aria-label="Đăng nhập">
               <User className="w-6 h-6" />
             </Link>
           )}
 
-          <button onClick={onCartClick} className="relative p-1 text-gray-700">
+          <button onClick={onCartClick} className="relative p-1 text-gray-700" aria-label="Giỏ hàng">
             <ShoppingCart className="w-6 h-6" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{cartCount > 99 ? "99+" : cartCount}</span>
@@ -286,7 +287,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
               className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-12 text-sm focus:outline-none focus:border-[#7DAACB]"
               autoFocus
             />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <button aria-label="Tìm kiếm trên điện thoại" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
               <Search className="w-5 h-5" />
             </button>
           </div>
@@ -315,6 +316,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
           {/* Home icon */}
           <Link
             href="/"
+            aria-label="Trang chủ"
             className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 text-[#2b2b2b] ${
               pathname === "/" ? "bg-[#E8DBB3]" : "bg-[#FFFDE8] hover:bg-[#E8DBB3]"
             }`}

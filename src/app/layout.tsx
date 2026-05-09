@@ -5,7 +5,8 @@ import { Toaster } from "react-hot-toast";
 import { getSiteSettings } from "@/lib/settings";
 import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"] });
+// Only load essential font weights to reduce font file size (~40% reduction)
+const inter = Inter({ subsets: ["latin"], weight: ["400", "600", "700", "800"], display: "swap" });
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -126,6 +127,9 @@ export default async function RootLayout({
     <html lang="vi" suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="f59892f24bf2f7c1" />
+        {/* Preconnect to critical origins for faster resource loading */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
         <GoogleAnalytics measurementId={settings.ga4MeasurementId} />
         <script
           type="application/ld+json"

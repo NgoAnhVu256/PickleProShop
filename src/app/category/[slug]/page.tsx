@@ -5,9 +5,22 @@ import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import type { Metadata } from 'next';
 
 // ISR: pre-render & revalidate every 60s for near-instant loads
 export const revalidate = 60;
+
+// SEO: Dynamic metadata for each category page
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await prisma.category.findUnique({ where: { slug }, select: { name: true, slug: true } });
+  if (!category) return { title: "Danh mục không tồn tại" };
+  return {
+    title: `${category.name} | PicklePro`,
+    description: `Mua ${category.name} chính hãng, giá tốt tại PicklePro. Giao hàng nhanh, đảm bảo chất lượng.`,
+    alternates: { canonical: `/category/${category.slug}` },
+  };
+}
 
 async function getCategoryData(slug: string) {
   try {
