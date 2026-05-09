@@ -16,7 +16,7 @@ export default function ProductCard({ product }: { product: any }) {
     <Link href={`/products/${product.slug}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
       <div className="aspect-[4/5] overflow-hidden rounded-lg md:rounded-xl bg-gray-50 relative shrink-0">
         <img 
-          src={product.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
+          src={product.thumbnail ? `/api/img?url=${encodeURIComponent(product.thumbnail)}&w=400&q=80` : 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
           alt={product.name} 
           width={400}
           height={500}
@@ -31,7 +31,7 @@ export default function ProductCard({ product }: { product: any }) {
             </span>
           </div>
         ) : hasSale ? (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm">
+          <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm">
             Sale
           </div>
         ) : null}

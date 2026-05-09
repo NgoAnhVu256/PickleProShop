@@ -26,7 +26,7 @@ export default function Footer({ settings }: { settings?: any }) {
           <div className="md:col-span-3">
             <Link href="/" className="inline-block mb-3">
               <img
-                src={logo}
+                src={logo && logo !== '/api/favicon' ? `/api/img?url=${encodeURIComponent(logo)}&w=128&q=80` : logo}
                 alt={siteName}
                 width={64}
                 height={64}
