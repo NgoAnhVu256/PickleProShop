@@ -13,11 +13,10 @@ const RichTextEditor = lazy(() => import("@/components/admin/RichTextEditor"));
 interface Category { id: string; name: string; categoryAttrs?: { attribute: { id: string; label: string; name: string } }[]; }
 interface Brand { id: string; name: string; }
 
-// Option-Matrix: mỗi nhóm màu sắc chứa nhiều size
 interface ColorGroup {
   color: string;
   images: string[];
-  sizes: { size: string; sku: string; price: string; stock: string }[];
+  sizes: { attrValues: Record<string, string>; sku: string; price: string; stock: string }[];
 }
 
 export default function AdminCreateProduct() {
@@ -57,17 +56,14 @@ export default function AdminCreateProduct() {
 
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
+
+  // Primary attribute = nhóm chính (ưu tiên "color/mau", nếu không có thì lấy attr đầu tiên)
   let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase() === "size" || a.name.toLowerCase() === "kich_thuoc" || a.name.toLowerCase() === "thickness");
-  
   if (!primaryAttr && categoryAttributes.length > 0) {
     primaryAttr = categoryAttributes[0];
-    if (!secondaryAttr && categoryAttributes.length > 1) secondaryAttr = categoryAttributes[1];
-  } else if (primaryAttr && !secondaryAttr && categoryAttributes.length > 1) {
-    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id);
-  } else if (!primaryAttr && secondaryAttr && categoryAttributes.length > 1) {
-     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id);
   }
+  // Tất cả thuộc tính còn lại hiển thị dưới dạng cột trong bảng
+  const otherAttrs = categoryAttributes.filter(a => a.id !== primaryAttr?.id);
 
   const hasVariants = categoryAttributes.length > 0;
 
@@ -80,8 +76,13 @@ export default function AdminCreateProduct() {
   const defaultVariantPrice = salePrice || basePrice || "0";
 
   // ─── Color Group helpers ───
+  const makeEmptyAttrValues = () => {
+    const vals: Record<string, string> = {};
+    otherAttrs.forEach(a => { vals[a.id] = ""; });
+    return vals;
+  };
   const addColorGroup = () => {
-    setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: defaultVariantPrice, stock: "0" }] }]);
+    setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ attrValues: makeEmptyAttrValues(), sku: "", price: defaultVariantPrice, stock: "0" }] }]);
   };
   const removeColorGroup = (idx: number) => setColorGroups(colorGroups.filter((_, i) => i !== idx));
   const updateColorGroup = (idx: number, field: string, val: any) => {
@@ -89,7 +90,7 @@ export default function AdminCreateProduct() {
   };
   const addSizeToColor = (cIdx: number) => {
     const u = [...colorGroups];
-    u[cIdx].sizes.push({ size: "", sku: "", price: defaultVariantPrice, stock: "0" });
+    u[cIdx].sizes.push({ attrValues: makeEmptyAttrValues(), sku: "", price: defaultVariantPrice, stock: "0" });
     setColorGroups(u);
   };
   const removeSizeFromColor = (cIdx: number, sIdx: number) => {
@@ -100,6 +101,11 @@ export default function AdminCreateProduct() {
   const updateSize = (cIdx: number, sIdx: number, field: string, val: string) => {
     const u = [...colorGroups];
     (u[cIdx].sizes[sIdx] as any)[field] = val;
+    setColorGroups(u);
+  };
+  const updateAttrValue = (cIdx: number, sIdx: number, attrId: string, val: string) => {
+    const u = [...colorGroups];
+    u[cIdx].sizes[sIdx].attrValues = { ...u[cIdx].sizes[sIdx].attrValues, [attrId]: val };
     setColorGroups(u);
   };
 
@@ -117,7 +123,9 @@ export default function AdminCreateProduct() {
           images: cg.images,
           attrValues: [
             primaryAttr && cg.color ? { attributeId: primaryAttr.id, value: cg.color } : null,
-            secondaryAttr && s.size ? { attributeId: secondaryAttr.id, value: s.size } : null,
+            ...otherAttrs.map(attr =>
+              s.attrValues[attr.id] ? { attributeId: attr.id, value: s.attrValues[attr.id] } : null
+            ),
           ].filter(Boolean),
         });
       });
@@ -156,6 +164,9 @@ export default function AdminCreateProduct() {
   };
 
   if (loading) return <div className="skeleton" style={{ height: 400 }} />;
+
+  // Grid template cho bảng biến thể: các cột thuộc tính + SKU + Giá + Tồn kho + nút xóa
+  const variantGridCols = `${otherAttrs.map(() => '1fr').join(' ')}${otherAttrs.length > 0 ? ' ' : ''}2fr 1.2fr 1fr auto`;
 
   return (
     <div className="fade-in">
@@ -239,7 +250,7 @@ export default function AdminCreateProduct() {
               </div>
             </div>
 
-            {/* ─── OPTION-MATRIX: Color → Sizes ─── */}
+            {/* ─── OPTION-MATRIX: Primary Attr → Other Attrs ─── */}
             <div className="card" style={{ padding: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
@@ -288,27 +299,28 @@ export default function AdminCreateProduct() {
                           />
                         </div>
 
-                        {/* Secondary Attributes Table */}
+                        {/* All Other Attributes Table */}
                         <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                            {secondaryAttr && <span>{secondaryAttr.label}</span>}<span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
+                          <div style={{ display: "grid", gridTemplateColumns: variantGridCols, gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+                            {otherAttrs.map(attr => <span key={attr.id}>{attr.label}</span>)}
+                            <span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
                           </div>
                           {cg.sizes.map((s, sIdx) => (
-                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: secondaryAttr ? "1fr 2fr 1.2fr 1fr auto" : "2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
-                              {secondaryAttr && <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder={secondaryAttr.name === "thickness" ? "16mm" : `Nhập ${secondaryAttr.label?.toLowerCase()}`} style={{ fontSize: 13 }} />}
+                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: variantGridCols, gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
+                              {otherAttrs.map(attr => (
+                                <input key={attr.id} className="input" value={s.attrValues[attr.id] || ""} onChange={e => updateAttrValue(cIdx, sIdx, attr.id, e.target.value)} placeholder={`Nhập ${attr.label?.toLowerCase()}`} style={{ fontSize: 13 }} />
+                              ))}
                               <input className="input" value={s.sku} onChange={e => updateSize(cIdx, sIdx, "sku", e.target.value)} placeholder="Mã SKU" style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.price} onChange={e => updateSize(cIdx, sIdx, "price", e.target.value)} style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.stock} onChange={e => updateSize(cIdx, sIdx, "stock", e.target.value)} style={{ fontSize: 13 }} />
                               <button type="button" onClick={() => removeSizeFromColor(cIdx, sIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}><X size={16} /></button>
                             </div>
                           ))}
-                          {secondaryAttr && (
-                            <div style={{ padding: "8px 12px" }}>
-                              <button type="button" onClick={() => addSizeToColor(cIdx)} style={{ width: "100%", padding: 8, border: "1px dashed #cbd5e1", borderRadius: 8, background: "transparent", cursor: "pointer", fontSize: 12, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                                <Plus size={14} /> Thêm {secondaryAttr.label?.toLowerCase() || "thuộc tính"}
-                              </button>
-                            </div>
-                          )}
+                          <div style={{ padding: "8px 12px" }}>
+                            <button type="button" onClick={() => addSizeToColor(cIdx)} style={{ width: "100%", padding: 8, border: "1px dashed #cbd5e1", borderRadius: 8, background: "transparent", cursor: "pointer", fontSize: 12, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                              <Plus size={14} /> Thêm biến thể
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}

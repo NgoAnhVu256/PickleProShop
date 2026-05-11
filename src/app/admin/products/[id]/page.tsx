@@ -16,7 +16,7 @@ interface Brand { id: string; name: string; }
 interface ColorGroup {
   color: string;
   images: string[];
-  sizes: { size: string; sku: string; price: string; stock: string; id?: string }[];
+  sizes: { attrValues: Record<string, string>; sku: string; price: string; stock: string; id?: string }[];
 }
 
 export default function AdminEditProduct({ params }: { params: Promise<{ id: string }> }) {
@@ -68,30 +68,30 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           // Rebuild dynamic attribute groups from existing variants
           const cat = cData.data?.find((c: any) => c.id === p.categoryId);
           const attrs = cat?.categoryAttrs?.map((ca: any) => ca.attribute) || [];
-          let pAttr = attrs.find((a: any) => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-          let sAttr = attrs.find((a: any) => a.name.toLowerCase() === "size" || a.name.toLowerCase() === "kich_thuoc" || a.name.toLowerCase() === "thickness");
 
-          if (!pAttr && attrs.length > 0) {
-            pAttr = attrs[0];
-            if (!sAttr && attrs.length > 1) sAttr = attrs[1];
-          } else if (pAttr && !sAttr && attrs.length > 1) {
-            sAttr = attrs.find((a: any) => a.id !== pAttr?.id);
-          } else if (!pAttr && sAttr && attrs.length > 1) {
-             pAttr = attrs.find((a: any) => a.id !== sAttr?.id);
-          }
+          // Detect primary attribute (ưu tiên color/mau)
+          let pAttr = attrs.find((a: any) => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
+          if (!pAttr && attrs.length > 0) pAttr = attrs[0];
+
+          // All other attrs
+          const oAttrs = attrs.filter((a: any) => a.id !== pAttr?.id);
 
           if (attrs.length > 0 && p.variants?.length > 0) {
             const groups: Record<string, ColorGroup> = {};
             p.variants.forEach((v: any) => {
-              let color = "", size = "";
+              let color = "";
+              const rowAttrValues: Record<string, string> = {};
               v.attrValues.forEach((av: any) => {
                 if (av.attributeId === pAttr?.id) color = av.value;
-                if (av.attributeId === sAttr?.id) size = av.value;
+                else rowAttrValues[av.attributeId] = av.value;
+              });
+              // Fill empty values for attrs not present in this variant
+              oAttrs.forEach((a: any) => {
+                if (!rowAttrValues[a.id]) rowAttrValues[a.id] = "";
               });
               const groupKey = color || "Mặc định";
               if (!groups[groupKey]) groups[groupKey] = { color, images: v.images || [], sizes: [] };
-              groups[groupKey].sizes.push({ size, sku: v.sku, price: String(v.price), stock: String(v.stock), id: v.id });
-              // Use first variant's images for the group
+              groups[groupKey].sizes.push({ attrValues: rowAttrValues, sku: v.sku, price: String(v.price), stock: String(v.stock), id: v.id });
               if (v.images?.length > 0 && groups[groupKey].images.length === 0) groups[groupKey].images = v.images;
             });
             setColorGroups(Object.values(groups));
@@ -105,17 +105,12 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
 
   const selectedCategory = categories.find(c => c.id === categoryId);
   const categoryAttributes = selectedCategory?.categoryAttrs?.map(ca => ca.attribute) || [];
+
   let primaryAttr = categoryAttributes.find(a => a.name.toLowerCase().includes("color") || a.name.toLowerCase().includes("mau"));
-  let secondaryAttr = categoryAttributes.find(a => a.name.toLowerCase() === "size" || a.name.toLowerCase() === "kich_thuoc" || a.name.toLowerCase() === "thickness");
-  
   if (!primaryAttr && categoryAttributes.length > 0) {
     primaryAttr = categoryAttributes[0];
-    if (!secondaryAttr && categoryAttributes.length > 1) secondaryAttr = categoryAttributes[1];
-  } else if (primaryAttr && !secondaryAttr && categoryAttributes.length > 1) {
-    secondaryAttr = categoryAttributes.find(a => a.id !== primaryAttr?.id);
-  } else if (!primaryAttr && secondaryAttr && categoryAttributes.length > 1) {
-     primaryAttr = categoryAttributes.find(a => a.id !== secondaryAttr?.id);
   }
+  const otherAttrs = categoryAttributes.filter(a => a.id !== primaryAttr?.id);
 
   const hasVariants = categoryAttributes.length > 0;
 
@@ -126,12 +121,23 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
   })();
 
   const defaultVariantPrice = salePrice || basePrice || "0";
-  const addColorGroup = () => setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ size: "", sku: "", price: defaultVariantPrice, stock: "0" }] }]);
+
+  const makeEmptyAttrValues = () => {
+    const vals: Record<string, string> = {};
+    otherAttrs.forEach(a => { vals[a.id] = ""; });
+    return vals;
+  };
+  const addColorGroup = () => setColorGroups([...colorGroups, { color: "", images: [], sizes: [{ attrValues: makeEmptyAttrValues(), sku: "", price: defaultVariantPrice, stock: "0" }] }]);
   const removeColorGroup = (idx: number) => setColorGroups(colorGroups.filter((_, i) => i !== idx));
   const updateColorGroup = (idx: number, field: string, val: any) => { const u = [...colorGroups]; (u[idx] as any)[field] = val; setColorGroups(u); };
-  const addSizeToColor = (cIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes.push({ size: "", sku: "", price: defaultVariantPrice, stock: "0" }); setColorGroups(u); };
+  const addSizeToColor = (cIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes.push({ attrValues: makeEmptyAttrValues(), sku: "", price: defaultVariantPrice, stock: "0" }); setColorGroups(u); };
   const removeSizeFromColor = (cIdx: number, sIdx: number) => { const u = [...colorGroups]; u[cIdx].sizes = u[cIdx].sizes.filter((_, i) => i !== sIdx); setColorGroups(u); };
   const updateSize = (cIdx: number, sIdx: number, field: string, val: string) => { const u = [...colorGroups]; (u[cIdx].sizes[sIdx] as any)[field] = val; setColorGroups(u); };
+  const updateAttrValue = (cIdx: number, sIdx: number, attrId: string, val: string) => {
+    const u = [...colorGroups];
+    u[cIdx].sizes[sIdx].attrValues = { ...u[cIdx].sizes[sIdx].attrValues, [attrId]: val };
+    setColorGroups(u);
+  };
 
   const buildVariants = () => {
     if (!hasVariants) return [];
@@ -143,7 +149,9 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           id: s.id, sku: s.sku, price: parseFloat(s.price) || 0, stock: parseInt(s.stock) || 0, images: cg.images,
           attrValues: [
             primaryAttr && cg.color ? { attributeId: primaryAttr.id, value: cg.color } : null,
-            secondaryAttr && s.size ? { attributeId: secondaryAttr.id, value: s.size } : null,
+            ...otherAttrs.map(attr =>
+              s.attrValues[attr.id] ? { attributeId: attr.id, value: s.attrValues[attr.id] } : null
+            ),
           ].filter(Boolean),
         });
       });
@@ -178,6 +186,8 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
   };
 
   if (loading) return <div className="skeleton" style={{ height: 400 }} />;
+
+  const variantGridCols = `${otherAttrs.map(() => '1fr').join(' ')}${otherAttrs.length > 0 ? ' ' : ''}2fr 1.2fr 1fr auto`;
 
   return (
     <div className="fade-in">
@@ -248,7 +258,6 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                 <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
               </div>
 
-              {/* Stock input — shows when product has NO actual variants */}
               {categoryId && colorGroups.length === 0 && (
                 <div style={{ padding: 20, background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, marginBottom: 16 }}>
                   <p style={{ color: "#0369a1", fontSize: 13, marginBottom: 16 }}>
@@ -268,21 +277,24 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                       <div key={cIdx} style={{ padding: 20, border: "2px solid #e2e8f0", borderRadius: 16, background: "#fafbfc" }}>
                         <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
                           <div style={{ flex: 1 }}>
-                            <label className="input-label" style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed" }}> Tên màu sắc</label>
-                            <input className="input" value={cg.color} onChange={e => updateColorGroup(cIdx, "color", e.target.value)} placeholder="VD: Đỏ, Xanh..." style={{ fontWeight: 700, fontSize: 15 }} />
+                            <label className="input-label" style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed" }}>{primaryAttr?.label || "Nhóm biến thể"}</label>
+                            <input className="input" value={cg.color} onChange={e => updateColorGroup(cIdx, "color", e.target.value)} placeholder={`Nhập ${primaryAttr?.label?.toLowerCase() || "giá trị"}...`} style={{ fontWeight: 700, fontSize: 15 }} />
                           </div>
                           <button type="button" onClick={() => removeColorGroup(cIdx)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginTop: 24 }}><Trash2 size={18} /></button>
                         </div>
                         <div style={{ marginBottom: 16 }}>
-                          <MultiImageUpload label="Ảnh cho màu này" value={cg.images} onChange={urls => updateColorGroup(cIdx, "images", urls)} onRemove={url => updateColorGroup(cIdx, "images", cg.images.filter(i => i !== url))} folder="products/variants" />
+                          <MultiImageUpload label={`Ảnh cho ${primaryAttr?.label?.toLowerCase() || "nhóm"} này`} value={cg.images} onChange={urls => updateColorGroup(cIdx, "images", urls)} onRemove={url => updateColorGroup(cIdx, "images", cg.images.filter(i => i !== url))} folder="products/variants" />
                         </div>
                         <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1.2fr 1fr auto", gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                            <span>{secondaryAttr?.label || "Phân loại"}</span><span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
+                          <div style={{ display: "grid", gridTemplateColumns: variantGridCols, gap: 0, padding: "8px 12px", background: "#f1f5f9", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+                            {otherAttrs.map(attr => <span key={attr.id}>{attr.label}</span>)}
+                            <span>Mã SKU</span><span>Giá (VNĐ)</span><span>Tồn kho</span><span></span>
                           </div>
                           {cg.sizes.map((s, sIdx) => (
-                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1.2fr 1fr auto", gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
-                              <input className="input" value={s.size} onChange={e => updateSize(cIdx, sIdx, "size", e.target.value)} placeholder={secondaryAttr?.name === "thickness" ? "16mm" : "39"} style={{ fontSize: 13 }} />
+                            <div key={sIdx} style={{ display: "grid", gridTemplateColumns: variantGridCols, gap: 8, padding: "8px 12px", borderTop: "1px solid #f1f5f9", alignItems: "center" }}>
+                              {otherAttrs.map(attr => (
+                                <input key={attr.id} className="input" value={s.attrValues[attr.id] || ""} onChange={e => updateAttrValue(cIdx, sIdx, attr.id, e.target.value)} placeholder={`Nhập ${attr.label?.toLowerCase()}`} style={{ fontSize: 13 }} />
+                              ))}
                               <input className="input" value={s.sku} onChange={e => updateSize(cIdx, sIdx, "sku", e.target.value)} placeholder="SKU" style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.price} onChange={e => updateSize(cIdx, sIdx, "price", e.target.value)} style={{ fontSize: 13 }} />
                               <input className="input" type="number" value={s.stock} onChange={e => updateSize(cIdx, sIdx, "stock", e.target.value)} style={{ fontSize: 13 }} />
@@ -291,7 +303,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                           ))}
                           <div style={{ padding: "8px 12px" }}>
                             <button type="button" onClick={() => addSizeToColor(cIdx)} style={{ width: "100%", padding: 8, border: "1px dashed #cbd5e1", borderRadius: 8, background: "transparent", cursor: "pointer", fontSize: 12, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                              <Plus size={14} /> Thêm {secondaryAttr?.label?.toLowerCase() || "phân loại"}
+                              <Plus size={14} /> Thêm biến thể
                             </button>
                           </div>
                         </div>
@@ -299,7 +311,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
                     ))}
                   </div>
                   <button type="button" onClick={addColorGroup} className="btn btn-secondary btn-sm" style={{ width: "100%", padding: 12, display: "flex", justifyContent: "center", gap: 8, fontSize: 13 }}>
-                    <Plus size={16} /> Thêm màu sắc mới
+                    <Plus size={16} /> Thêm {primaryAttr?.label?.toLowerCase() || "nhóm"} mới
                   </button>
                 </>
               )}
@@ -333,7 +345,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
               {colorGroups.length > 0 && (
                 <div style={{ marginBottom: 20, padding: 12, background: "#f0fdf4", borderRadius: 10, border: "1px solid #bbf7d0" }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: "#166534", textTransform: "uppercase", marginBottom: 6 }}>Tóm tắt biến thể</p>
-                  <p style={{ fontSize: 13, color: "#15803d" }}>{colorGroups.length} màu • {colorGroups.reduce((sum, cg) => sum + cg.sizes.length, 0)} biến thể</p>
+                  <p style={{ fontSize: 13, color: "#15803d" }}>{colorGroups.length} {primaryAttr?.label?.toLowerCase() || "nhóm"} • {colorGroups.reduce((sum, cg) => sum + cg.sizes.length, 0)} biến thể</p>
                 </div>
               )}
               <button type="submit" className="btn btn-primary" style={{ width: "100%", height: 44, fontSize: 15 }} disabled={submitting}>
