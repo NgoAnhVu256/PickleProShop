@@ -128,9 +128,9 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-12">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-8 flex-wrap" aria-label="Breadcrumb">
+        <nav className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs text-gray-400 font-medium mb-4 md:mb-8 flex-wrap" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-[#7DAACB]">Trang chủ</Link><ChevronRight size={12} />
           <Link href="/products" className="hover:text-[#7DAACB]">Sản phẩm</Link><ChevronRight size={12} />
           <Link href={`/category/${product.category.slug}`} className="hover:text-[#7DAACB]">{product.category.name}</Link><ChevronRight size={12} />
@@ -162,8 +162,8 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                 <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">{product.name}</h1>
 
                 {/* Price */}
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-black text-gray-900">{displayPrice.toLocaleString()}₫</span>
+                <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
+                  <span className="text-2xl md:text-3xl font-black text-gray-900">{displayPrice.toLocaleString()}₫</span>
                   {isDiscounted && <span className="text-lg text-gray-400 line-through">{originalPrice.toLocaleString()}₫</span>}
                   {isDiscounted && <span className="text-sm font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full">-{Math.round((1 - displayPrice / originalPrice) * 100)}%</span>}
                 </div>
@@ -279,7 +279,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
 
             {/* Description */}
             {product.description && (
-              <div className="mt-16 max-w-4xl">
+              <div className="mt-8 md:mt-16 max-w-4xl">
                 <h2 className="text-xl font-black text-gray-900 mb-6 uppercase tracking-tight">Mô tả sản phẩm</h2>
                 <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: product.description }} />
               </div>
@@ -311,17 +311,18 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
             )}
           </div>
 
-          {/* Recently Viewed Sidebar */}
+          {/* Recently Viewed — horizontal scroll on mobile, sidebar on desktop */}
           <aside className="w-full xl:w-[280px] shrink-0 space-y-6">
             {recentProducts.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-24">
-                <div className="bg-gray-50 border-b border-gray-100 p-4"><h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Sản phẩm đã xem</h3></div>
-                <div className="p-4 space-y-4">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden xl:sticky xl:top-24">
+                <div className="bg-gray-50 border-b border-gray-100 p-3 md:p-4"><h3 className="text-xs md:text-sm font-black text-gray-900 uppercase tracking-wider">Sản phẩm đã xem</h3></div>
+                {/* Mobile: horizontal scroll */}
+                <div className="flex xl:flex-col gap-3 p-3 md:p-4 overflow-x-auto xl:overflow-x-visible no-scrollbar">
                   {recentProducts.map(p => {
                     const price = p.salePrice || p.basePrice; const hasSale = !!p.salePrice && p.salePrice < p.basePrice;
                     return (
-                      <Link key={p.id} href={`/products/${p.slug}`} className="flex gap-3 group">
-                        <div className="w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100"><img src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" /></div>
+                      <Link key={p.id} href={`/products/${p.slug}`} className="flex xl:flex-row flex-col gap-2 xl:gap-3 group shrink-0 w-[120px] xl:w-auto">
+                        <div className="w-full xl:w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100"><img src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" /></div>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-[#7DAACB] mb-1 leading-snug">{p.name}</h4>
                           <span className="text-sm font-black text-[#7DAACB]">{price.toLocaleString()}₫</span>

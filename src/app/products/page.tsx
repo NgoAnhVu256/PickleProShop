@@ -131,15 +131,15 @@ function ProductListingContent() {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
         {/* Title */}
-        <div className="pt-10 pb-8">
-          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Tất cả sản phẩm</h1>
-          <p className="text-gray-500 mt-2 text-sm font-medium">
+        <div className="pt-6 md:pt-10 pb-6 md:pb-8">
+          <h1 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">Tất cả sản phẩm</h1>
+          <p className="text-gray-500 mt-1.5 md:mt-2 text-xs md:text-sm font-medium">
             Khám phá bộ sưu tập Pickleball chuyên nghiệp ({total} sản phẩm)
           </p>
         </div>
 
         {/* Search + Filter Bar */}
-        <div className="sticky top-20 z-20 bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl p-4 shadow-sm mb-8 flex flex-col lg:flex-row items-center gap-4">
+        <div className="sticky top-[120px] md:top-20 z-20 bg-white/90 backdrop-blur-md border border-gray-100 rounded-2xl md:rounded-3xl p-3 md:p-4 shadow-sm mb-6 md:mb-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 md:gap-4">
           {/* Search Box */}
           <div className="relative flex-1 w-full lg:w-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -152,26 +152,26 @@ function ProductListingContent() {
             />
           </div>
 
-          <div className="flex items-center gap-3 w-full lg:w-auto flex-wrap">
+          <div className="flex items-center gap-2 md:gap-3 w-full lg:w-auto overflow-x-auto no-scrollbar pb-1">
             {/* Sort */}
             <select
               value={sortBy}
               onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
+              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer shrink-0"
             >
               <option value="newest">Mới nhất</option>
-              <option value="price_asc">Giá tăng dần</option>
-              <option value="price_desc">Giá giảm dần</option>
-              <option value="name_asc">Tên A-Z</option>
+              <option value="price_asc">Giá ↑</option>
+              <option value="price_desc">Giá ↓</option>
+              <option value="name_asc">A-Z</option>
             </select>
 
             {/* Category filter */}
             <select
               value={selectedCategory}
               onChange={(e) => { setSelectedCategory(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
+              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer shrink-0"
             >
-              <option value="">Tất cả danh mục</option>
+              <option value="">Danh mục</option>
               {categories.map(c => (
                 <option key={c.id} value={c.slug}>{c.name}</option>
               ))}
@@ -181,9 +181,9 @@ function ProductListingContent() {
             <select
               value={selectedBrand}
               onChange={(e) => { setSelectedBrand(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
+              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer shrink-0"
             >
-              <option value="">Tất cả thương hiệu</option>
+              <option value="">Thương hiệu</option>
               {brands.map(b => (
                 <option key={b.id} value={b.slug}>{b.name}</option>
               ))}
@@ -193,19 +193,19 @@ function ProductListingContent() {
             <select
               value={priceRange}
               onChange={(e) => { setPriceRange(e.target.value); setPage(1); }}
-              className="px-4 py-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
+              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer shrink-0"
             >
-              <option value="">Tất cả mức giá</option>
-              <option value="0-500000">Dưới 500.000₫</option>
-              <option value="500000-1000000">500.000₫ - 1.000.000₫</option>
-              <option value="1000000-2000000">1.000.000₫ - 2.000.000₫</option>
-              <option value="2000000-5000000">2.000.000₫ - 5.000.000₫</option>
-              <option value="5000000-">Trên 5.000.000₫</option>
+              <option value="">Mức giá</option>
+              <option value="0-500000">Dưới 500k</option>
+              <option value="500000-1000000">500k - 1tr</option>
+              <option value="1000000-2000000">1tr - 2tr</option>
+              <option value="2000000-5000000">2tr - 5tr</option>
+              <option value="5000000-">Trên 5tr</option>
             </select>
 
             {hasFilters && (
-              <button onClick={clearFilters} className="flex items-center gap-1 px-4 py-3 bg-red-50 text-red-500 rounded-2xl text-sm font-bold hover:bg-red-100 transition-colors">
-                <X size={14} /> Xóa lọc
+              <button onClick={clearFilters} className="flex items-center gap-1 px-3 md:px-4 py-2.5 md:py-3 bg-red-50 text-red-500 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold hover:bg-red-100 transition-colors shrink-0">
+                <X size={14} /> Xóa
               </button>
             )}
           </div>
