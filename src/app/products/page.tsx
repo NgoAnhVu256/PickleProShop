@@ -134,7 +134,7 @@ function ProductListingContent() {
         <div className="pt-6 md:pt-10 pb-6 md:pb-8">
           <h1 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">Tất cả sản phẩm</h1>
           <p className="text-gray-500 mt-1.5 md:mt-2 text-xs md:text-sm font-medium">
-            Khám phá bộ sưu tập Pickleball chuyên nghiệp ({total} sản phẩm)
+            Khám phá bộ sưu tập Pickleball chuyên nghiệp
           </p>
         </div>
 

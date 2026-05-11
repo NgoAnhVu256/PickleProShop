@@ -82,7 +82,7 @@ export default function LoginClient({ settings }: { settings: any }) {
       <div className="w-full max-w-[450px] z-10">
         {/* Brand Header */}
         <div className="mb-8 text-center relative z-10">
-          <img src={logo || '/api/favicon'} alt="PicklePro" className="h-16 w-16 mx-auto mb-6 rounded-lg object-cover" />
+          <img src="/api/favicon" alt="PicklePro" className="h-16 w-16 mx-auto mb-6 rounded-lg object-cover" />
           <h1 className="text-3xl font-black mb-2 tracking-tight text-gray-900">Đăng Nhập</h1>
           <p className="text-gray-500 font-medium text-sm">Chào mừng trở lại PicklePro</p>
         </div>

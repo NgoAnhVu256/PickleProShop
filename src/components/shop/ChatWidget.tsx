@@ -57,7 +57,7 @@ export default function ChatWidget({
 }: {
   zaloLink?: string;
   messengerLink?: string;
-  chatbotAvatar?: string;
+  chatbotAvatar = "/api/favicon",
 }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -226,10 +226,8 @@ export default function ChatWidget({
         >
           {open ? (
             <ChevronDown size={24} color="#fff" />
-          ) : chatbotAvatar ? (
-            <img src={chatbotAvatar} alt="Chat AI" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
           ) : (
-            <Sparkles size={26} color="#fff" />
+            <img src={chatbotAvatar} alt="Chat AI" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
           )}
 
           {/* Pulse ring */}
@@ -276,16 +274,12 @@ export default function ChatWidget({
         }}>
           <div style={{
             width: 38, height: 38, borderRadius: "50%",
-            background: chatbotAvatar ? "transparent" : "rgba(255,255,255,0.2)",
+            background: "transparent",
             display: "flex", alignItems: "center", justifyContent: "center",
             flexShrink: 0,
             overflow: "hidden",
           }}>
-            {chatbotAvatar ? (
-              <img src={chatbotAvatar} alt="AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <Sparkles size={20} color="#fff" />
-            )}
+            <img src={chatbotAvatar} alt="AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ color: "#fff", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>PicklePro AI</div>
@@ -342,11 +336,7 @@ export default function ChatWidget({
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginBottom: 2,
                   overflow: "hidden",
                 }}>
-                  {chatbotAvatar ? (
-                    <img src={chatbotAvatar} alt="AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <Bot size={14} color="#fff" />
-                  )}
+                  <img src={chatbotAvatar} alt="AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
               )}
               <div style={{
@@ -374,11 +364,7 @@ export default function ChatWidget({
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 overflow: "hidden",
               }}>
-                {chatbotAvatar ? (
-                  <img src={chatbotAvatar} alt="AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
-                  <Bot size={14} color="#fff" />
-                )}
+                <img src={chatbotAvatar} alt="AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <div style={{
                 padding: "10px 16px", background: "#fff", borderRadius: "18px 18px 18px 4px",
