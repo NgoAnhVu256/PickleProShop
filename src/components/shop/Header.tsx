@@ -313,7 +313,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
 
       {/* CATEGORY NAV */}
       <nav className="bg-[#7DAACB]">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-center gap-2 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
+        <div className="max-w-7xl mx-auto px-2 md:px-6 h-12 md:h-16 flex items-center justify-start md:justify-center gap-1.5 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
           {/* Home icon */}
           <Link
             href="/"
