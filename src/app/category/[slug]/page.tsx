@@ -15,10 +15,17 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const { slug } = await params;
   const category = await prisma.category.findUnique({ where: { slug }, select: { name: true, slug: true } });
   if (!category) return { title: "Danh mục không tồn tại" };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
   return {
-    title: `${category.name} | PicklePro`,
-    description: `Mua ${category.name} chính hãng, giá tốt tại PicklePro. Giao hàng nhanh, đảm bảo chất lượng.`,
-    alternates: { canonical: `/category/${category.slug}` },
+    title: `${category.name} — Mua chính hãng giá tốt | PicklePro`,
+    description: `Mua ${category.name} Pickleball chính hãng, giá tốt nhất tại PicklePro. Giao hàng nhanh toàn quốc, đảm bảo chất lượng.`,
+    keywords: [`${category.name}`, `${category.name} Pickleball`, `mua ${category.name}`, 'PicklePro', 'Pickleball chính hãng'],
+    alternates: { canonical: `${siteUrl}/category/${category.slug}` },
+    openGraph: {
+      title: `${category.name} — PicklePro`,
+      description: `Khám phá bộ sưu tập ${category.name} Pickleball chính hãng tại PicklePro.`,
+      url: `${siteUrl}/category/${category.slug}`,
+    },
   };
 }
 
@@ -66,8 +73,36 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     );
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://picklepro.vn";
+
+  // JSON-LD BreadcrumbList Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Trang chủ", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: category.name },
+    ],
+  };
+
+  // JSON-LD ItemList Schema
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: category.name,
+    numberOfItems: category.products.length,
+    itemListElement: category.products.slice(0, 20).map((p: any, i: number) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${siteUrl}/products/${p.slug}`,
+      name: p.name,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
       <HomeHeader />
       
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">

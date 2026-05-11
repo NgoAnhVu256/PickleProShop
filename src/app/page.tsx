@@ -296,6 +296,8 @@ export default async function HomePage() {
       
       <main className="pb-20">
         <BannerGrid banners={banners} />
+        {/* SEO H1 — visible but styled as part of hero area */}
+        <h1 className="sr-only">PicklePro — Cửa hàng Pickleball chính hãng hàng đầu Việt Nam</h1>
         <PromotionCarousel promotions={promotionBanners} />
 
         {/* BELOW THE FOLD — each section streams independently */}
