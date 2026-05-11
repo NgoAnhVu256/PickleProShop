@@ -53,11 +53,11 @@ function MessengerIcon({ size = 24 }: { size?: number }) {
 export default function ChatWidget({
   zaloLink = "",
   messengerLink = "",
-  chatbotAvatar = "",
+  chatbotAvatar = "/api/favicon",
 }: {
   zaloLink?: string;
   messengerLink?: string;
-  chatbotAvatar = "/api/favicon",
+  chatbotAvatar?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
