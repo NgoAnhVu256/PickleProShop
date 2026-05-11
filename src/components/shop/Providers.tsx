@@ -37,7 +37,7 @@ export default function Providers({
             <ChatWidget
               zaloLink={settings?.zalo}
               messengerLink={settings?.messenger}
-              chatbotAvatar="/api/favicon"
+              chatbotAvatar={settings?.chatbotAvatar}
             />
           )}
         </CartProvider>
