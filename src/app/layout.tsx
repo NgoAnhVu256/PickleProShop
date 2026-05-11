@@ -128,6 +128,34 @@ export default async function RootLayout({
     },
   };
 
+  // LocalBusiness schema for Google Maps & local SEO
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "SportingGoodsStore",
+    name: settings.name,
+    url: siteUrl,
+    telephone: settings.phone,
+    email: settings.email,
+    description: settings.slogan,
+    logo: settings.logo
+      ? (settings.logo.startsWith("http") ? settings.logo : `${siteUrl}${settings.logo}`)
+      : `${siteUrl}/api/favicon`,
+    ...(settings.addresses?.length > 0 && {
+      address: settings.addresses.map((addr: string) => ({
+        "@type": "PostalAddress",
+        streetAddress: addr,
+        addressCountry: "VN",
+      })),
+    }),
+    sameAs: [settings.facebook, settings.instagram, settings.youtube, settings.tiktok].filter(Boolean),
+    priceRange: "₫₫",
+    openingHoursSpecification: settings.workingHours ? {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      description: settings.workingHours,
+    } : undefined,
+  };
+
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
@@ -142,6 +170,10 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
       </head>
       <body className={`${inter.className} antialiased text-gray-900`}>

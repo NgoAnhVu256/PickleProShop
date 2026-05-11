@@ -42,12 +42,16 @@ export default function Footer({ settings }: { settings?: any }) {
 
           {/* Col 2: Liên kết */}
           <div className="md:col-span-2">
-            <h4 className="text-[13px] font-black text-[#2d3a45] uppercase tracking-[0.15em] mb-5">Liên kết</h4>
-            <div className="flex flex-col gap-3 text-[13px] font-medium text-[#5a6a78]">
-              <Link href="/" className="hover:text-[#2d3a45] transition-colors">Cửa hàng</Link>
-              <Link href="/blog" className="hover:text-[#2d3a45] transition-colors">Tin tức</Link>
-              <Link href="/" className="hover:text-[#2d3a45] transition-colors">Đại lý</Link>
-            </div>
+            <h4 className="text-[13px] font-black text-[#2d3a45] uppercase tracking-[0.15em] mb-5">Cửa hàng</h4>
+            <nav className="flex flex-col gap-3 text-[13px] font-medium text-[#5a6a78]" aria-label="Footer navigation">
+              <Link href="/products" className="hover:text-[#2d3a45] transition-colors">Tất cả sản phẩm</Link>
+              <Link href="/category/vot-pickleball" className="hover:text-[#2d3a45] transition-colors">Vợt Pickleball</Link>
+              <Link href="/category/quan-ao" className="hover:text-[#2d3a45] transition-colors">Quần áo</Link>
+              <Link href="/category/phu-kien" className="hover:text-[#2d3a45] transition-colors">Phụ kiện</Link>
+              <Link href="/category/balo" className="hover:text-[#2d3a45] transition-colors">Balo</Link>
+              <Link href="/blog" className="hover:text-[#2d3a45] transition-colors">Tin tức & Blog</Link>
+              <Link href="/feedback" className="hover:text-[#2d3a45] transition-colors">Đánh giá</Link>
+            </nav>
           </div>
 
           {/* Col 3: Thông tin liên hệ */}
