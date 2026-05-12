@@ -13,7 +13,7 @@ export default function ProductCard({ product }: { product: any }) {
   const isOutOfStock = totalStock !== null && totalStock === 0;
 
   return (
-    <Link href={`/products/${product.slug}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
+    <Link href={`/products/${product.slug}`} aria-label={`Xem sản phẩm ${product.name}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
       <div className="aspect-[4/5] overflow-hidden rounded-lg md:rounded-xl bg-gray-50 relative shrink-0">
         <img 
           src={product.thumbnail ? `/api/img?url=${encodeURIComponent(product.thumbnail)}&w=400&q=80` : 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
@@ -43,7 +43,7 @@ export default function ProductCard({ product }: { product: any }) {
             <span className="text-sm md:text-base font-bold text-gray-500">Liên hệ</span>
           ) : (
             <>
-              <span className="text-sm md:text-base font-bold text-[#7DAACB]">{price.toLocaleString()}đ</span>
+              <span className="text-sm md:text-base font-bold text-[#1a6fa0]">{price.toLocaleString()}đ</span>
               {hasSale && (
                 <span className="text-[10px] md:text-xs text-gray-500 line-through">{(originalPrice).toLocaleString()}đ</span>
               )}
@@ -51,11 +51,13 @@ export default function ProductCard({ product }: { product: any }) {
           )}
         </div>
       </div>
-      <button className={`w-full py-2.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest mt-1 transition-colors ${
-        isOutOfStock 
-          ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed' 
-          : 'bg-gray-50 border border-gray-200 hover:bg-[#7DAACB] hover:text-white hover:border-[#7DAACB]'
-      }`}>
+      <button 
+        aria-label={isOutOfStock ? `${product.name} - Hết hàng` : `Xem chi tiết ${product.name}`}
+        className={`w-full py-2.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest mt-1 transition-colors ${
+          isOutOfStock 
+            ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed' 
+            : 'bg-gray-50 border border-gray-200 hover:bg-[#1a6fa0] hover:text-white hover:border-[#1a6fa0]'
+        }`}>
         {isOutOfStock ? 'Hết hàng' : 'Xem chi tiết'}
       </button>
     </Link>

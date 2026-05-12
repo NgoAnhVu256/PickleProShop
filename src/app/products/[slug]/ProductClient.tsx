@@ -148,7 +148,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                 {allImages.length > 1 && (
                   <div className="flex gap-3 overflow-x-auto pb-2">
                     {allImages.slice(0, 8).map((img, i) => (
-                      <button key={i} onClick={() => setMainImage(img)} className={`w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all ${mainImage === img ? "border-[#7DAACB] shadow-lg" : "border-gray-100 hover:border-gray-300"}`}>
+                      <button key={i} onClick={() => setMainImage(img)} aria-label={`Xem ảnh ${i + 1} của ${product.name}`} className={`w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all ${mainImage === img ? "border-[#7DAACB] shadow-lg" : "border-gray-100 hover:border-gray-300"}`}>
                         <img src={img} alt={`${product.name} - Ảnh ${i + 1}`} width={80} height={80} loading="lazy" className="w-full h-full object-cover" />
                       </button>
                     ))}
@@ -176,7 +176,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                       {colorOptions.map(color => {
                         const colorImg = colorImageMap[color]; const isSelected = color === selectedColor;
                         return (
-                          <button key={color} onClick={() => handleColorSelect(color)} className={`relative flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all min-w-[80px] ${isSelected ? "border-[#7DAACB] bg-[#FFFDEB] shadow-md" : "border-gray-200 bg-white hover:border-gray-400"}`}>
+                          <button key={color} onClick={() => handleColorSelect(color)} aria-label={`Chọn màu ${color}`} className={`relative flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all min-w-[80px] ${isSelected ? "border-[#7DAACB] bg-[#FFFDEB] shadow-md" : "border-gray-200 bg-white hover:border-gray-400"}`}>
                             {colorImg && <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-50"><img src={colorImg} alt={color} className="w-full h-full object-cover" /></div>}
                             <span className="text-xs font-semibold text-gray-700">{color}</span>
                             {isSelected && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#7DAACB] rounded-full flex items-center justify-center"><Check size={12} className="text-white" /></div>}
@@ -195,7 +195,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                       <p className="text-sm font-bold text-gray-700">{sizeAttrLabel}: <span className="text-[#7DAACB]">{selectedSize}</span></p>
                       <div className="flex flex-wrap gap-2">
                         {sizeOptions.map(size => { const isSelected = size === selectedSize; const stock = selectedColor ? getVariantStock(selectedColor, size) : 1; const oos = stock === 0;
-                          return (<button key={size} onClick={() => !oos && setSelectedSize(size)} disabled={oos} className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${isSelected ? "border-[#7DAACB] bg-[#7DAACB]/5 text-[#7DAACB]" : oos ? "border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed line-through" : "border-gray-200 text-gray-700 hover:border-gray-400"}`}>{size}</button>);
+                          return (<button key={size} onClick={() => !oos && setSelectedSize(size)} disabled={oos} aria-label={`Chọn size ${size}${oos ? ' - Hết hàng' : ''}`} className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${isSelected ? "border-[#7DAACB] bg-[#7DAACB]/5 text-[#7DAACB]" : oos ? "border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed line-through" : "border-gray-200 text-gray-700 hover:border-gray-400"}`}>{size}</button>);
                         })}
                       </div>
                     </div>
@@ -208,7 +208,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                     <p className="text-sm font-bold text-gray-700">Phân loại:</p>
                     <div className="flex flex-wrap gap-2">
                       {product.variants.map(v => { const label = v.attrValues.map(a => a.value).join(" / ") || v.sku; const isSelected = matchedVariant?.id === v.id;
-                        return (<button key={v.id} onClick={() => { setSelectedColor(""); setSelectedSize(""); if (v.images?.length > 0) setMainImage(v.images[0]); }} disabled={v.stock === 0} className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${isSelected ? "border-[#7DAACB] bg-[#7DAACB]/5 text-[#7DAACB]" : v.stock === 0 ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-gray-200 text-gray-700 hover:border-gray-400"}`}>{label}{v.stock === 0 && <span className="ml-1 text-[10px]">(Hết hàng)</span>}</button>);
+                        return (<button key={v.id} onClick={() => { setSelectedColor(""); setSelectedSize(""); if (v.images?.length > 0) setMainImage(v.images[0]); }} disabled={v.stock === 0} aria-label={`Chọn phân loại ${label}${v.stock === 0 ? ' - Hết hàng' : ''}`} className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${isSelected ? "border-[#7DAACB] bg-[#7DAACB]/5 text-[#7DAACB]" : v.stock === 0 ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-gray-200 text-gray-700 hover:border-gray-400"}`}>{label}{v.stock === 0 && <span className="ml-1 text-[10px]">(Hết hàng)</span>}</button>);
                       })}
                     </div>
                   </div>
@@ -247,9 +247,9 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                 <div className="flex items-center gap-4">
                   <p className="text-sm font-bold text-gray-700">Số lượng:</p>
                   <div className={`flex items-center gap-0 bg-gray-50 rounded-xl border border-gray-200 ${currentVariantOutOfStock ? 'opacity-40 pointer-events-none' : ''}`}>
-                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900"><Minus size={16} /></button>
+                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} aria-label="Giảm số lượng" className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900"><Minus size={16} /></button>
                     <span className="w-12 text-center text-sm font-bold">{quantity}</span>
-                    <button onClick={() => setQuantity(q => q + 1)} className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900"><Plus size={16} /></button>
+                    <button onClick={() => setQuantity(q => q + 1)} aria-label="Tăng số lượng" className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900"><Plus size={16} /></button>
                   </div>
                   {matchedVariant && matchedVariant.stock > 0 && <span className="text-xs text-gray-400 font-medium">Còn {matchedVariant.stock} sản phẩm</span>}
                   {!hasAnyVariants && !currentVariantOutOfStock && (product.stock ?? 0) > 0 && <span className="text-xs text-gray-400 font-medium">Còn {product.stock} sản phẩm</span>}
@@ -260,7 +260,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                   {currentVariantOutOfStock ? (
                     <div className="flex-1 py-4 bg-gray-200 text-gray-500 rounded-2xl font-black text-sm flex items-center justify-center gap-2 cursor-not-allowed"><Package size={18} /> HẾT HÀNG</div>
                   ) : (
-                    <button onClick={handleAddToCart} className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <button onClick={handleAddToCart} aria-label="Thêm vào giỏ hàng" className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2">
                       <ShoppingCart size={18} /> THÊM VÀO GIỎ HÀNG
                     </button>
                   )}
@@ -300,7 +300,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                         </div>
                         <h3 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-[#7DAACB]">{p.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-sm font-black">{price.toLocaleString()}₫</span>
+                          <span className="text-sm font-black text-gray-900">{price.toLocaleString()}₫</span>
                           {hasSale && <span className="text-xs text-gray-400 line-through">{p.basePrice.toLocaleString()}₫</span>}
                         </div>
                       </Link>
@@ -325,7 +325,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                         <div className="w-full xl:w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100"><img src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" /></div>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-[#7DAACB] mb-1 leading-snug">{p.name}</h4>
-                          <span className="text-sm font-black text-[#7DAACB]">{price.toLocaleString()}₫</span>
+                          <span className="text-sm font-black text-[#1a6fa0]">{price.toLocaleString()}₫</span>
                           {hasSale && <span className="text-[10px] text-gray-400 line-through">{p.basePrice.toLocaleString()}₫</span>}
                         </div>
                       </Link>
