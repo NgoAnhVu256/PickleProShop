@@ -134,20 +134,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     ? (product.thumbnail.startsWith("http") ? product.thumbnail : `${siteUrl}${product.thumbnail}`)
     : `${siteUrl}/api/favicon`;
 
+  const displayTitle = product.brand?.name && !product.name.toLowerCase().startsWith(product.brand.name.toLowerCase())
+    ? `${product.brand.name} ${product.name}`
+    : product.name;
+
   return {
-    title: `${product.name} | PicklePro`,
+    title: `${displayTitle} | PicklePro`,
     description,
     alternates: { canonical: `${siteUrl}/products/${product.slug}` },
     openGraph: {
       type: "website",
-      title: `${product.name}${brandName} — PicklePro`,
+      title: `${displayTitle} — PicklePro`,
       description,
       images: [ogImage],
       url: `${siteUrl}/products/${product.slug}`,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | PicklePro`,
+      title: `${displayTitle} | PicklePro`,
       description,
       images: [ogImage],
     },
@@ -176,7 +180,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: product.name,
+    name: product.brand?.name && !product.name.toLowerCase().startsWith(product.brand.name.toLowerCase())
+      ? `${product.brand.name} ${product.name}`
+      : product.name,
     image: product.thumbnail ? `${siteUrl}${product.thumbnail}` : undefined,
     description: product.description?.replace(/<[^>]*>/g, "").slice(0, 300) || `${product.name} - PicklePro`,
     brand: product.brand ? { "@type": "Brand", name: product.brand.name } : undefined,

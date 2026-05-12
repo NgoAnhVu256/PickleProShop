@@ -12,12 +12,17 @@ export default function ProductCard({ product }: { product: any }) {
     : (product.stock ?? null);
   const isOutOfStock = totalStock !== null && totalStock === 0;
 
+  // Auto-prepend brand name to product name
+  const displayName = product.brand?.name && !product.name.toLowerCase().startsWith(product.brand.name.toLowerCase())
+    ? `${product.brand.name} ${product.name}`
+    : product.name;
+
   return (
     <Link href={`/products/${product.slug}`} aria-label={`Xem sản phẩm ${product.name}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
       <div className="aspect-[4/5] overflow-hidden rounded-lg md:rounded-xl bg-gray-50 relative shrink-0">
         <img 
           src={product.thumbnail ? `/api/img?url=${encodeURIComponent(product.thumbnail)}&w=400&q=80` : 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
-          alt={product.name} 
+          alt={displayName} 
           width={400}
           height={500}
           className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
@@ -37,7 +42,7 @@ export default function ProductCard({ product }: { product: any }) {
         ) : null}
       </div>
       <div className="flex-1 flex flex-col justify-start">
-        <h2 className="text-[13px] md:text-sm font-semibold text-gray-900 mb-1 md:mb-1.5 line-clamp-2 leading-snug">{product.name}</h2>
+        <h2 className="text-[13px] md:text-sm font-semibold text-gray-900 mb-1 md:mb-1.5 line-clamp-2 leading-snug">{displayName}</h2>
         <div className="flex items-center gap-2 mt-auto pt-1">
           {isOutOfStock ? (
             <span className="text-sm md:text-base font-bold text-gray-500">Liên hệ</span>

@@ -159,7 +159,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
               {/* Product Info */}
               <div className="space-y-6">
                 {product.brand && <span className="text-xs font-black text-[#7DAACB] uppercase tracking-widest">{product.brand.name}</span>}
-                <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">{product.name}</h1>
+                <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">{product.brand?.name && !product.name.toLowerCase().startsWith(product.brand.name.toLowerCase()) ? `${product.brand.name} ${product.name}` : product.name}</h1>
 
                 {/* Price */}
                 <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
