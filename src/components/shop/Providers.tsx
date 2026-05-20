@@ -25,6 +25,7 @@ export default function Providers({
 }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isCheckout = pathname?.startsWith("/checkout");
 
   return (
     <SiteSettingsContext.Provider value={settings}>
@@ -33,7 +34,7 @@ export default function Providers({
           {children}
           {!isAdmin && <CartDrawer />}
           {!isAdmin && <PopupBanner />}
-          {!isAdmin && (
+          {!isAdmin && !isCheckout && (
             <ChatWidget
               zaloLink={settings?.zalo}
               messengerLink={settings?.messenger}

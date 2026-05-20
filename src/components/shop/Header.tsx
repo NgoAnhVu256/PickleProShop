@@ -18,7 +18,7 @@ import { useSiteSettings } from './Providers';
 
 let globalNavCategories: {name: string, href: string}[] | null = null;
 
-export default function Header({ cartCount = 0, onCartClick }: { cartCount?: number; onCartClick?: () => void }) {
+export default function Header() {
   const settingsContext = useSiteSettings();
   
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -277,10 +277,10 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
             </Link>
           )}
 
-          <button onClick={onCartClick} className="relative p-1 text-gray-700" aria-label="Giỏ hàng">
+          <button onClick={() => setIsCartOpen(true)} className="relative p-1 text-gray-700" aria-label="Giỏ hàng">
             <ShoppingCart className="w-6 h-6" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{cartCount > 99 ? "99+" : cartCount}</span>
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{totalItems > 99 ? "99+" : totalItems}</span>
             )}
           </button>
         </div>

@@ -34,7 +34,7 @@ export interface AppliedPromotion {
 interface CartContextType {
   // Raw items (user-added, stored in localStorage)
   items: CartItem[];
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: CartItem, openCart?: boolean) => void;
   removeFromCart: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
   clearCart: () => void;
@@ -143,7 +143,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     };
   }, [items, isLoaded, recalculate]);
 
-  const addToCart = useCallback((item: CartItem) => {
+  const addToCart = useCallback((item: CartItem, openCart = true) => {
     setItems(prev => {
       const existing = prev.find(i => i.variantId === item.variantId);
       if (existing) {
@@ -155,7 +155,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, item];
     });
-    setIsCartOpen(true);
+    if (openCart) setIsCartOpen(true);
   }, []);
 
   const removeFromCart = useCallback((variantId: string) => {

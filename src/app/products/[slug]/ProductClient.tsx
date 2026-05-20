@@ -115,9 +115,9 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
     if (hasOptionMatrix && !matchedVariant) { toast.error("Vui lòng chọn đầy đủ phân loại sản phẩm"); return; }
     if (matchedVariant) {
       if (matchedVariant.stock < quantity) { toast.error("Số lượng vượt quá tồn kho"); return; }
-      addToCart({ variantId: matchedVariant.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: matchedVariant.sku, variantLabel: matchedVariant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || matchedVariant.sku, price: getEffectivePrice(matchedVariant), quantity, image: matchedVariant.images?.[0] || product.thumbnail || "" });
+      addToCart({ variantId: matchedVariant.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: matchedVariant.sku, variantLabel: matchedVariant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || matchedVariant.sku, price: getEffectivePrice(matchedVariant), quantity, image: matchedVariant.images?.[0] || product.thumbnail || "" }, false);
     } else {
-      addToCart({ variantId: product.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: "", variantLabel: "Mặc định", price: product.salePrice || product.basePrice, quantity, image: product.thumbnail || "" });
+      addToCart({ variantId: product.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: "", variantLabel: "Mặc định", price: product.salePrice || product.basePrice, quantity, image: product.thumbnail || "" }, false);
     }
     toast.success("Đã thêm vào giỏ hàng! 🛒");
   };
@@ -127,9 +127,9 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
     if (hasOptionMatrix && !matchedVariant) { toast.error("Vui lòng chọn đầy đủ phân loại sản phẩm"); return; }
     if (matchedVariant) {
       if (matchedVariant.stock < quantity) { toast.error("Số lượng vượt quá tồn kho"); return; }
-      addToCart({ variantId: matchedVariant.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: matchedVariant.sku, variantLabel: matchedVariant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || matchedVariant.sku, price: getEffectivePrice(matchedVariant), quantity, image: matchedVariant.images?.[0] || product.thumbnail || "" });
+      addToCart({ variantId: matchedVariant.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: matchedVariant.sku, variantLabel: matchedVariant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || matchedVariant.sku, price: getEffectivePrice(matchedVariant), quantity, image: matchedVariant.images?.[0] || product.thumbnail || "" }, false);
     } else {
-      addToCart({ variantId: product.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: "", variantLabel: "Mặc định", price: product.salePrice || product.basePrice, quantity, image: product.thumbnail || "" });
+      addToCart({ variantId: product.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: "", variantLabel: "Mặc định", price: product.salePrice || product.basePrice, quantity, image: product.thumbnail || "" }, false);
     }
     router.push("/checkout");
   };
