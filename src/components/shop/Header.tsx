@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import { useCart } from './CartContext';
 
 interface SearchResult {
   id: string;
@@ -43,6 +44,7 @@ export default function Header() {
   const user = session?.user;
   const role = (user as any)?.role;
   const pathname = usePathname();
+  const { totalItems, setIsCartOpen } = useCart();
 
   const logo = settingsContext?.logo;
   const siteName = settingsContext?.name || "PicklePro";
