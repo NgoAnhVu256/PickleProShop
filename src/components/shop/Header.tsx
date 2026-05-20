@@ -22,6 +22,7 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
   const settingsContext = useSiteSettings();
   
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -191,6 +192,15 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
 
         {/* ACTIONS */}
         <div className="flex items-center gap-3 sm:gap-4 md:gap-6 shrink-0">
+          {/* Hamburger Toggle */}
+          <button 
+            className="md:hidden p-2 text-gray-700"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Mở menu"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
           {/* Mobile Search Toggle */}
           <button 
             className="md:hidden p-2 text-gray-700"
@@ -338,6 +348,67 @@ export default function Header({ cartCount = 0, onCartClick }: { cartCount?: num
           })}
         </div>
       </nav>
+
+      {/* MOBILE SIDEBAR MENU */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] md:hidden">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+          {/* Sidebar */}
+          <div className="absolute top-0 left-0 bottom-0 w-4/5 max-w-sm bg-white shadow-2xl flex flex-col animate-in slide-in-from-left duration-300">
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+              <span className="font-extrabold text-xl">{siteName}</span>
+              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-400 hover:text-gray-900 bg-gray-50 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto py-4">
+              <nav className="flex flex-col px-4 gap-2">
+                {navCategories.map(item => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-3 px-4 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-[#7DAACB] transition-colors"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {user ? (
+              <div className="p-4 border-t border-gray-100 space-y-2">
+                <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#5a93b5] to-[#7DAACB] text-white flex items-center justify-center font-bold">
+                    {user.image ? <img src={user.image} alt="" className="w-full h-full rounded-full object-cover" /> : (user.name || "U")[0].toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                  </div>
+                </div>
+                <Link href="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  <UserCircle size={18} className="text-[#7DAACB]" /> Tài khoản
+                </Link>
+                <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  <Package size={18} className="text-gray-400" /> Đơn hàng
+                </Link>
+                <button onClick={() => signOut()} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 mt-2">
+                  <LogOut size={18} /> Đăng xuất
+                </button>
+              </div>
+            ) : (
+              <div className="p-4 border-t border-gray-100">
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full py-3 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white text-center rounded-xl font-bold">
+                  Đăng nhập / Đăng ký
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

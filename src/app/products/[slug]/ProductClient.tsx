@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChevronRight, ShoppingCart, Minus, Plus, Package, Truck, Shield, Check } from "lucide-react";
 import Header from "@/components/shop/Header";
 import ClientFooter from "@/components/shop/ClientFooter";
@@ -25,6 +26,7 @@ interface ProductDetail {
 
 export default function ProductClient({ product }: { product: ProductDetail }) {
   const { addToCart } = useCart();
+  const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
@@ -118,6 +120,18 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
       addToCart({ variantId: product.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: "", variantLabel: "Mặc định", price: product.salePrice || product.basePrice, quantity, image: product.thumbnail || "" });
     }
     toast.success("Đã thêm vào giỏ hàng! 🛒");
+  };
+
+  const handleBuyNow = () => {
+    if (currentVariantOutOfStock) { toast.error("Sản phẩm này hiện đã hết hàng"); return; }
+    if (hasOptionMatrix && !matchedVariant) { toast.error("Vui lòng chọn đầy đủ phân loại sản phẩm"); return; }
+    if (matchedVariant) {
+      if (matchedVariant.stock < quantity) { toast.error("Số lượng vượt quá tồn kho"); return; }
+      addToCart({ variantId: matchedVariant.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: matchedVariant.sku, variantLabel: matchedVariant.attrValues.map(a => `${a.attribute.label}: ${a.value}`).join(", ") || matchedVariant.sku, price: getEffectivePrice(matchedVariant), quantity, image: matchedVariant.images?.[0] || product.thumbnail || "" });
+    } else {
+      addToCart({ variantId: product.id, productId: product.id, productName: product.name, productSlug: product.slug, variantSku: "", variantLabel: "Mặc định", price: product.salePrice || product.basePrice, quantity, image: product.thumbnail || "" });
+    }
+    router.push("/checkout");
   };
 
   const getVariantStock = (color: string, size: string) => {
@@ -255,14 +269,19 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                   {!hasAnyVariants && !currentVariantOutOfStock && (product.stock ?? 0) > 0 && <span className="text-xs text-gray-400 font-medium">Còn {product.stock} sản phẩm</span>}
                 </div>
 
-                {/* Add to Cart */}
-                <div className="flex gap-3 pt-2">
+                {/* Desktop Add to Cart / Buy Now (Hidden on Mobile, replaced by Sticky Bar) */}
+                <div className="hidden md:flex gap-3 pt-2">
                   {currentVariantOutOfStock ? (
                     <div className="flex-1 py-4 bg-gray-200 text-gray-500 rounded-2xl font-black text-sm flex items-center justify-center gap-2 cursor-not-allowed"><Package size={18} /> HẾT HÀNG</div>
                   ) : (
-                    <button onClick={handleAddToCart} aria-label="Thêm vào giỏ hàng" className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2">
-                      <ShoppingCart size={18} /> THÊM VÀO GIỎ HÀNG
-                    </button>
+                    <>
+                      <button onClick={handleAddToCart} aria-label="Thêm vào giỏ hàng" className="flex-1 py-4 border-2 border-[#7DAACB] text-[#7DAACB] bg-white rounded-2xl font-black text-sm hover:bg-[#7DAACB]/5 transition-all flex items-center justify-center gap-2">
+                        <ShoppingCart size={18} /> THÊM VÀO GIỎ
+                      </button>
+                      <button onClick={handleBuyNow} aria-label="Mua ngay" className="flex-1 py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        MUA NGAY
+                      </button>
+                    </>
                   )}
                 </div>
 
@@ -337,6 +356,25 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
           </aside>
         </div>
       </main>
+
+      {/* Mobile Sticky Action Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 bg-white border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-[60] pb-safe">
+        <div className="flex gap-2">
+          {currentVariantOutOfStock ? (
+            <div className="flex-1 py-3 bg-gray-200 text-gray-500 rounded-xl font-black text-xs flex items-center justify-center gap-1 cursor-not-allowed"><Package size={16} /> HẾT HÀNG</div>
+          ) : (
+            <>
+              <button onClick={handleAddToCart} className="w-14 shrink-0 h-12 flex items-center justify-center border-2 border-[#7DAACB] text-[#7DAACB] rounded-xl hover:bg-[#7DAACB]/5 transition-colors">
+                <ShoppingCart size={20} />
+              </button>
+              <button onClick={handleBuyNow} className="flex-1 h-12 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-xl font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center">
+                MUA NGAY
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
       <ClientFooter />
     </div>
   );

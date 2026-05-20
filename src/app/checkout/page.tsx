@@ -317,6 +317,7 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="0901234567"
+                      autoComplete="tel"
                       className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all"
                       required
                     />
@@ -384,6 +385,7 @@ export default function CheckoutPage() {
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="Số nhà, tên đường chi tiết..."
                       rows={2}
+                      autoComplete="street-address"
                       className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all resize-none"
                       required
                     />

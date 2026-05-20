@@ -1,13 +1,21 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { getSiteSettings } from "@/lib/settings";
 import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
+import MobileBottomNav from "@/components/shop/MobileBottomNav";
 // Only load essential font weights to reduce font file size (~40% reduction)
 const inter = Inter({ subsets: ["latin"], weight: ["400", "600", "700", "800"], display: "swap" });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#7DAACB",
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
@@ -56,6 +64,11 @@ export async function generateMetadata(): Promise<Metadata> {
       title: ogTitle,
       description: ogDescription,
       images: [ogImage],
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: settings.name,
     },
     // Full SEO access for all bots
     robots: {
@@ -178,7 +191,10 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.className} antialiased text-gray-900`}>
         <Providers settings={settings}>
-          {children}
+          <div className="pb-16 md:pb-0">
+            {children}
+          </div>
+          <MobileBottomNav />
         </Providers>
         <Toaster position="top-center" />
         {/* GA loads after hydration — not render-blocking */}
