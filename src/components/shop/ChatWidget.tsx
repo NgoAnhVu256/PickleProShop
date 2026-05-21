@@ -251,10 +251,10 @@ export default function ChatWidget({
 
       {/* ═══ Chat Panel ═══ */}
       <div
+        className="picklepro-chat-panel"
         style={{
           position: "fixed",
           bottom: 100,
-          right: 28,
           zIndex: 9998,
           width: 360,
           maxWidth: "calc(100vw - 40px)",
@@ -494,6 +494,19 @@ export default function ChatWidget({
       </div>
 
       <style>{`
+        .picklepro-chat-panel {
+          right: 104px;
+        }
+        @media (max-width: 768px) {
+          .picklepro-chat-panel {
+            right: 20px !important;
+            left: 20px !important;
+            width: auto !important;
+            max-width: none !important;
+            bottom: 90px !important;
+            z-index: 100000 !important;
+          }
+        }
         @keyframes chat-pulse {
           0%, 100% { transform: scale(1); opacity: 0.6; }
           50% { transform: scale(1.3); opacity: 0; }
