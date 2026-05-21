@@ -113,13 +113,13 @@ export default function PopupBanner() {
     <img
       src={banner.image}
       alt={banner.title || "Khuyến mãi"}
-      width={400}
-      height={400}
+      width={800}
+      height={800}
       decoding="async"
       fetchPriority="low"
       style={{
-        maxWidth: "min(400px, 85vw)",
-        maxHeight: "65vh",
+        maxWidth: "min(800px, 90vw)",
+        maxHeight: "85vh",
         width: "100%",
         height: "auto",
         borderRadius: 12,
