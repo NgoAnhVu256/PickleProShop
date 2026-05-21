@@ -48,7 +48,7 @@ const getCachedCategories = unstable_cache(
 
 const getCachedProducts = unstable_cache(
   async () => prisma.product.findMany({
-    take: 10,
+    take: 30,
     where: { isActive: true },
     select: {
       id: true,
@@ -122,7 +122,7 @@ function ProductsSkeleton() {
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="h-9 w-80 bg-gray-200 rounded-lg mx-auto mb-8 animate-pulse" />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-          {Array.from({ length: 10 }).map((_, i) => (
+          {Array.from({ length: 15 }).map((_, i) => (
             <div key={i} className="bg-white p-3 rounded-2xl border border-gray-100">
               <div className="aspect-[4/5] bg-gray-100 rounded-xl animate-pulse" />
               <div className="h-4 w-3/4 bg-gray-100 rounded mt-3 animate-pulse" />
