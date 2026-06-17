@@ -49,21 +49,29 @@ echo "   ✅ Đã xóa sạch cấu hình Certbot & Let's Encrypt."
 echo ""
 echo "⚙️ [2/5] Đang cấu hình lại Nginx cho cổng 80 (HTTP Only)..."
 
-# Xác định file cấu hình Nginx
-NGINX_CONF="/etc/nginx/sites-available/picklepro"
-NGINX_LINK="/etc/nginx/sites-enabled/picklepro"
-
-# Nếu file sites-available/picklepro không tồn tại, kiểm tra default
-if [ ! -f "$NGINX_CONF" ]; then
-  echo "   - Không tìm thấy /etc/nginx/sites-available/picklepro."
-  echo "   - Sử dụng file cấu hình mặc định /etc/nginx/sites-available/default..."
-  NGINX_CONF="/etc/nginx/sites-available/default"
+# Tự động phát hiện cấu trúc thư mục Nginx
+if [ -d "/etc/nginx/sites-available" ]; then
+  NGINX_CONF="/etc/nginx/sites-available/picklepro"
+  NGINX_LINK="/etc/nginx/sites-enabled/picklepro"
+elif [ -d "/etc/nginx/conf.d" ]; then
+  NGINX_CONF="/etc/nginx/conf.d/picklepro.conf"
+  NGINX_LINK=""
+else
+  mkdir -p /etc/nginx/conf.d
+  NGINX_CONF="/etc/nginx/conf.d/picklepro.conf"
+  NGINX_LINK=""
 fi
 
-# Tạo bản sao lưu cấu hình cũ phòng trường hợp lỗi
-BACKUP_CONF="${NGINX_CONF}.backup_$(date +%Y%m%d_%H%M%S)"
-cp "$NGINX_CONF" "$BACKUP_CONF"
-echo "   - Đã sao lưu cấu hình cũ tại: $BACKUP_CONF"
+echo "   - Đường dẫn cấu hình Nginx sẽ ghi: $NGINX_CONF"
+
+# Tạo bản sao lưu cấu hình cũ nếu có tồn tại
+if [ -f "$NGINX_CONF" ]; then
+  BACKUP_CONF="${NGINX_CONF}.backup_$(date +%Y%m%d_%H%M%S)"
+  cp "$NGINX_CONF" "$BACKUP_CONF"
+  echo "   - Đã sao lưu cấu hình cũ tại: $BACKUP_CONF"
+else
+  echo "   - Không có cấu hình cũ, tiến hành tạo mới hoàn toàn."
+fi
 
 # Ghi cấu hình mới vào file Nginx
 cat << 'EOF' > "$NGINX_CONF"
@@ -121,8 +129,12 @@ if nginx -t; then
   systemctl restart nginx
   echo "   ✅ Khởi động lại Nginx thành công!"
 else
-  echo "   ❌ Lỗi cú pháp cấu hình Nginx! Đang khôi phục cấu hình cũ..."
-  cp "$BACKUP_CONF" "$NGINX_CONF"
+  echo "   ❌ Lỗi cú pháp cấu hình Nginx! Đang khôi phục..."
+  if [ -n "$BACKUP_CONF" ] && [ -f "$BACKUP_CONF" ]; then
+    cp "$BACKUP_CONF" "$NGINX_CONF"
+  else
+    rm -f "$NGINX_CONF"
+  fi
   systemctl restart nginx
   exit 1
 fi
