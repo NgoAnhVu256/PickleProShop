@@ -13,7 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo "═══════════════════════════════════════════"
-2: echo "  🚀 Bắt đầu chuyển cấu hình PicklePro sang HTTP Only..."
+echo "  🚀 Bắt đầu chuyển cấu hình PicklePro sang HTTP Only..."
 echo "═══════════════════════════════════════════"
 
 # 1. Xóa chứng chỉ Let's Encrypt cũ
