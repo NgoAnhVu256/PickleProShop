@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { ChevronRight, ShoppingCart, Minus, Plus, Package, Truck, Shield, Check } from "lucide-react";
 import Header from "@/components/shop/Header";
 import ClientFooter from "@/components/shop/ClientFooter";
@@ -156,14 +157,14 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
               {/* Images */}
               <div className="space-y-4">
-                <div className="aspect-square rounded-3xl overflow-hidden bg-white border border-gray-100">
-                  <img src={mainImage || 'https://placehold.co/600x600/f8fafc/94a3b8?text=Product'} alt={product.name} width={600} height={600} className="w-full h-full object-contain p-4" />
+                <div className="aspect-square rounded-3xl overflow-hidden bg-white border border-gray-100 relative">
+                  <Image src={mainImage || 'https://placehold.co/600x600/f8fafc/94a3b8?text=Product'} alt={product.name} fill priority sizes="(max-width: 1024px) 100vw, 50vw" className="object-contain p-4" />
                 </div>
                 {allImages.length > 1 && (
                   <div className="flex gap-3 overflow-x-auto pb-2">
                     {allImages.slice(0, 8).map((img, i) => (
-                      <button key={i} onClick={() => setMainImage(img)} aria-label={`Xem ảnh ${i + 1} của ${product.name}`} className={`w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all ${mainImage === img ? "border-[#2C2877] shadow-lg" : "border-gray-100 hover:border-gray-300"}`}>
-                        <img src={img} alt={`${product.name} - Ảnh ${i + 1}`} width={80} height={80} loading="lazy" className="w-full h-full object-cover" />
+                      <button key={i} onClick={() => setMainImage(img)} aria-label={`Xem ảnh ${i + 1} của ${product.name}`} className={`w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all relative ${mainImage === img ? "border-[#2C2877] shadow-lg" : "border-gray-100 hover:border-gray-300"}`}>
+                        <Image src={img} alt={`${product.name} - Ảnh ${i + 1}`} fill sizes="80px" loading="lazy" className="object-cover" />
                       </button>
                     ))}
                   </div>
@@ -191,7 +192,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                         const colorImg = colorImageMap[color]; const isSelected = color === selectedColor;
                         return (
                           <button key={color} onClick={() => handleColorSelect(color)} aria-label={`Chọn màu ${color}`} className={`relative flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all min-w-[80px] ${isSelected ? "border-[#2C2877] bg-[#F0F4F9] shadow-md" : "border-gray-200 bg-white hover:border-gray-400"}`}>
-                            {colorImg && <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-50"><img src={colorImg} alt={color} className="w-full h-full object-cover" /></div>}
+                            {colorImg && <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-50 relative"><Image src={colorImg} alt={color} fill sizes="64px" className="object-cover" /></div>}
                             <span className="text-xs font-semibold text-gray-700">{color}</span>
                             {isSelected && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#FF6220] rounded-full flex items-center justify-center"><Check size={12} className="text-white" /></div>}
                           </button>
@@ -245,7 +246,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                             const fn = vn ? `${r.productVariant.product.name} - ${vn}` : r.productVariant.product.name;
                             return (
                               <div key={r.id} className="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
-                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 shrink-0"><img src={r.productVariant.product.thumbnail || 'https://placehold.co/100x100'} alt={fn} className="w-full h-full object-cover" /></div>
+                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 shrink-0 relative"><Image src={r.productVariant.product.thumbnail || 'https://placehold.co/100x100'} alt={fn} fill sizes="48px" className="object-cover" /></div>
                                 <div className="flex-1 min-w-0"><p className="text-xs font-bold text-gray-900 truncate">{fn}</p><p className="text-[10px] font-bold text-gray-400 mt-0.5">Số lượng: <span className="text-[#2C2877]">x{r.quantity}</span></p></div>
                                 <div className="text-right shrink-0">{r.promoPrice === 0 ? <span className="text-xs font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Tặng miễn phí</span> : <span className="text-xs font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full">+{r.promoPrice.toLocaleString()}₫</span>}<p className="text-[10px] font-medium text-gray-400 line-through mt-1">{r.productVariant.price.toLocaleString()}₫</p></div>
                               </div>
@@ -314,8 +315,8 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                     return (
                       <Link key={p.id} href={`/products/${p.slug}`} className="bg-white rounded-2xl border border-gray-100 p-2 md:p-3 group hover:shadow-xl transition-all duration-300">
                         <div className="aspect-[4/5] overflow-hidden rounded-xl bg-gray-50 relative mb-2">
-                          <img src={p.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=SP'} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                          {hasSale && <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-md">Sale</div>}
+                          <Image src={p.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=SP'} alt={p.name} fill sizes="(max-width: 768px) 50vw, 20vw" className="object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                          {hasSale && <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-md z-10">Sale</div>}
                         </div>
                         <h3 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-[#2C2877]">{p.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
@@ -341,7 +342,7 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                     const price = p.salePrice || p.basePrice; const hasSale = !!p.salePrice && p.salePrice < p.basePrice;
                     return (
                       <Link key={p.id} href={`/products/${p.slug}`} className="flex xl:flex-row flex-col gap-2 xl:gap-3 group shrink-0 w-[120px] xl:w-auto">
-                        <div className="w-full xl:w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100"><img src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" /></div>
+                        <div className="w-full xl:w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100 relative"><Image src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} fill sizes="80px" className="object-cover group-hover:scale-105 transition-transform" loading="lazy" /></div>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-[#2C2877] mb-1 leading-snug">{p.name}</h4>
                           <span className="text-sm font-black text-[#FF6220]">{price.toLocaleString()}₫</span>

@@ -2,6 +2,7 @@ import HomeHeader from '@/components/shop/HomeHeader';
 import { prisma } from '@/lib/prisma';
 import { getSiteSettings } from '@/lib/settings';
 import Link from 'next/link';
+import Image from 'next/image';
 import Footer from '@/components/shop/Footer';
 import { Calendar, ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -161,12 +162,13 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
       <main className="pb-20">
         {/* --- HERO HEADER --- */}
         <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden bg-gray-900">
-          <img 
+          <Image 
             src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=1200'} 
-            className="w-full h-full object-cover object-top opacity-80"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-top opacity-80"
             alt={post.title}
-            loading="eager"
-            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
           
@@ -178,7 +180,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
               <ArrowLeft size={16} /> Quay lại
             </Link>
             <div className="flex items-center gap-3 mb-4">
-              <span className="bg-[#7DAACB] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
+              <span className="bg-primary text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
                 {post.category.name}
               </span>
               <div className="flex items-center gap-2 text-white/60 text-xs font-medium">
@@ -198,7 +200,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           {/* Article */}
           <article className="lg:col-span-8">
             {post.excerpt && (
-              <p className="text-xl text-gray-500 font-medium italic border-l-4 border-[#7DAACB] pl-6 mb-10 leading-relaxed">
+              <p className="text-xl text-gray-500 font-medium italic border-l-4 border-primary pl-6 mb-10 leading-relaxed">
                 {post.excerpt}
               </p>
             )}
@@ -227,14 +229,18 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                 <div className="space-y-6">
                   {relatedPosts.map((rp) => (
                     <Link key={rp.id} href={`/blog/${rp.slug}`} className="group flex gap-4">
-                      <img 
-                        src={rp.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=200'}
-                        alt={rp.title}
-                        className="w-24 h-24 rounded-2xl object-cover shrink-0"
-                        loading="lazy"
-                      />
+                      <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-gray-50 shrink-0">
+                        <Image 
+                          src={rp.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=200'}
+                          alt={rp.title}
+                          fill
+                          sizes="96px"
+                          className="object-cover"
+                          loading="lazy"
+                        />
+                      </div>
                       <div className="flex flex-col justify-center">
-                        <h5 className="text-[14px] font-bold text-gray-900 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-snug">
+                        <h5 className="text-[14px] font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                           {rp.title}
                         </h5>
                         <p className="text-[11px] text-gray-400 mt-2 font-medium">
@@ -249,11 +255,14 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
             {/* Right Banners */}
             {sideBanners.map((banner) => (
-              <Link key={banner.id} href={banner.link || '#'} className="block rounded-[32px] overflow-hidden group shadow-xl hover:shadow-[#7DAACB]/20 transition-all duration-500">
-                <img 
+              <Link key={banner.id} href={banner.link || '#'} className="block rounded-[32px] overflow-hidden group shadow-xl hover:shadow-primary/20 transition-all duration-500">
+                <Image 
                   src={banner.image} 
                   alt={banner.title} 
-                  className="w-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  width={360}
+                  height={480}
+                  sizes="(max-width: 1024px) 100vw, 360px"
+                  className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700"
                   loading="lazy"
                 />
               </Link>

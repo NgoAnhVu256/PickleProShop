@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   // Enable source maps in production for better debugging
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   // Increase body size limit for admin posts with embedded images
   serverExternalPackages: ["sharp"],
   experimental: {
@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     },
     middlewareClientMaxBodySize: "50mb",
     // Tree-shake unused exports from these packages
-    optimizePackageImports: ["lucide-react", "react-hot-toast", "next-auth"],
+    optimizePackageImports: ["lucide-react", "react-hot-toast", "next-auth", "framer-motion"],
   },
   eslint: {
     ignoreDuringBuilds: true,

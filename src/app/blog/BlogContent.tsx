@@ -35,7 +35,7 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
       {/* Breadcrumb & Tiêu đề */}
       <div className="mb-8 md:mb-12">
         <div className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-4 flex-wrap">
-          <Link href="/" className="hover:text-[#7DAACB]">Trang chủ</Link>
+          <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
           <ChevronRight size={12} />
           <span className="text-gray-900">Tin tức Pickleball</span>
         </div>
@@ -56,8 +56,8 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
               onClick={() => setSelectedCategory('all')}
               className={`px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${
                 selectedCategory === 'all' 
-                  ? "bg-[#7DAACB] text-white border-[#7DAACB] shadow-md shadow-[#7DAACB]/20" 
-                  : "bg-white text-gray-600 border-gray-200 hover:border-[#7DAACB] hover:text-[#7DAACB]"
+                  ? "bg-primary text-white border-primary shadow-md shadow-primary/20" 
+                  : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
               }`}
             >
               Tất cả tin tức
@@ -68,8 +68,8 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
                 onClick={() => setSelectedCategory(cat.slug)}
                 className={`px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${
                   selectedCategory === cat.slug
-                    ? "bg-[#7DAACB] text-white border-[#7DAACB] shadow-md shadow-[#7DAACB]/20" 
-                    : "bg-white text-gray-600 border-gray-200 hover:border-[#7DAACB] hover:text-[#7DAACB]"
+                    ? "bg-primary text-white border-primary shadow-md shadow-primary/20" 
+                    : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
                 }`}
               >
                 {cat.name}
@@ -90,7 +90,7 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
                       loading="lazy"
                       decoding="async"
                     />
-                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#7DAACB] shadow-sm">
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-primary shadow-sm">
                       {post.category?.name}
                     </div>
                   </div>
@@ -98,13 +98,13 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
                     <div className="text-[10px] md:text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-2">
                       {new Date(post.publishedAt).toLocaleDateString('vi-VN')}
                     </div>
-                    <h3 className="text-base md:text-lg font-black mb-2 group-hover:text-[#7DAACB] transition-colors line-clamp-2 leading-tight uppercase tracking-tight">
+                    <h3 className="text-base md:text-lg font-black mb-2 group-hover:text-primary transition-colors line-clamp-2 leading-tight uppercase tracking-tight">
                       {post.title}
                     </h3>
                     <p className="text-xs md:text-sm text-gray-400 line-clamp-2 leading-relaxed font-medium mb-4">
                       {post.excerpt}
                     </p>
-                    <div className="mt-auto pt-2 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#7DAACB] group-hover:text-[#5a93b5]">
+                    <div className="mt-auto pt-2 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-primary group-hover:text-primary-dark">
                       Đọc tiếp <ChevronRight size={14} />
                     </div>
                   </div>
@@ -124,7 +124,7 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
           {/* Tin tức mới nhất */}
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
             <h3 className="text-lg font-black text-gray-900 uppercase tracking-tight mb-5 flex items-center gap-2">
-              <span className="w-2 h-6 bg-[#7DAACB] rounded-full"></span>
+              <span className="w-2 h-6 bg-primary rounded-full"></span>
               Tin tức mới nhất
             </h3>
             <div className="space-y-5">
@@ -139,7 +139,7 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-bold text-gray-900 line-clamp-2 leading-tight group-hover:text-[#7DAACB] transition-colors mb-1">
+                    <h4 className="text-sm font-bold text-gray-900 line-clamp-2 leading-tight group-hover:text-primary transition-colors mb-1">
                       {post.title}
                     </h4>
                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
@@ -154,7 +154,7 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
           {/* Popular Tags */}
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sticky top-24">
             <h3 className="text-lg font-black text-gray-900 uppercase tracking-tight mb-5 flex items-center gap-2">
-              <span className="w-2 h-6 bg-[#7DAACB] rounded-full"></span>
+              <span className="w-2 h-6 bg-primary rounded-full"></span>
               Chủ đề phổ biến
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -164,14 +164,14 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
                   onClick={() => setSelectedCategory(cat.slug)}
                   className={`px-3 py-1.5 border rounded-lg text-xs font-bold transition-all ${
                     selectedCategory === cat.slug
-                      ? "bg-[#7DAACB]/10 border-[#7DAACB] text-[#7DAACB]"
-                      : "bg-gray-50 border-gray-100 hover:border-[#7DAACB] text-gray-600 hover:text-[#7DAACB] hover:bg-[#7DAACB]/5"
+                      ? "bg-primary/10 border-primary text-primary"
+                      : "bg-gray-50 border-gray-100 hover:border-primary text-gray-600 hover:text-primary hover:bg-primary/5"
                   }`}
                 >
                   #{cat.name}
                 </button>
               ))}
-              <button onClick={() => setSelectedCategory('all')} className="px-3 py-1.5 bg-gray-50 border border-gray-100 hover:border-[#7DAACB] text-gray-600 hover:text-[#7DAACB] hover:bg-[#7DAACB]/5 rounded-lg text-xs font-bold transition-all">#PickleballVietnam</button>
+              <button onClick={() => setSelectedCategory('all')} className="px-3 py-1.5 bg-gray-50 border border-gray-100 hover:border-primary text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg text-xs font-bold transition-all">#PickleballVietnam</button>
             </div>
           </div>
         </aside>

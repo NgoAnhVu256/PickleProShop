@@ -52,7 +52,7 @@ export default function FeedbackPage() {
           </div>
           <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-3">Cảm ơn bạn!</h1>
           <p className="text-gray-500 font-medium mb-8">Góp ý của bạn đã được gửi thành công. Chúng tôi sẽ xem xét và phản hồi trong thời gian sớm nhất.</p>
-          <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-bold text-sm shadow-lg shadow-[#7DAACB]/20 hover:shadow-xl transition-all">
+          <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl transition-all">
             <ArrowLeft size={16} /> Quay lại trang chủ
           </Link>
         </div>
@@ -66,8 +66,8 @@ export default function FeedbackPage() {
       <div className="max-w-2xl mx-auto px-4 py-10 md:py-16">
         {/* Header */}
         <div className="text-center mb-10 md:mb-12">
-          <div className="w-16 h-16 bg-[#7DAACB]/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-            <MessageSquare className="w-8 h-8 text-[#7DAACB]" />
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <MessageSquare className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight mb-3">Góp ý với PicklePro</h1>
           <p className="text-gray-500 text-sm md:text-base font-medium max-w-md mx-auto">Mọi góp ý của bạn đều rất quý giá và giúp chúng tôi cải thiện dịch vụ tốt hơn.</p>
@@ -81,7 +81,7 @@ export default function FeedbackPage() {
               <input
                 type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                 placeholder="Nguyễn Văn A"
-                className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-[#7DAACB]/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/10 transition-all"
+                className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-primary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
               />
             </div>
             <div>
@@ -89,7 +89,7 @@ export default function FeedbackPage() {
               <input
                 type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                 placeholder="email@example.com"
-                className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-[#7DAACB]/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/10 transition-all"
+                className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-primary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
               />
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function FeedbackPage() {
             <input
               type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
               placeholder="0912 345 678"
-              className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-[#7DAACB]/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/10 transition-all"
+              className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-primary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
           <div>
@@ -106,7 +106,7 @@ export default function FeedbackPage() {
             <input
               type="text" value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))}
               placeholder="Góp ý về sản phẩm, dịch vụ, giao diện..."
-              className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-[#7DAACB]/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/10 transition-all"
+              className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-primary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
           <div>
@@ -114,13 +114,13 @@ export default function FeedbackPage() {
             <textarea
               rows={5} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
               placeholder="Hãy chia sẻ ý kiến của bạn..."
-              className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-[#7DAACB]/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/10 transition-all resize-none"
+              className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:border-primary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all resize-none"
             />
           </div>
           <button
             type="submit"
             disabled={sending}
-            className="w-full py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl shadow-[#7DAACB]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60"
+            className="w-full py-4 bg-primary hover:bg-primary-dark text-white rounded-2xl font-black text-sm shadow-xl shadow-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {sending ? "Đang gửi..." : <><Send size={16} /> Gửi góp ý</>}
           </button>

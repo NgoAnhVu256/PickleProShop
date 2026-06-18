@@ -5,7 +5,7 @@ export default function Loading() {
         {/* Outer static ring */}
         <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
         {/* Spinning ring */}
-        <div className="absolute inset-0 border-4 border-[#7DAACB] rounded-full border-t-transparent border-r-transparent animate-spin shadow-lg shadow-[#7DAACB]/20"></div>
+        <div className="absolute inset-0 border-4 border-[#2C2877] rounded-full border-t-transparent border-r-transparent animate-spin shadow-lg shadow-[#2C2877]/20"></div>
         {/* Favicon from admin — uses /api/favicon which reads store_favicon from DB */}
         <img
           src="/api/favicon"

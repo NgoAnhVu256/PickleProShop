@@ -1,6 +1,7 @@
 "use client";
 import { Search, ShoppingCart, User, Menu, X, LogOut, Shield, ChevronDown, Package, UserCircle } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { useSession, signOut } from 'next-auth/react';
@@ -166,19 +167,19 @@ export default function Header() {
                       onClick={() => { setShowDropdown(false); setSearchQuery(""); }}
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
                     >
-                      <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0">
-                        <img src={p.thumbnail || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt="" className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0 relative">
+                        <Image src={p.thumbnail || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt="" fill sizes="48px" className="object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900 truncate">{highlightMatch(p.name, searchQuery)}</p>
-                        <p className="text-xs font-bold text-[#7DAACB]">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
+                        <p className="text-xs font-bold text-accent">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
                       </div>
                     </Link>
                   ))}
                   <Link
                     href={`/products?search=${encodeURIComponent(searchQuery)}`}
                     onClick={() => setShowDropdown(false)}
-                    className="block text-center py-3 text-sm font-bold text-[#7DAACB] border-t border-gray-100 hover:bg-gray-50"
+                    className="block text-center py-3 text-sm font-bold text-primary border-t border-gray-100 hover:bg-gray-50 hover:text-primary-dark"
                   >
                     Xem tất cả kết quả →
                   </Link>
@@ -298,7 +299,7 @@ export default function Header() {
               placeholder="Bạn tìm gì hôm nay?" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-12 text-sm focus:outline-none focus:border-[#7DAACB]"
+              className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-12 text-sm focus:outline-none focus:border-primary"
               autoFocus
             />
             <button aria-label="Tìm kiếm trên điện thoại" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -310,12 +311,12 @@ export default function Header() {
             <div className="mt-2 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden">
               {searchResults.slice(0, 4).map((p) => (
                 <Link key={p.id} href={`/products/${p.slug}`} onClick={() => { setShowDropdown(false); setIsSearchOpen(false); }} className="flex items-center gap-3 p-3 hover:bg-gray-50 border-b border-gray-50 last:border-0">
-                  <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0">
-                    <img src={p.thumbnail || ''} alt="" className="w-full h-full object-cover" />
+                  <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0 relative">
+                    <Image src={p.thumbnail || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt="" fill sizes="40px" className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate">{p.name}</p>
-                    <p className="text-xs font-bold text-[#7DAACB]">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
+                    <p className="text-xs font-bold text-accent">{(p.salePrice || p.basePrice).toLocaleString()}₫</p>
                   </div>
                 </Link>
               ))}
@@ -380,7 +381,7 @@ export default function Header() {
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="py-3 px-4 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-[#7DAACB] transition-colors"
+                    className="py-3 px-4 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -391,8 +392,8 @@ export default function Header() {
             {user ? (
               <div className="p-4 border-t border-gray-100 space-y-2">
                 <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl mb-4">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#5a93b5] to-[#7DAACB] text-white flex items-center justify-center font-bold">
-                    {user.image ? <img src={user.image} alt="" className="w-full h-full rounded-full object-cover" /> : (user.name || "U")[0].toUpperCase()}
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold relative overflow-hidden">
+                    {user.image ? <Image src={user.image} alt="" fill sizes="40px" className="object-cover" /> : (user.name || "U")[0].toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
@@ -400,7 +401,7 @@ export default function Header() {
                   </div>
                 </div>
                 <Link href="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  <UserCircle size={18} className="text-[#7DAACB]" /> Tài khoản
+                  <UserCircle size={18} className="text-primary" /> Tài khoản
                 </Link>
                 <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
                   <Package size={18} className="text-gray-400" /> Đơn hàng
@@ -411,7 +412,7 @@ export default function Header() {
               </div>
             ) : (
               <div className="p-4 border-t border-gray-100">
-                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full py-3 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white text-center rounded-xl font-bold">
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full py-3 bg-primary hover:bg-primary-dark text-white text-center rounded-xl font-bold transition-colors">
                   Đăng nhập / Đăng ký
                 </Link>
               </div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function BannerGrid({ banners }: { banners?: any }) {
   if (!banners || !banners.HERO || banners.HERO.length === 0) return null;
@@ -62,14 +63,13 @@ function AutoSlider({ items = [], interval }: { items: any[]; interval: number }
       {items.map((item, i) => {
         const isActive = i === index;
         const content = (
-          <img
+          <Image
             src={item.image}
             alt={item.title || 'Banner'}
-            width={400}
-            height={300}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 25vw"
+            className="object-cover"
             loading="lazy"
-            decoding="async"
           />
         );
 
@@ -121,15 +121,14 @@ function HeroSlider({ items = [] }: { items: any[] }) {
       {items.map((item, i) => {
         const isActive = i === index;
         const content = (
-          <img
+          <Image
             src={item.image}
             alt={item.title || 'Hero Banner'}
-            width={800}
-            height={400}
-            className="w-full h-full object-cover"
-            fetchPriority={i === 0 ? "high" : "auto"}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+            priority={i === 0}
             loading={i === 0 ? "eager" : "lazy"}
-            decoding={i === 0 ? "sync" : "async"}
           />
         );
 

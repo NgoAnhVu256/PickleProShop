@@ -304,7 +304,7 @@ tr:last-child td {
   margin-top: 1.4em;
   margin-bottom: 0.5em;
   letter-spacing: -0.01em;
-  border-bottom: 2px solid #7DAACB;
+  border-bottom: 2px solid var(--primary);
   padding-bottom: 0.3em;
 }
 .blog-content h3 {
@@ -340,17 +340,17 @@ tr:last-child td {
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 .blog-content blockquote {
-  border-left: 4px solid #7DAACB;
+  border-left: 4px solid var(--primary);
   padding-left: 1.2em;
   margin: 1.5em 0;
   font-style: italic;
   color: #6b7280;
 }
 .blog-content a {
-  color: #7DAACB;
+  color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .blog-content a:hover {
-  color: #5a93b5;
+  color: var(--primary-dark);
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ProductCard({ product }: { product: any }) {
   const price = product.salePrice || product.basePrice || 0;
@@ -20,14 +21,13 @@ export default function ProductCard({ product }: { product: any }) {
   return (
     <Link href={`/products/${product.slug}`} aria-label={`Xem sản phẩm ${product.name}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
       <div className="aspect-[4/5] overflow-hidden rounded-lg md:rounded-xl bg-gray-50 relative shrink-0">
-        <img 
+        <Image 
           src={product.thumbnail ? `/api/img?url=${encodeURIComponent(product.thumbnail)}&w=400&q=80` : 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
           alt={displayName} 
-          width={400}
-          height={500}
-          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+          className={`object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
           loading="lazy"
-          decoding="async"
         />
         {isOutOfStock ? (
           <div className="absolute inset-0 flex items-center justify-center">
