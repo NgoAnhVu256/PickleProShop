@@ -136,7 +136,7 @@ export default function AdminFeedbackPage() {
     } catch { toast.error("Lỗi xóa"); }
   };
 
-  const statusColor = (s: string) => s === "NEW" ? "#3498db" : s === "REVIEWED" ? "#f39c12" : "#27ae60";
+  const statusColor = (s: string) => s === "NEW" ? "#3498db" : s === "REVIEWED" ? "#f39c12" : "#2C2877";
   const statusLabel = (s: string) => s === "NEW" ? "Mới" : s === "REVIEWED" ? "Đã xem" : "Đã xử lý";
 
   return (
@@ -154,7 +154,7 @@ export default function AdminFeedbackPage() {
           { label: "Tổng", value: stats.total, color: "#8a98ac" },
           { label: "Mới", value: stats.new, color: "#3498db" },
           { label: "Đã xem", value: stats.reviewed, color: "#f39c12" },
-          { label: "Đã xử lý", value: stats.resolved, color: "#27ae60" },
+          { label: "Đã xử lý", value: stats.resolved, color: "#2C2877" },
         ].map(s => (
           <div key={s.label} style={{ background: "#fff", borderRadius: 12, border: "1px solid #eef2f7", padding: "16px 20px", textAlign: "center" }}>
             <div style={{ fontSize: 24, fontWeight: 800, color: s.color }}>{s.value}</div>
@@ -290,7 +290,7 @@ export default function AdminFeedbackPage() {
         <>
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
             <button onClick={() => { setShowBannerForm(true); setEditingBannerId(null); setBannerForm({ title: "", image: "", link: "", isActive: true }); }}
-              style={{ background: "#27ae60", color: "#fff", border: "none", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+              style={{ background: "#2C2877", color: "#fff", border: "none", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
               <Plus size={16} /> Thêm banner
             </button>
           </div>
@@ -302,7 +302,7 @@ export default function AdminFeedbackPage() {
                 <div style={{ flex: 1 }}>
                   <h4 style={{ fontSize: 14, fontWeight: 700, color: "#323b4b", marginBottom: 4 }}>{b.title}</h4>
                   <p style={{ fontSize: 12, color: "#b0bac9" }}>{b.link || "Không có link"}</p>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: b.isActive ? "#27ae60" : "#e74c3c" }}>{b.isActive ? "Đang hiển thị" : "Ẩn"}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: b.isActive ? "#2C2877" : "#e74c3c" }}>{b.isActive ? "Đang hiển thị" : "Ẩn"}</span>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button onClick={() => { setEditingBannerId(b.id); setBannerForm({ title: b.title, image: b.image, link: b.link || "", isActive: b.isActive }); setShowBannerForm(true); }}
@@ -361,7 +361,7 @@ export default function AdminFeedbackPage() {
                   <button onClick={() => setShowBannerForm(false)}
                     style={{ flex: 1, padding: "10px", border: "1px solid #eef2f7", borderRadius: 10, background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>Hủy</button>
                   <button onClick={handleSaveBanner}
-                    style={{ flex: 1, padding: "10px", border: "none", borderRadius: 10, background: "#27ae60", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
+                    style={{ flex: 1, padding: "10px", border: "none", borderRadius: 10, background: "#2C2877", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
                     {editingBannerId ? "Cập nhật" : "Tạo mới"}
                   </button>
                 </div>

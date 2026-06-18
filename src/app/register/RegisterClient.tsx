@@ -90,8 +90,8 @@ export default function RegisterClient({ settings }: { settings: any }) {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-6 relative overflow-hidden">
       <Toaster position="top-center" />
       
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-[120px] opacity-60 animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-50 rounded-full blur-[120px] opacity-60 animate-pulse" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100/30 rounded-full blur-[120px] opacity-60 animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-100/30 rounded-full blur-[120px] opacity-60 animate-pulse" />
 
       <div className="w-full max-w-[480px] z-10">
         <div className="text-center mb-8">
@@ -126,13 +126,13 @@ export default function RegisterClient({ settings }: { settings: any }) {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Họ và tên</label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#3cc06e] transition-colors" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#2C2877] transition-colors" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Nguyễn Văn A"
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#58d68d] focus:bg-white focus:ring-4 focus:ring-green-500/5 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#2C2877] focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   required
                 />
               </div>
@@ -141,13 +141,13 @@ export default function RegisterClient({ settings }: { settings: any }) {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#3cc06e] transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#2C2877] transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#58d68d] focus:bg-white focus:ring-4 focus:ring-green-500/5 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#2C2877] focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   required
                 />
               </div>
@@ -156,7 +156,7 @@ export default function RegisterClient({ settings }: { settings: any }) {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Số điện thoại</label>
               <div className="relative group">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#3cc06e] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#2C2877] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
                 <input
@@ -164,7 +164,7 @@ export default function RegisterClient({ settings }: { settings: any }) {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="0901234567"
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#58d68d] focus:bg-white focus:ring-4 focus:ring-green-500/5 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#2C2877] focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   required
                 />
               </div>
@@ -173,13 +173,13 @@ export default function RegisterClient({ settings }: { settings: any }) {
             <div className="space-y-1.5 pb-2">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Mật khẩu</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#3cc06e] transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#2C2877] transition-colors" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Tối thiểu 8 ký tự"
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#58d68d] focus:bg-white focus:ring-4 focus:ring-green-500/5 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:border-[#2C2877] focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   required
                   minLength={8}
                 />
@@ -189,7 +189,7 @@ export default function RegisterClient({ settings }: { settings: any }) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-black text-white py-4 rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl hover:bg-gray-900 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full relative group overflow-hidden bg-gradient-to-br from-[#2C2877] to-[#FF6220] text-white py-4 rounded-2xl font-black text-sm shadow-xl shadow-indigo-100 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -204,13 +204,13 @@ export default function RegisterClient({ settings }: { settings: any }) {
 
           <p className="text-center mt-8 text-sm text-gray-500 font-medium">
             Đã có tài khoản?{" "}
-            <Link href="/login" className="text-[#3cc06e] font-bold hover:underline">Đăng nhập</Link>
+            <Link href="/login" className="text-[#2C2877] font-bold hover:underline">Đăng nhập</Link>
           </p>
         </div>
 
         <div className="mt-10 flex items-center justify-center gap-6">
           <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
-            <ShieldCheck className="w-4 h-4 text-[#3cc06e]" />
+            <ShieldCheck className="w-4 h-4 text-[#2C2877]" />
             Dữ liệu mã hoá
           </div>
           <div className="w-1 h-1 bg-gray-200 rounded-full" />

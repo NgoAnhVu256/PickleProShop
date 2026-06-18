@@ -76,8 +76,8 @@ export default function LoginClient({ settings }: { settings: any }) {
       <Toaster position="top-center" />
       
       {/* Abstract Background Shapes */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-50 rounded-full blur-[120px] opacity-60 animate-pulse" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-[120px] opacity-60 animate-pulse" />
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-100/30 rounded-full blur-[120px] opacity-60 animate-pulse" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-100/30 rounded-full blur-[120px] opacity-60 animate-pulse" />
 
       <div className="w-full max-w-[450px] z-10">
         {/* Brand Header */}
@@ -119,13 +119,13 @@ export default function LoginClient({ settings }: { settings: any }) {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Địa chỉ Email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#3cc06e] transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#2C2877] transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@picklepro.vn"
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#58d68d] focus:bg-white focus:ring-4 focus:ring-green-500/5 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#2C2877] focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   required
                 />
               </div>
@@ -134,16 +134,16 @@ export default function LoginClient({ settings }: { settings: any }) {
             <div className="space-y-1.5">
               <div className="flex justify-between items-center ml-1">
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Mật khẩu</label>
-                <Link href="#" className="text-xs font-bold text-[#3cc06e] hover:underline">Quên mật khẩu?</Link>
+                <Link href="#" className="text-xs font-bold text-[#2C2877] hover:underline">Quên mật khẩu?</Link>
               </div>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#3cc06e] transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-300 group-focus-within:text-[#2C2877] transition-colors" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#58d68d] focus:bg-white focus:ring-4 focus:ring-green-500/5 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#2C2877] focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   required
                 />
               </div>
@@ -152,7 +152,7 @@ export default function LoginClient({ settings }: { settings: any }) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full relative group overflow-hidden bg-gradient-to-br from-[#58d68d] to-[#3cc06e] text-white py-4 rounded-xl font-black text-sm shadow-xl shadow-green-100 hover:shadow-green-200 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full relative group overflow-hidden bg-gradient-to-br from-[#2C2877] to-[#FF6220] text-white py-4 rounded-xl font-black text-sm shadow-xl shadow-indigo-100 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

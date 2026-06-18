@@ -181,7 +181,7 @@ export default function AdminCreateProduct() {
 
             {/* Basic Info */}
             <div className="card" style={{ padding: 24 }}>
-              <h2 className="section-title"><Tag size={18} color="#58d68d" /> Thông tin cơ bản</h2>
+              <h2 className="section-title"><Tag size={18} color="#2C2877" /> Thông tin cơ bản</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 <div>
                   <label className="input-label">Tên sản phẩm *</label>
@@ -253,7 +253,7 @@ export default function AdminCreateProduct() {
             {/* ─── OPTION-MATRIX: Primary Attr → Other Attrs ─── */}
             <div className="card" style={{ padding: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
+                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#2C2877" /> Biến thể</h2>
               </div>
 
               {!categoryId && (

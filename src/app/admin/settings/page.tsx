@@ -300,7 +300,7 @@ function AddressesManager({
           style={{
             display: "flex", alignItems: "center", gap: 5, padding: "5px 12px",
             borderRadius: 8, border: "none", cursor: "pointer",
-            background: "linear-gradient(135deg, #58d68d, #3cc06e)",
+            background: "linear-gradient(135deg, #2C2877, #1b1853)",
             color: "#fff", fontSize: 12, fontWeight: 700,
           }}
         >
@@ -317,7 +317,7 @@ function AddressesManager({
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{
               width: 28, height: 28, borderRadius: "50%",
-              background: "linear-gradient(135deg,#58d68d,#3cc06e)",
+              background: "linear-gradient(135deg, #2C2877, #1b1853)",
               color: "#fff", fontSize: 11, fontWeight: 800,
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
             }}>
@@ -337,7 +337,7 @@ function AddressesManager({
                   outline: "none", fontFamily: "inherit",
                   transition: "border-color 0.15s",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#58d68d")}
+                onFocus={(e) => (e.target.style.borderColor = "#2C2877")}
                 onBlur={(e) => (e.target.style.borderColor = "#eef2f7")}
               />
             </div>
@@ -438,7 +438,7 @@ export default function AdminSettingsPage() {
                 display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 8, border: "none", cursor: "pointer",
                 fontSize: 13, fontWeight: isActive ? 700 : 500,
                 color: isActive ? "#fff" : "#8a98ac",
-                background: isActive ? "linear-gradient(135deg, #58d68d, #3cc06e)" : "transparent",
+                background: isActive ? "linear-gradient(135deg, #2C2877, #1b1853)" : "transparent",
               }}
             >
               <Icon size={14} />

@@ -38,8 +38,8 @@ export default async function AdminDashboard() {
       value: formatPrice(totalRevenue),
       sub: "Từ đơn thành công",
       iconName: "DollarSign" as const,
-      iconBg: "linear-gradient(135deg, #58d68d, #3cc06e)",
-      bg: "rgba(88,214,141,0.1)",
+      iconBg: "linear-gradient(135deg, #2C2877, #1b1853)",
+      bg: "rgba(44, 40, 119, 0.1)",
     },
     {
       label: "Tổng đơn hàng",
@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
     { label: "Chờ xử lý",     count: pendingOrders,   color: "#f39c12", bg: "rgba(243,156,18,0.12)"   },
     { label: "Đã thanh toán", count: paidOrders,       color: "#5dade2", bg: "rgba(93,173,226,0.12)"   },
     { label: "Đang giao",     count: shippedOrders,    color: "#9b59b6", bg: "rgba(155,89,182,0.12)"   },
-    { label: "Hoàn thành",    count: deliveredOrders,  color: "#58d68d", bg: "rgba(88,214,141,0.12)"   },
+    { label: "Hoàn thành",    count: deliveredOrders,  color: "#2C2877", bg: "rgba(44, 40, 119, 0.12)"   },
     { label: "Đã hủy",        count: cancelledOrders,  color: "#e74c3c", bg: "rgba(231,76,60,0.12)"    },
   ];
 
@@ -119,7 +119,7 @@ export default async function AdminDashboard() {
           </div>
 
           {/* Revenue highlight card */}
-          <div style={{ margin: "12px 16px 16px", padding: "16px", background: "linear-gradient(135deg, #58d68d, #2ecc71)", borderRadius: 12, color: "#fff" }}>
+          <div style={{ margin: "12px 16px 16px", padding: "16px", background: "linear-gradient(135deg, #2C2877, #FF6220)", borderRadius: 12, color: "#fff" }}>
             <p style={{ fontSize: 10, fontWeight: 700, opacity: 0.85, marginBottom: 6, textTransform: "uppercase", letterSpacing: 1 }}>Doanh thu tổng</p>
             <p style={{ fontSize: 20, fontWeight: 800, lineHeight: 1 }}>{formatPrice(totalRevenue)}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 8, fontSize: 12, opacity: 0.9 }}>
@@ -133,7 +133,7 @@ export default async function AdminDashboard() {
         <div style={{ background: "#ffffff", borderRadius: 14, border: "1px solid #eef2f7", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden" }}>
           <div style={{ padding: "16px 22px", borderBottom: "1px solid #eef2f7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h2 style={{ fontSize: 11, fontWeight: 700, color: "#b0bac9", textTransform: "uppercase", letterSpacing: 1 }}>Đơn hàng gần đây</h2>
-            <a href="/admin/orders" style={{ fontSize: 12, color: "#58d68d", fontWeight: 600, textDecoration: "none" }}>Xem tất cả →</a>
+            <a href="/admin/orders" style={{ fontSize: 12, color: "#2C2877", fontWeight: 600, textDecoration: "none" }}>Xem tất cả →</a>
           </div>
 
           <div style={{ overflowX: "auto" }}>
@@ -189,7 +189,7 @@ function StatusBadge({ status }: { status: string }) {
     PENDING:   { label: "Chờ xử lý",      color: "#e67e22", bg: "rgba(243,156,18,0.12)"  },
     PAID:      { label: "Đã thanh toán",  color: "#3498db", bg: "rgba(52,152,219,0.12)"  },
     SHIPPED:   { label: "Đang giao",      color: "#9b59b6", bg: "rgba(155,89,182,0.12)"  },
-    DELIVERED: { label: "Hoàn thành",     color: "#27ae60", bg: "rgba(39,174,96,0.12)"   },
+    DELIVERED: { label: "Hoàn thành",     color: "#2C2877", bg: "rgba(44, 40, 119, 0.12)"   },
     CANCELLED: { label: "Đã hủy",         color: "#e74c3c", bg: "rgba(231,76,60,0.12)"   },
   };
   const s = map[status] || { label: status, color: "#8a98ac", bg: "#f5f6fa" };

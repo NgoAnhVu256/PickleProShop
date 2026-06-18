@@ -170,7 +170,7 @@ export default function AdminUsersPage() {
           <p style={{ fontSize: 13, color: "#8a98ac" }}>Tổng cộng {total} tài khoản</p>
         </div>
         <button onClick={openCreate}
-          style={{ background: "#27ae60", color: "#fff", border: "none", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+          style={{ background: "#2C2877", color: "#fff", border: "none", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
           <Plus size={16} /> Thêm user
         </button>
       </div>
@@ -247,7 +247,7 @@ export default function AdminUsersPage() {
                     <td style={{ padding: "12px 16px", fontSize: 13, color: "#323b4b" }}>
                       {user.phone ? (
                         <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                          <Phone size={12} style={{ color: "#27ae60" }} /> {user.phone}
+                          <Phone size={12} style={{ color: "#2C2877" }} /> {user.phone}
                         </span>
                       ) : (
                         <span style={{ color: "#b0bac9" }}>—</span>
@@ -260,8 +260,8 @@ export default function AdminUsersPage() {
                         style={{
                           padding: "4px 10px", borderRadius: 8, border: "1px solid #eef2f7",
                           fontSize: 12, fontWeight: 700,
-                          color: user.role === "ADMIN" ? "#e74c3c" : "#58d68d",
-                          background: user.role === "ADMIN" ? "rgba(231,76,60,0.08)" : "rgba(88,214,141,0.08)",
+                          color: user.role === "ADMIN" ? "#e74c3c" : "#2C2877",
+                          background: user.role === "ADMIN" ? "rgba(231,76,60,0.08)" : "rgba(44,40,119,0.08)",
                           cursor: "pointer", outline: "none",
                         }}
                       >
@@ -374,7 +374,7 @@ export default function AdminUsersPage() {
               <button onClick={() => setShowModal(false)}
                 style={{ flex: 1, padding: "10px", border: "1px solid #eef2f7", borderRadius: 10, background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>Hủy</button>
               <button onClick={handleSave}
-                style={{ flex: 1, padding: "10px", border: "none", borderRadius: 10, background: "#27ae60", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
+                style={{ flex: 1, padding: "10px", border: "none", borderRadius: 10, background: "#2C2877", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
                 {editingUser ? "Cập nhật" : "Tạo mới"}
               </button>
             </div>
@@ -387,8 +387,8 @@ export default function AdminUsersPage() {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        select:focus { border-color: #58d68d !important; }
-        input:focus { border-color: #58d68d !important; box-shadow: 0 0 0 3px rgba(88,214,141,0.12); }
+        select:focus { border-color: #2C2877 !important; }
+        input:focus { border-color: #2C2877 !important; box-shadow: 0 0 0 3px rgba(44, 40, 119, 0.12); }
       `}</style>
       <ConfirmDialog />
     </div>

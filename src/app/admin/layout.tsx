@@ -167,7 +167,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const adminAvatarUrl = adminImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=58d68d&color=fff&size=64&bold=true`;
+  const adminAvatarUrl = adminImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=2C2877&color=fff&size=64&bold=true`;
 
   return (
     <div className="admin-theme" style={{ display: "flex", minHeight: "100vh", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
@@ -231,11 +231,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       fontSize: 14,
                       fontWeight: isActive ? 600 : 400,
                       color: isActive ? "#ffffff" : "#8a98ac",
-                      background: isActive ? "linear-gradient(135deg, #58d68d, #3cc06e)" : "transparent",
+                      background: isActive ? "linear-gradient(135deg, #2C2877, #1b1853)" : "transparent",
                       textDecoration: "none",
                       transition: "all 0.15s",
                       marginBottom: 2,
-                      boxShadow: isActive ? "0 4px 12px rgba(88,214,141,0.3)" : "none",
+                      boxShadow: isActive ? "0 4px 12px rgba(44,40,119,0.2)" : "none",
                     }}
                   >
                     <Icon size={17} />
@@ -283,7 +283,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Menu size={22} />
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#8a98ac" }}>
-              <span style={{ color: "#58d68d", fontWeight: 500 }}>Admin</span>
+              <span style={{ color: "#2C2877", fontWeight: 600 }}>Admin</span>
               <span>/</span>
               <span style={{ color: "#323b4b", fontWeight: 600 }}>{getPageTitle(pathname)}</span>
             </div>
@@ -353,7 +353,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       </Link>
                     ))}
                   </div>
-                  <Link href="/admin/orders" onClick={() => setShowNotifs(false)} style={{ display: "block", textAlign: "center", padding: "10px", fontSize: 12, fontWeight: 700, color: "#58d68d", textDecoration: "none", borderTop: "1px solid #eef2f7" }}>Xem tất cả đơn hàng →</Link>
+                  <Link href="/admin/orders" onClick={() => setShowNotifs(false)} style={{ display: "block", textAlign: "center", padding: "10px", fontSize: 12, fontWeight: 700, color: "#2C2877", textDecoration: "none", borderTop: "1px solid #eef2f7" }}>Xem tất cả đơn hàng →</Link>
                 </div>
               )}
             </div>
@@ -377,7 +377,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <p style={{ fontSize: 11, color: "#b0bac9", margin: 0 }}>{adminEmail}</p>
                   </div>
                   <Link href="/account" onClick={() => setShowProfileMenu(false)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8, fontSize: 13, color: "#323b4b", textDecoration: "none" }}>
-                    <Users size={15} color="#58d68d" /> Tài khoản cá nhân
+                    <Users size={15} color="#2C2877" /> Tài khoản cá nhân
                   </Link>
                   <Link href="/" onClick={() => setShowProfileMenu(false)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8, fontSize: 13, color: "#323b4b", textDecoration: "none" }}>
                     <ExternalLink size={15} color="#8a98ac" /> Về trang chủ
@@ -422,14 +422,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           .admin-search-desktop { display: none !important; }
         }
         header input:focus {
-          border-color: #58d68d !important;
-          box-shadow: 0 0 0 3px rgba(88,214,141,0.12);
+          border-color: #2C2877 !important;
+          box-shadow: 0 0 0 3px rgba(44,40,119,0.12);
         }
         nav a:hover {
           background: #f5f6fa !important;
           color: #323b4b !important;
         }
-        nav a.active-link { background: linear-gradient(135deg, #58d68d, #3cc06e) !important; }
+        nav a.active-link { background: linear-gradient(135deg, #2C2877, #1b1853) !important; }
       `}</style>
     </div>
   );

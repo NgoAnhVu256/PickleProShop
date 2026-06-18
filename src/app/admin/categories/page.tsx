@@ -168,7 +168,7 @@ export default function AdminCategoriesPage() {
                   {allAttributes.map(attr => (
                     <label key={attr.id} style={{ 
                       display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", 
-                      borderRadius: 8, border: "1px solid #eef2f7", background: selectedAttrIds.includes(attr.id) ? "rgba(88,214,141,0.06)" : "#fff",
+                      borderRadius: 8, border: "1px solid #eef2f7", background: selectedAttrIds.includes(attr.id) ? "rgba(44,40,119,0.06)" : "#fff",
                       cursor: "pointer", transition: "all 0.15s"
                     }}>
                       <input 

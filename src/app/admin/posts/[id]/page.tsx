@@ -108,10 +108,10 @@ export default function AdminEditPost({ params }: { params: Promise<{ id: string
       </div>
 
       <div style={{ display: "flex", gap: 20, marginBottom: 24, borderBottom: "1px solid #eef2f7" }}>
-        <button onClick={() => setActiveTab("content")} style={{ padding: "10px 20px", background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: activeTab === "content" ? "#58d68d" : "#8a98ac", borderBottom: activeTab === "content" ? "2px solid #58d68d" : "none" }}>
+        <button onClick={() => setActiveTab("content")} style={{ padding: "10px 20px", background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: activeTab === "content" ? "#2C2877" : "#8a98ac", borderBottom: activeTab === "content" ? "2px solid #2C2877" : "none" }}>
           Nội dung bài viết
         </button>
-        <button onClick={() => setActiveTab("seo")} style={{ padding: "10px 20px", background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: activeTab === "seo" ? "#58d68d" : "#8a98ac", borderBottom: activeTab === "seo" ? "2px solid #58d68d" : "none" }}>
+        <button onClick={() => setActiveTab("seo")} style={{ padding: "10px 20px", background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: activeTab === "seo" ? "#2C2877" : "#8a98ac", borderBottom: activeTab === "seo" ? "2px solid #2C2877" : "none" }}>
           Tối ưu SEO 2026
         </button>
       </div>
@@ -156,7 +156,7 @@ export default function AdminEditPost({ params }: { params: Promise<{ id: string
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div className="card" style={{ padding: 24 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                  <Globe size={18} color="#58d68d" /> SEO Metadata
+                  <Globe size={18} color="#2C2877" /> SEO Metadata
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div>

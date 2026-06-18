@@ -174,12 +174,12 @@ export default function AdminBrandsPage() {
                   <td style={{ fontFamily: "monospace", fontSize: 12, color: "#8a98ac" }}>{brand.slug}</td>
                   <td>
                     {brand.logo
-                      ? <span style={{ fontSize: 12, color: "#46b876" }}>Có logo</span>
+                      ? <span style={{ fontSize: 12, color: "#2C2877" }}>Có logo</span>
                       : <span style={{ fontSize: 12, color: "#b0bac9" }}>Chưa có</span>
                     }
                   </td>
                   <td>
-                    <span style={{ background: "#f0f9f4", color: "#46b876", padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
+                    <span style={{ background: "rgba(44,40,119,0.08)", color: "#2C2877", padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
                       {brand._count?.products ?? "—"} sản phẩm
                     </span>
                   </td>

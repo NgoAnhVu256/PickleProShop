@@ -102,7 +102,7 @@ export default function AdminPromotionsPage() {
 
   const tabStyle = (t: string) => ({
     padding: "12px 24px", fontWeight: 700 as const, fontSize: 14, cursor: "pointer" as const, border: "none",
-    borderBottom: activeTab === t ? "3px solid #58d68d" : "3px solid transparent",
+    borderBottom: activeTab === t ? "3px solid #2C2877" : "3px solid transparent",
     color: activeTab === t ? "#323b4b" : "#8a98ac", background: "none",
     transition: "all 0.2s",
   });
@@ -154,7 +154,7 @@ export default function AdminPromotionsPage() {
           {banners.filter(b => b.isActive).length > 0 && (
             <div className="card" style={{ padding: 20, marginBottom: 24 }}>
               <h3 style={{ fontSize: 14, fontWeight: 700, color: "#5a6677", marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-                <Eye size={16} color="#58d68d" /> Xem trước Carousel (Trang chủ)
+                <Eye size={16} color="#2C2877" /> Xem trước Carousel (Trang chủ)
               </h3>
               <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory" }}>
                 {banners.filter(b => b.isActive).map(b => (
@@ -177,8 +177,8 @@ export default function AdminPromotionsPage() {
           {/* Banner List Table */}
           {loadingBanners ? <div className="skeleton" style={{ height: 200 }} /> : banners.length === 0 ? (
             <div className="card" style={{ padding: 48, textAlign: "center" }}>
-              <div style={{ width: 64, height: 64, background: "rgba(88,214,141,0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
-                <ImageIcon size={28} color="#46b876" />
+              <div style={{ width: 64, height: 64, background: "rgba(44,40,119,0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+                <ImageIcon size={28} color="#2C2877" />
               </div>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#323b4b", marginBottom: 8 }}>Chưa có banner khuyến mãi</h2>
               <p style={{ fontSize: 14, color: "#8a98ac", maxWidth: 380, margin: "0 auto 16px", lineHeight: 1.7 }}>Thêm các banner dọc với link sản phẩm để tạo carousel khuyến mãi hấp dẫn trên trang chủ.</p>
@@ -213,11 +213,11 @@ export default function AdminPromotionsPage() {
                       </td>
                       <td style={tdS}><div style={{ width: 60, height: 90, borderRadius: 10, overflow: "hidden", border: "2px solid #eef2f7", background: "#f5f6fa" }}><img src={b.image} alt={b.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div></td>
                       <td style={tdS}><span style={{ fontSize: 14, fontWeight: 600, color: "#323b4b" }}>{b.title}</span></td>
-                      <td style={tdS}>{b.link ? <a href={b.link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#46b876", textDecoration: "none", display: "flex", alignItems: "center", gap: 4, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><ExternalLink size={12} />{b.link}</a> : <span style={{ fontSize: 12, color: "#b0bac9" }}>– Chưa có –</span>}</td>
-                      <td style={{ ...tdS, textAlign: "center" }}><span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, background: b.isActive ? "rgba(88,214,141,0.12)" : "rgba(239,68,68,0.08)", color: b.isActive ? "#27ae60" : "#ef4444" }}>{b.isActive ? "HIỆN" : "ẨN"}</span></td>
+                      <td style={tdS}>{b.link ? <a href={b.link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#2C2877", textDecoration: "none", display: "flex", alignItems: "center", gap: 4, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><ExternalLink size={12} />{b.link}</a> : <span style={{ fontSize: 12, color: "#b0bac9" }}>– Chưa có –</span>}</td>
+                      <td style={{ ...tdS, textAlign: "center" }}><span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, background: b.isActive ? "rgba(44,40,119,0.12)" : "rgba(239,68,68,0.08)", color: b.isActive ? "#2C2877" : "#ef4444" }}>{b.isActive ? "HIỆN" : "ẨN"}</span></td>
                       <td style={{ ...tdS, textAlign: "center" }}>
                         <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
-                          <button onClick={() => toggleActive(b)} style={actBtn} title={b.isActive ? "Ẩn" : "Hiện"}>{b.isActive ? <EyeOff size={15} color="#8a98ac" /> : <Eye size={15} color="#58d68d" />}</button>
+                          <button onClick={() => toggleActive(b)} style={actBtn} title={b.isActive ? "Ẩn" : "Hiện"}>{b.isActive ? <EyeOff size={15} color="#8a98ac" /> : <Eye size={15} color="#2C2877" />}</button>
                           <button onClick={() => openEdit(b)} style={actBtn} title="Sửa"><Pencil size={15} color="#3498db" /></button>
                           <button onClick={() => handleDeleteBanner(b.id)} style={{ ...actBtn, background: "rgba(239,68,68,0.08)" }} title="Xóa"><Trash2 size={15} color="#ef4444" /></button>
                         </div>
@@ -294,10 +294,10 @@ export default function AdminPromotionsPage() {
                       </td>
                       <td style={{ padding: "16px 20px", textAlign: "center" }}><span style={{ fontWeight: 600, color: "#3b82f6" }}>{p.conditions?.length || 0}</span></td>
                       <td style={{ padding: "16px 20px", textAlign: "center" }}><span style={{ fontWeight: 600, color: "#ec4899" }}>{p.rewards?.length || 0}</span></td>
-                      <td style={{ padding: "16px 20px", textAlign: "center" }}>{p.isActive ? <span style={{ padding: "4px 10px", borderRadius: 999, background: "#dcfce7", color: "#166534", fontSize: 11, fontWeight: 700 }}>Đang chạy</span> : <span style={{ padding: "4px 10px", borderRadius: 999, background: "#f1f5f9", color: "#64748b", fontSize: 11, fontWeight: 700 }}>Tạm dừng</span>}</td>
+                      <td style={{ padding: "16px 20px", textAlign: "center" }}>{p.isActive ? <span style={{ padding: "4px 10px", borderRadius: 999, background: "rgba(44,40,119,0.12)", color: "#2C2877", fontSize: 11, fontWeight: 700 }}>Đang chạy</span> : <span style={{ padding: "4px 10px", borderRadius: 999, background: "#f1f5f9", color: "#64748b", fontSize: 11, fontWeight: 700 }}>Tạm dừng</span>}</td>
                       <td style={{ padding: "16px 20px", textAlign: "center" }}>
                         <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
-                          <button onClick={() => toggleCampaignActive(p)} style={actBtn} title={p.isActive ? "Tạm dừng" : "Kích hoạt"}>{p.isActive ? <EyeOff size={15} color="#8a98ac" /> : <Eye size={15} color="#58d68d" />}</button>
+                          <button onClick={() => toggleCampaignActive(p)} style={actBtn} title={p.isActive ? "Tạm dừng" : "Kích hoạt"}>{p.isActive ? <EyeOff size={15} color="#8a98ac" /> : <Eye size={15} color="#2C2877" />}</button>
                           <Link href={`/admin/promotions/${p.id}`} style={{ ...actBtn, textDecoration: 'none' }} title="Sửa/Chi tiết"><Pencil size={15} color="#3498db" /></Link>
                           <button onClick={() => handleDeleteCampaign(p.id)} style={{ ...actBtn, background: "rgba(239,68,68,0.08)" }} title="Xóa"><Trash2 size={15} color="#ef4444" /></button>
                         </div>

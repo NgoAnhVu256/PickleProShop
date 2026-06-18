@@ -107,8 +107,8 @@ export default function AdminCreatePost() {
           onClick={() => setActiveTab("content")} 
           style={{ 
             padding: "10px 20px", background: "none", border: "none", cursor: "pointer", 
-            fontSize: 14, fontWeight: 600, color: activeTab === "content" ? "#58d68d" : "#8a98ac",
-            borderBottom: activeTab === "content" ? "2px solid #58d68d" : "none"
+            fontSize: 14, fontWeight: 600, color: activeTab === "content" ? "#2C2877" : "#8a98ac",
+            borderBottom: activeTab === "content" ? "2px solid #2C2877" : "none"
           }}
         >
           Nội dung bài viết
@@ -117,8 +117,8 @@ export default function AdminCreatePost() {
           onClick={() => setActiveTab("seo")} 
           style={{ 
             padding: "10px 20px", background: "none", border: "none", cursor: "pointer", 
-            fontSize: 14, fontWeight: 600, color: activeTab === "seo" ? "#58d68d" : "#8a98ac",
-            borderBottom: activeTab === "seo" ? "2px solid #58d68d" : "none"
+            fontSize: 14, fontWeight: 600, color: activeTab === "seo" ? "#2C2877" : "#8a98ac",
+            borderBottom: activeTab === "seo" ? "2px solid #2C2877" : "none"
           }}
         >
           Yoast SEO 2026
@@ -165,7 +165,7 @@ export default function AdminCreatePost() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div className="card" style={{ padding: 24 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                  <Globe size={18} color="#58d68d" /> Tối ưu hóa SEO (Google Search)
+                  <Globe size={18} color="#2C2877" /> Tối ưu hóa SEO (Google Search)
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div>

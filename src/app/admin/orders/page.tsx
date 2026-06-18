@@ -105,8 +105,8 @@ export default function AdminOrdersPage() {
                 fontSize: 13,
                 fontWeight: isActive ? 700 : 500,
                 color: isActive ? "#ffffff" : "#5a6677",
-                background: isActive ? "linear-gradient(135deg, #58d68d, #3cc06e)" : "#f5f6fa",
-                boxShadow: isActive ? "0 4px 12px rgba(88,214,141,0.3)" : "none",
+                background: isActive ? "linear-gradient(135deg, #2C2877, #1b1853)" : "#f5f6fa",
+                boxShadow: isActive ? "0 4px 12px rgba(44, 40, 119, 0.2)" : "none",
                 transition: "all 0.15s",
               }}
             >

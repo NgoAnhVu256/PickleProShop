@@ -114,10 +114,9 @@ export default function AdminAttributesPage() {
         </button>
       </div>
 
-      {/* Info banner */}
       <div style={{
-        background: "rgba(88,214,141,0.08)",
-        border: "1px solid rgba(88,214,141,0.25)",
+        background: "rgba(44,40,119,0.08)",
+        border: "1px solid rgba(44,40,119,0.2)",
         borderRadius: 12,
         padding: "12px 16px",
         marginBottom: 20,
@@ -125,9 +124,9 @@ export default function AdminAttributesPage() {
         alignItems: "flex-start",
         gap: 12,
       }}>
-        <SlidersHorizontal size={18} color="#46b876" style={{ flexShrink: 0, marginTop: 1 }} />
+        <SlidersHorizontal size={18} color="#2C2877" style={{ flexShrink: 0, marginTop: 1 }} />
         <div>
-          <p style={{ fontSize: 13, fontWeight: 600, color: "#3aa866", marginBottom: 2 }}>Cách hoạt động</p>
+          <p style={{ fontSize: 13, fontWeight: 600, color: "#2C2877", marginBottom: 2 }}>Cách hoạt động</p>
           <p style={{ fontSize: 12, color: "#5a6677", lineHeight: 1.6 }}>
             Thuộc tính được tạo ở đây là <strong>danh sách chung</strong>. Sau đó vào <strong>Danh mục</strong> để gán thuộc tính phù hợp cho từng danh mục (vợt → độ dày, cỡ cán; giày → màu, size…).
             Khi tạo biến thể sản phẩm, hệ thống sẽ tự động hiển thị đúng thuộc tính của danh mục đó.

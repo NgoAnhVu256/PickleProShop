@@ -11,7 +11,7 @@ import ClientFooter from "@/components/shop/ClientFooter";
 
 function AccountSidebar({ name, email, image, role }: { name: string; email: string; image: string; role: string }) {
   const pathname = usePathname();
-  const avatarUrl = image || (email ? `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=7DAACB&color=fff&size=128&bold=true` : "");
+  const avatarUrl = image || (email ? `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=2C2877&color=fff&size=128&bold=true` : "");
 
   const navItems = [
     { href: "/account", label: "Thông tin tài khoản", icon: User, active: pathname === "/account" },
@@ -22,7 +22,7 @@ function AccountSidebar({ name, email, image, role }: { name: string; email: str
     <aside className="w-full lg:w-[260px] shrink-0">
       {/* User info */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#7DAACB]/20 bg-white shadow-sm">
+        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#2C2877]/20 bg-white shadow-sm">
           <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
         </div>
         <div className="min-w-0">
@@ -41,11 +41,11 @@ function AccountSidebar({ name, email, image, role }: { name: string; email: str
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                 item.active
-                  ? "bg-[#7DAACB]/10 text-[#5a93b5] border border-[#7DAACB]/20"
+                  ? "bg-[#2C2877]/10 text-[#2C2877] border border-[#2C2877]/20"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <Icon size={18} className={item.active ? "text-[#7DAACB]" : "text-gray-400"} />
+              <Icon size={18} className={item.active ? "text-[#2C2877]" : "text-gray-400"} />
               {item.label}
             </Link>
           );
@@ -169,7 +169,7 @@ export default function AccountPage() {
                         type="text"
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all"
+                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#2C2877] focus:ring-2 focus:ring-[#2C2877]/10 outline-none transition-all"
                         placeholder="Nguyễn Văn A"
                       />
                     </div>
@@ -182,7 +182,7 @@ export default function AccountPage() {
                         type="tel"
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#7DAACB] focus:ring-2 focus:ring-[#7DAACB]/10 outline-none transition-all"
+                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#2C2877] focus:ring-2 focus:ring-[#2C2877]/10 outline-none transition-all"
                         placeholder="0901234567"
                       />
                     </div>
@@ -208,7 +208,7 @@ export default function AccountPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-xl font-black text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-[#2C2877] to-[#FF6220] text-white rounded-xl font-black text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
                   {saving ? "Đang lưu..." : "Lưu thay đổi"}

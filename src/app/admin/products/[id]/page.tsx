@@ -204,7 +204,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {/* Basic Info */}
             <div className="card" style={{ padding: 24 }}>
-              <h2 className="section-title"><Tag size={18} color="#58d68d" /> Thông tin cơ bản</h2>
+              <h2 className="section-title"><Tag size={18} color="#2C2877" /> Thông tin cơ bản</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 <div><label className="input-label">Tên sản phẩm *</label><input className="input" value={name} onChange={e => setName(e.target.value)} required /></div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -255,7 +255,7 @@ export default function AdminEditProduct({ params }: { params: Promise<{ id: str
             {/* Option-Matrix */}
             <div className="card" style={{ padding: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#58d68d" /> Biến thể</h2>
+                <h2 className="section-title" style={{ marginBottom: 0 }}><Layers size={18} color="#2C2877" /> Biến thể</h2>
               </div>
 
               {categoryId && colorGroups.length === 0 && (
