@@ -48,7 +48,7 @@ export default function ProductCard({ product }: { product: any }) {
             <span className="text-sm md:text-base font-bold text-gray-500">Liên hệ</span>
           ) : (
             <>
-              <span className="text-sm md:text-base font-bold text-[#FF6220]">{price.toLocaleString()}đ</span>
+              <span className="text-sm md:text-base font-bold text-[#1a6fa0]">{price.toLocaleString()}đ</span>
               {hasSale && (
                 <span className="text-[10px] md:text-xs text-gray-500 line-through">{(originalPrice).toLocaleString()}đ</span>
               )}
@@ -61,7 +61,7 @@ export default function ProductCard({ product }: { product: any }) {
         className={`w-full py-2.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest mt-1 transition-colors ${
           isOutOfStock 
             ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed' 
-            : 'bg-gray-50 border border-gray-200 hover:bg-[#FF6220] hover:text-white hover:border-[#FF6220]'
+            : 'bg-gray-50 border border-gray-200 hover:bg-[#1a6fa0] hover:text-white hover:border-[#1a6fa0]'
         }`}>
         {isOutOfStock ? 'Hết hàng' : 'Xem chi tiết'}
       </button>

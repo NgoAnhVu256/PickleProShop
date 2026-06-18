@@ -91,7 +91,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
           <input
             type="text"
             placeholder={`Tìm trong ${categoryName}...`}
-            className="w-full pl-10 md:pl-11 pr-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/20 focus:bg-white transition-all border border-transparent focus:border-[#7DAACB]/30"
+            className="w-full pl-10 md:pl-11 pr-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C2877]/20 focus:bg-white transition-all border border-transparent focus:border-[#2C2877]/30"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -104,7 +104,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
               aria-label="Lọc theo thương hiệu"
-              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
+              className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#2C2877]/30 focus:outline-none cursor-pointer"
             >
               <option value="">Tất cả thương hiệu</option>
               {brands.map(b => (
@@ -118,7 +118,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="Sắp xếp sản phẩm"
-            className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#7DAACB]/30 focus:outline-none cursor-pointer"
+            className="px-3 md:px-4 py-2.5 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 border border-transparent focus:border-[#2C2877]/30 focus:outline-none cursor-pointer"
           >
             <option value="newest">Mới nhất</option>
             <option value="price_asc">Giá tăng dần</option>
@@ -129,7 +129,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
           {/* Filter toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-1 px-3 md:px-4 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-colors ${showFilters ? "bg-[#7DAACB] text-white" : "bg-gray-50 text-gray-700 hover:bg-gray-100"}`}
+            className={`flex items-center gap-1 px-3 md:px-4 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-colors ${showFilters ? "bg-[#FF6220] text-white" : "bg-gray-50 text-gray-700 hover:bg-gray-100"}`}
           >
             <SlidersHorizontal size={14} /> Lọc giá
           </button>
@@ -155,7 +155,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
               placeholder="Từ"
               value={priceRange[0] || ""}
               onChange={e => setPriceRange([Number(e.target.value) || 0, priceRange[1]])}
-              className="w-28 md:w-36 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#7DAACB]/50"
+              className="w-28 md:w-36 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#2C2877]/50"
             />
             <span className="text-gray-400 text-sm">—</span>
             <input
@@ -163,7 +163,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
               placeholder="Đến"
               value={priceRange[1] >= maxPrice ? "" : priceRange[1]}
               onChange={e => setPriceRange([priceRange[0], Number(e.target.value) || maxPrice])}
-              className="w-28 md:w-36 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#7DAACB]/50"
+              className="w-28 md:w-36 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#2C2877]/50"
             />
             <span className="text-xs text-gray-400">₫</span>
           </div>
@@ -202,7 +202,7 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
                   )}
                 </div>
                 <div>
-                  <h2 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#7DAACB] transition-colors leading-snug">
+                  <h2 className="text-[13px] md:text-sm font-bold text-gray-900 mb-0.5 line-clamp-2 min-h-[2.5em] group-hover:text-[#FF6220] transition-colors leading-snug">
                     {product.name}
                   </h2>
                   {product.brand && (

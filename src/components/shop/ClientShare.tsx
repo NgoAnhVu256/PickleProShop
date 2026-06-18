@@ -48,7 +48,7 @@ export default function ClientShare({ url, title }: { url: string, title?: strin
       </div>
       <button 
         onClick={handleCopyLink}
-        className="flex items-center gap-2 text-sm font-bold text-[#7DAACB] hover:underline underline-offset-4"
+        className="flex items-center gap-2 text-sm font-bold text-[#2C2877] hover:underline underline-offset-4"
       >
         <Share2 size={16} /> Sao chép liên kết
       </button>

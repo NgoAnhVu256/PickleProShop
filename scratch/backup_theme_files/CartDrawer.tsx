@@ -47,7 +47,7 @@ export default function CartDrawer() {
           <div className="flex items-center gap-3">
             <ShoppingBag size={20} className="text-gray-900" />
             <h2 className="text-lg font-black text-gray-900">Giỏ hàng</h2>
-            <span className="bg-[#FF6220] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{totalItems}</span>
+            <span className="bg-[#7DAACB] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{totalItems}</span>
           </div>
           <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors" aria-label="Đóng giỏ hàng">
             <X size={20} className="text-gray-500" />
@@ -64,7 +64,7 @@ export default function CartDrawer() {
               <Link
                 href="/products"
                 onClick={() => setIsCartOpen(false)}
-                className="mt-6 text-sm font-bold text-[#2C2877] underline underline-offset-4"
+                className="mt-6 text-sm font-bold text-[#7DAACB] underline underline-offset-4"
               >
                 Mua sắm ngay
               </Link>
@@ -78,7 +78,7 @@ export default function CartDrawer() {
                     <img src={item.image || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt={item.productName} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/products/${item.productSlug}`} onClick={() => setIsCartOpen(false)} className="text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#2C2877]">
+                    <Link href={`/products/${item.productSlug}`} onClick={() => setIsCartOpen(false)} className="text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#7DAACB]">
                       {item.productName}
                     </Link>
                     <p className="text-[11px] text-gray-400 font-medium mt-0.5">{item.variantLabel}</p>
@@ -175,7 +175,7 @@ export default function CartDrawer() {
             <button
               onClick={handleCheckout}
               disabled={isOrdering}
-              className="w-full py-4 bg-gradient-to-r from-[#FF6220] to-[#e04f10] text-white rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               {isOrdering ? <Loader2 className="w-5 h-5 animate-spin" /> : "ĐẶT HÀNG NGAY"}
             </button>

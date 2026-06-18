@@ -1,25 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F0F4F9;
+  --background: #f8fafc;
   --foreground: #0f172a;
-  --primary: #2C2877;
-  --primary-dark: #1b1853;
-  --primary-glow: rgba(44, 40, 119, 0.4);
-  --accent: #FF6220;
-  --accent-dark: #e04f10;
-  --accent-glow: rgba(255, 98, 32, 0.4);
-  --lime: #A0E870;
-  --lime-dark: #82cc52;
+  --primary: #58d68d;
+  --primary-dark: #3cc06e;
+  --primary-glow: rgba(88, 214, 141, 0.4);
 }
 
 @theme {
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
-  --color-accent: var(--accent);
-  --color-accent-dark: var(--accent-dark);
-  --color-lime: var(--lime);
-  --color-lime-dark: var(--lime-dark);
 }
 
 /* Base Resets */
@@ -77,14 +68,14 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  background: linear-gradient(135deg, #58d68d, #3cc06e);
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 98, 32, 0.3);
+  box-shadow: 0 4px 12px rgba(88, 214, 141, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(255, 98, 32, 0.4);
+  box-shadow: 0 6px 16px rgba(88, 214, 141, 0.4);
 }
 
 .btn-secondary {
@@ -264,8 +255,8 @@ tr:last-child td {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  background: transparent;
-  color: #F0F4F9;
+  background: #FFFDE8;
+  color: #2b2b2b;
   border: none;
   transition: all 0.2s ease;
   text-decoration: none;
@@ -278,12 +269,10 @@ tr:last-child td {
   }
 }
 .nav-pill:hover {
-  background: rgba(240, 244, 249, 0.1);
-  color: #ffffff;
+  background: #E8DBB3;
 }
 .nav-pill.active {
-  background: #ffffff;
-  color: #2C2877;
+  background: #E8DBB3;
 }
 
 /* ─── Blog Content Headings (from RichTextEditor) ─── */

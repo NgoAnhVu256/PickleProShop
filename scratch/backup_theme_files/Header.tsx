@@ -130,13 +130,13 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#2C2877] text-white border-b border-[#1b1853] shadow-sm">
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
       {/* TOP BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between gap-4 md:gap-8">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0" aria-label="Trang chủ">
           <img src={logo ? `/api/img?url=${encodeURIComponent(logo)}&w=96&q=80` : '/api/favicon'} alt={siteName} width={40} height={40} className="h-8 md:h-10 w-8 md:w-10 rounded-lg object-cover" />
-          <span className="font-extrabold text-base md:text-xl tracking-tighter text-white">{siteName}</span>
+          <span className="font-extrabold text-base md:text-xl tracking-tighter">{siteName}</span>
         </Link>
 
         {/* SEARCH - DESKTOP & TABLET */}
@@ -148,10 +148,10 @@ export default function Header() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
             onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
-            className="w-full h-10 md:h-12 bg-[#1b1853]/50 border border-[#1b1853] rounded-full pl-6 pr-14 text-sm md:text-[15px] text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6220]/20 focus:border-[#FF6220] transition-all"
+            className="w-full h-10 md:h-12 bg-gray-50 border border-gray-200 rounded-full pl-6 pr-14 text-sm md:text-[15px] focus:outline-none focus:ring-2 focus:ring-[#7DAACB]/20 focus:border-[#7DAACB] transition-all"
           />
-          <button onClick={handleSearchSubmit} aria-label="Tìm kiếm" className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 bg-[#FF6220] rounded-full flex items-center justify-center text-white hover:bg-[#FF6220]/80 transition-colors">
-            <Search className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
+          <button onClick={handleSearchSubmit} aria-label="Tìm kiếm" className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-9 md:h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-[#7DAACB] transition-colors">
+            <Search className="w-4 h-4 md:w-4.5 md:h-4.5" />
           </button>
 
           {/* Search Results Dropdown */}
@@ -196,7 +196,7 @@ export default function Header() {
         <div className="flex items-center gap-3 sm:gap-4 md:gap-6 shrink-0">
           {/* Hamburger Toggle */}
           <button 
-            className="md:hidden p-2 text-white"
+            className="md:hidden p-2 text-gray-700"
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Mở menu"
           >
@@ -205,7 +205,7 @@ export default function Header() {
 
           {/* Mobile Search Toggle */}
           <button 
-            className="md:hidden p-2 text-white"
+            className="md:hidden p-2 text-gray-700"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             aria-label="Mở tìm kiếm"
           >
@@ -221,19 +221,19 @@ export default function Header() {
                 className="flex items-center gap-2 text-sm"
                 aria-label="Menu tài khoản"
               >
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#FF6220] to-[#2C2877] flex items-center justify-center text-white font-bold text-xs">
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#5a93b5] to-[#7DAACB] flex items-center justify-center text-white font-bold text-xs">
                   {user.image ? (
                     <img src={user.image} alt="" className="w-full h-full object-cover" />
                   ) : (
                     (user.name || "U")[0].toUpperCase()
                   )}
                 </div>
-                <span className="hidden lg:inline font-bold text-gray-100 max-w-[100px] truncate">{user.name}</span>
-                <ChevronDown size={14} className={`hidden lg:block text-gray-300 transition-transform ${showUserMenu ? "rotate-180" : ""}`} />
+                <span className="hidden lg:inline font-bold text-gray-700 max-w-[100px] truncate">{user.name}</span>
+                <ChevronDown size={14} className={`hidden lg:block text-gray-400 transition-transform ${showUserMenu ? "rotate-180" : ""}`} />
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden z-50 p-2 text-gray-900">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden z-50 p-2">
                   <div className="px-3 py-2 border-b border-gray-100 mb-1">
                     <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
                     <p className="text-xs text-gray-400 truncate">{user.email}</p>
@@ -247,7 +247,7 @@ export default function Header() {
                   )}
                   
                   <Link href="/account" onClick={() => setShowUserMenu(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                    <UserCircle size={16} className="text-[#2C2877]" />
+                    <UserCircle size={16} className="text-[#7DAACB]" />
                     Tài khoản
                   </Link>
 
@@ -269,21 +269,20 @@ export default function Header() {
           ) : (
             /* Not logged in */
             <div className="hidden lg:flex items-center gap-4 text-xs xl:text-sm font-bold">
-              <Link href="/login" className="bg-white text-[#2C2877] hover:bg-gray-100 px-6 py-2 rounded-full shadow-sm hover:shadow-md transition-all">Đăng nhập</Link>
+              <Link href="/login" className="bg-gradient-to-r from-[#5a93b5] to-[#7DAACB] text-white px-6 py-2 rounded-full shadow-sm hover:shadow-md transition-all">Đăng nhập</Link>
             </div>
           )}
 
           {!user && (
-            <Link href="/login" className="p-1 lg:hidden text-white" aria-label="Đăng nhập">
+            <Link href="/login" className="p-1 lg:hidden text-gray-700" aria-label="Đăng nhập">
               <User className="w-6 h-6" />
             </Link>
           )}
 
-          <button onClick={() => setIsCartOpen(true)} className="relative bg-[#A0E870] hover:bg-[#82cc52] text-gray-900 font-bold px-4 py-2 rounded-full flex items-center gap-2 shadow-sm transition-all text-xs md:text-sm" aria-label="Giỏ hàng">
-            <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-gray-900" />
-            <span className="hidden sm:inline">Giỏ hàng</span>
+          <button onClick={() => setIsCartOpen(true)} className="relative p-1 text-gray-700" aria-label="Giỏ hàng">
+            <ShoppingCart className="w-6 h-6" />
             {totalItems > 0 && (
-              <span className="bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{totalItems > 99 ? "99+" : totalItems}</span>
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{totalItems > 99 ? "99+" : totalItems}</span>
             )}
           </button>
         </div>
@@ -325,14 +324,14 @@ export default function Header() {
       )}
 
       {/* CATEGORY NAV */}
-      <nav className="bg-[#1b1853]">
+      <nav className="bg-[#7DAACB]">
         <div className="max-w-7xl mx-auto px-2 md:px-6 h-12 md:h-16 flex items-center justify-start md:justify-center gap-1.5 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
           {/* Home icon */}
           <Link
             href="/"
             aria-label="Trang chủ"
-            className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
-              pathname === "/" ? "bg-[#FF6220] text-white" : "bg-white/10 text-white hover:bg-white/20"
+            className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 text-[#2b2b2b] ${
+              pathname === "/" ? "bg-[#E8DBB3]" : "bg-[#FFFDE8] hover:bg-[#E8DBB3]"
             }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -349,13 +348,6 @@ export default function Header() {
               </Link>
             );
           })}
-          {/* Nút liên hệ màu cam giống thiết kế mẫu */}
-          <Link
-            href="/feedback"
-            className="shrink-0 bg-[#FF6220] hover:bg-[#e04f10] text-white text-[11px] md:text-sm font-bold px-4 md:px-5 py-2.5 rounded-full flex items-center gap-1 shadow-sm transition-all uppercase tracking-wider"
-          >
-            Liên hệ ↗
-          </Link>
         </div>
       </nav>
 

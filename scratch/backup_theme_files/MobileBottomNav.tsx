@@ -20,20 +20,20 @@ export default function MobileBottomNav() {
         <Link
           href="/"
           className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${
-            pathname === "/" ? "text-[#2C2877]" : "text-gray-400 hover:text-gray-600"
+            pathname === "/" ? "text-[#7DAACB]" : "text-gray-400 hover:text-gray-600"
           }`}
         >
-          <Home size={22} className={pathname === "/" ? "fill-[#2C2877]/10" : ""} />
+          <Home size={22} className={pathname === "/" ? "fill-[#7DAACB]/20" : ""} />
           <span className="text-[10px] font-semibold">Trang chủ</span>
         </Link>
 
         <Link
           href="/products"
           className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${
-            pathname === "/products" ? "text-[#2C2877]" : "text-gray-400 hover:text-gray-600"
+            pathname === "/products" ? "text-[#7DAACB]" : "text-gray-400 hover:text-gray-600"
           }`}
         >
-          <LayoutGrid size={22} className={pathname === "/products" ? "fill-[#2C2877]/10" : ""} />
+          <LayoutGrid size={22} className={pathname === "/products" ? "fill-[#7DAACB]/20" : ""} />
           <span className="text-[10px] font-semibold">Sản phẩm</span>
         </Link>
 
@@ -56,11 +56,11 @@ export default function MobileBottomNav() {
           href={session?.user ? "/account" : "/login"}
           className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
             pathname.startsWith("/account") || pathname.startsWith("/login")
-              ? "text-[#2C2877]"
+              ? "text-[#7DAACB]"
               : "text-gray-400 hover:text-gray-600"
           }`}
         >
-          <User size={22} className={pathname.startsWith("/account") ? "fill-[#2C2877]/10" : ""} />
+          <User size={22} className={pathname.startsWith("/account") ? "fill-[#7DAACB]/20" : ""} />
           <span className="text-[10px] font-semibold">{session ? "Tài khoản" : "Đăng nhập"}</span>
         </Link>
       </div>
