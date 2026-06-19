@@ -19,14 +19,14 @@ export default function ProductCard({ product }: { product: any }) {
     : product.name;
 
   return (
-    <Link href={`/products/${product.slug}`} aria-label={`Xem sản phẩm ${product.name}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
+    <Link href={`/products/${product.slug}`} prefetch={false} aria-label={`Xem sản phẩm ${product.name}`} className="bg-white p-2 md:p-3 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col gap-2 md:gap-3 h-full">
       <div className="aspect-[4/5] overflow-hidden rounded-lg md:rounded-xl bg-gray-50 relative shrink-0">
         <Image 
           src={product.thumbnail ? `/api/img?url=${encodeURIComponent(product.thumbnail)}&w=400&q=80` : 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'} 
           alt={displayName} 
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          className={`object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
+          className={`object-cover group-hover:scale-105 transition-transform duration-200 ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
           loading="lazy"
         />
         {isOutOfStock ? (

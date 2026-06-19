@@ -63,6 +63,7 @@ export default function CartDrawer() {
               <p className="text-sm text-gray-400">Hãy thêm sản phẩm vào giỏ hàng</p>
               <Link
                 href="/products"
+                prefetch={false}
                 onClick={() => setIsCartOpen(false)}
                 className="mt-6 text-sm font-bold text-[#2C2877] underline underline-offset-4"
               >
@@ -78,7 +79,7 @@ export default function CartDrawer() {
                     <img src={item.image || 'https://placehold.co/80x80/f8fafc/94a3b8?text=SP'} alt={item.productName} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/products/${item.productSlug}`} onClick={() => setIsCartOpen(false)} className="text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#2C2877]">
+                    <Link href={`/products/${item.productSlug}`} prefetch={false} onClick={() => setIsCartOpen(false)} className="text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#2C2877]">
                       {item.productName}
                     </Link>
                     <p className="text-[11px] text-gray-400 font-medium mt-0.5">{item.variantLabel}</p>

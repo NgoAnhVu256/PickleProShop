@@ -135,7 +135,7 @@ export default function Header() {
       {/* TOP BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between gap-4 md:gap-8">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0" aria-label="Trang chủ">
+        <Link href="/" prefetch={false} className="flex items-center gap-2 md:gap-3 shrink-0" aria-label="Trang chủ">
           <img src={logo ? `/api/img?url=${encodeURIComponent(logo)}&w=96&q=80` : '/api/favicon'} alt={siteName} width={40} height={40} className="h-8 md:h-10 w-8 md:w-10 rounded-lg object-cover" />
           <span className="font-extrabold text-base md:text-xl tracking-tighter text-white">{siteName}</span>
         </Link>
@@ -331,6 +331,7 @@ export default function Header() {
           {/* Home icon */}
           <Link
             href="/"
+            prefetch={false}
             aria-label="Trang chủ"
             className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
               pathname === "/" ? "bg-[#FF6220] text-white" : "bg-white/10 text-white hover:bg-white/20"
@@ -344,6 +345,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
+                prefetch={false}
                 className={`nav-pill ${isActive ? "active" : ""}`}
               >
                 {item.name}
@@ -353,6 +355,7 @@ export default function Header() {
           {/* Nút liên hệ màu cam giống thiết kế mẫu */}
           <Link
             href="/feedback"
+            prefetch={false}
             className="shrink-0 bg-[#FF6220] hover:bg-[#e04f10] text-white text-[11px] md:text-sm font-bold px-4 md:px-5 py-2.5 rounded-full flex items-center gap-1 shadow-sm transition-all uppercase tracking-wider"
           >
             Liên hệ ↗
@@ -380,6 +383,7 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
+                    prefetch={false}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="py-3 px-4 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
                   >
@@ -400,10 +404,10 @@ export default function Header() {
                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
                 </div>
-                <Link href="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <Link href="/account" prefetch={false} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
                   <UserCircle size={18} className="text-primary" /> Tài khoản
                 </Link>
-                <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <Link href="/orders" prefetch={false} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
                   <Package size={18} className="text-gray-400" /> Đơn hàng
                 </Link>
                 <button onClick={() => signOut()} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 mt-2">
@@ -412,7 +416,7 @@ export default function Header() {
               </div>
             ) : (
               <div className="p-4 border-t border-gray-100">
-                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full py-3 bg-primary hover:bg-primary-dark text-white text-center rounded-xl font-bold transition-colors">
+                <Link href="/login" prefetch={false} onClick={() => setIsMobileMenuOpen(false)} className="block w-full py-3 bg-primary hover:bg-primary-dark text-white text-center rounded-xl font-bold transition-colors">
                   Đăng nhập / Đăng ký
                 </Link>
               </div>

@@ -1,21 +1,17 @@
 export default function Loading() {
   return (
-    <div className="fixed inset-0 bg-white/70 backdrop-blur-md z-[9999] flex flex-col items-center justify-center">
-      <div className="relative flex items-center justify-center w-24 h-24">
-        {/* Outer static ring */}
-        <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
-        {/* Spinning ring */}
-        <div className="absolute inset-0 border-4 border-[#2C2877] rounded-full border-t-transparent border-r-transparent animate-spin shadow-lg shadow-[#2C2877]/20"></div>
-        {/* Favicon from admin — uses /api/favicon which reads store_favicon from DB */}
-        <img
-          src="/api/favicon"
-          alt="PicklePro"
-          width={52}
-          height={52}
-          className="w-[52px] h-[52px] rounded-full object-cover"
-        />
-      </div>
-      <p className="mt-5 text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase animate-pulse">Đang tải...</p>
+    <div className="fixed top-0 left-0 right-0 h-1.5 bg-[#2C2877] z-[9999] opacity-90 overflow-hidden shadow-sm">
+      <div className="h-full bg-gradient-to-r from-[#2C2877] via-[#FF6220] to-[#A0E870] animate-loading-bar" />
+      <style>{`
+        @keyframes loading-bar {
+          0% { width: 0%; transform: translateX(-100%); }
+          50% { width: 70%; transform: translateX(0); }
+          100% { width: 95%; transform: translateX(0); }
+        }
+        .animate-loading-bar {
+          animation: loading-bar 1.2s cubic-bezier(0.1, 0.8, 0.1, 1) forwards;
+        }
+      `}</style>
     </div>
   );
 }

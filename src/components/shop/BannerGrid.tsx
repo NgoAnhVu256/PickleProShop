@@ -79,7 +79,7 @@ function AutoSlider({ items = [], interval }: { items: any[]; interval: number }
 
         if (item.link) {
           return (
-            <Link key={item.id} href={item.link} className={cls}>
+            <Link key={item.id} href={item.link} prefetch={false} className={cls}>
               {content}
             </Link>
           );
@@ -138,7 +138,7 @@ function HeroSlider({ items = [] }: { items: any[] }) {
 
         if (item.link) {
           return (
-            <Link key={item.id} href={item.link} className={cls}>
+            <Link key={item.id} href={item.link} prefetch={false} className={cls}>
               {content}
             </Link>
           );

@@ -24,7 +24,7 @@ export default function Footer({ settings }: { settings?: any }) {
 
           {/* Col 1: Logo + Slogan */}
           <div className="md:col-span-3">
-            <Link href="/" className="inline-block mb-3">
+            <Link href="/" prefetch={false} className="inline-block mb-3">
               <img
                 src={logo && logo !== '/api/favicon' ? `/api/img?url=${encodeURIComponent(logo)}&w=128&q=80` : logo}
                 alt={siteName}
@@ -44,13 +44,13 @@ export default function Footer({ settings }: { settings?: any }) {
           <div className="md:col-span-2">
             <h4 className="text-[13px] font-black text-[#2d3a45] uppercase tracking-[0.15em] mb-5">Cửa hàng</h4>
             <nav className="flex flex-col gap-3 text-[13px] font-medium text-[#5a6a78]" aria-label="Footer navigation">
-              <Link href="/products" className="hover:text-[#2d3a45] transition-colors">Tất cả sản phẩm</Link>
-              <Link href="/category/vot-pickleball" className="hover:text-[#2d3a45] transition-colors">Vợt Pickleball</Link>
-              <Link href="/category/quan-ao" className="hover:text-[#2d3a45] transition-colors">Quần áo</Link>
-              <Link href="/category/phu-kien" className="hover:text-[#2d3a45] transition-colors">Phụ kiện</Link>
-              <Link href="/category/balo" className="hover:text-[#2d3a45] transition-colors">Balo</Link>
-              <Link href="/blog" className="hover:text-[#2d3a45] transition-colors">Tin tức & Blog</Link>
-              <Link href="/feedback" className="hover:text-[#2d3a45] transition-colors">Đánh giá</Link>
+              <Link href="/products" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Tất cả sản phẩm</Link>
+              <Link href="/category/vot-pickleball" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Vợt Pickleball</Link>
+              <Link href="/category/quan-ao" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Quần áo</Link>
+              <Link href="/category/phu-kien" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Phụ kiện</Link>
+              <Link href="/category/balo" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Balo</Link>
+              <Link href="/blog" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Tin tức & Blog</Link>
+              <Link href="/feedback" prefetch={false} className="hover:text-[#2d3a45] transition-colors">Đánh giá</Link>
             </nav>
           </div>
 

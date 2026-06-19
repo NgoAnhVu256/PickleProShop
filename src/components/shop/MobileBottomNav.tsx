@@ -19,6 +19,7 @@ export default function MobileBottomNav() {
       <div className="flex items-center justify-around h-16">
         <Link
           href="/"
+          prefetch={false}
           className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${
             pathname === "/" ? "text-[#2C2877]" : "text-gray-400 hover:text-gray-600"
           }`}
@@ -29,6 +30,7 @@ export default function MobileBottomNav() {
 
         <Link
           href="/products"
+          prefetch={false}
           className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${
             pathname === "/products" ? "text-[#2C2877]" : "text-gray-400 hover:text-gray-600"
           }`}
@@ -54,6 +56,7 @@ export default function MobileBottomNav() {
 
         <Link
           href={session?.user ? "/account" : "/login"}
+          prefetch={false}
           className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
             pathname.startsWith("/account") || pathname.startsWith("/login")
               ? "text-[#2C2877]"

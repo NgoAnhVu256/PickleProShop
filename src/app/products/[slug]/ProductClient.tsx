@@ -146,9 +146,9 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs text-gray-400 font-medium mb-4 md:mb-8 flex-wrap" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-[#2C2877]">Trang chủ</Link><ChevronRight size={12} />
-          <Link href="/products" className="hover:text-[#2C2877]">Sản phẩm</Link><ChevronRight size={12} />
-          <Link href={`/category/${product.category.slug}`} className="hover:text-[#2C2877]">{product.category.name}</Link><ChevronRight size={12} />
+          <Link href="/" prefetch={false} className="hover:text-[#2C2877]">Trang chủ</Link><ChevronRight size={12} />
+          <Link href="/products" prefetch={false} className="hover:text-[#2C2877]">Sản phẩm</Link><ChevronRight size={12} />
+          <Link href={`/category/${product.category.slug}`} prefetch={false} className="hover:text-[#2C2877]">{product.category.name}</Link><ChevronRight size={12} />
           <span className="text-gray-900 line-clamp-1">{product.name}</span>
         </nav>
 
@@ -313,9 +313,9 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                   {product.relatedProducts.map(p => {
                     const price = p.salePrice || p.basePrice; const hasSale = !!p.salePrice && p.salePrice < p.basePrice;
                     return (
-                      <Link key={p.id} href={`/products/${p.slug}`} className="bg-white rounded-2xl border border-gray-100 p-2 md:p-3 group hover:shadow-xl transition-all duration-300">
+                      <Link key={p.id} href={`/products/${p.slug}`} prefetch={false} className="bg-white rounded-2xl border border-gray-100 p-2 md:p-3 group hover:shadow-xl transition-all duration-300">
                         <div className="aspect-[4/5] overflow-hidden rounded-xl bg-gray-50 relative mb-2">
-                          <Image src={p.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=SP'} alt={p.name} fill sizes="(max-width: 768px) 50vw, 20vw" className="object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                          <Image src={p.thumbnail || 'https://placehold.co/400x500/f8fafc/94a3b8?text=SP'} alt={p.name} fill sizes="(max-width: 768px) 50vw, 20vw" className="object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" />
                           {hasSale && <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-md z-10">Sale</div>}
                         </div>
                         <h3 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-[#2C2877]">{p.name}</h3>
@@ -341,8 +341,8 @@ export default function ProductClient({ product }: { product: ProductDetail }) {
                   {recentProducts.map(p => {
                     const price = p.salePrice || p.basePrice; const hasSale = !!p.salePrice && p.salePrice < p.basePrice;
                     return (
-                      <Link key={p.id} href={`/products/${p.slug}`} className="flex xl:flex-row flex-col gap-2 xl:gap-3 group shrink-0 w-[120px] xl:w-auto">
-                        <div className="w-full xl:w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100 relative"><Image src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} fill sizes="80px" className="object-cover group-hover:scale-105 transition-transform" loading="lazy" /></div>
+                      <Link key={p.id} href={`/products/${p.slug}`} prefetch={false} className="flex xl:flex-row flex-col gap-2 xl:gap-3 group shrink-0 w-[120px] xl:w-auto">
+                        <div className="w-full xl:w-20 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100 relative"><Image src={p.thumbnail || 'https://placehold.co/100x120'} alt={p.name} fill sizes="80px" className="object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" /></div>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-[#2C2877] mb-1 leading-snug">{p.name}</h4>
                           <span className="text-sm font-black text-[#FF6220]">{price.toLocaleString()}₫</span>

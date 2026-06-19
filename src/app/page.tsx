@@ -163,9 +163,9 @@ async function CategorySection() {
       {categories.length > 0 ? (
         <div className="flex flex-wrap justify-center gap-4 md:gap-6">
           {categories.map((cat) => (
-            <Link key={cat.id} href={`/category/${cat.slug}`} className="flex flex-col items-center gap-4 group w-[130px] md:w-[160px]">
+            <Link key={cat.id} href={`/category/${cat.slug}`} prefetch={false} className="flex flex-col items-center gap-4 group w-[130px] md:w-[160px]">
               <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100 group-hover:shadow-md transition-shadow relative">
-                <Image src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} fill sizes="(max-width: 768px) 33vw, 15vw" className="object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <Image src={cat.image || 'https://placehold.co/400x400/f8fafc/94a3b8?text=Category'} alt={cat.name} fill sizes="(max-width: 768px) 33vw, 15vw" className="object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" />
               </div>
               <span className="text-sm font-semibold text-gray-800">{cat.name}</span>
             </Link>
@@ -214,14 +214,14 @@ async function LatestPostsSection() {
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {posts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`} className="flex flex-col gap-4 group cursor-pointer">
+            <Link key={post.id} href={`/blog/${post.slug}`} prefetch={false} className="flex flex-col gap-4 group cursor-pointer">
               <div className="relative overflow-hidden rounded-xl bg-gray-100 aspect-[16/9]">
                 <Image
                   src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=600'}
                   alt={post.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover group-hover:scale-105 transition-transform duration-200"
                   loading="lazy"
                 />
                 <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-primary">
@@ -255,14 +255,14 @@ async function BottomBannerSection() {
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-20">
       {banners.BOTTOM.map((b: any) => (
-        <Link key={b.id} href={b.link || "#"} className="block rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300 mb-4 last:mb-0">
+        <Link key={b.id} href={b.link || "#"} prefetch={false} className="block rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300 mb-4 last:mb-0">
           <Image
             src={b.image}
             alt={b.title}
             width={1200}
             height={400}
             sizes="(max-width: 1200px) 100vw, 1200px"
-            className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+            className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-200"
             loading="lazy"
           />
         </Link>

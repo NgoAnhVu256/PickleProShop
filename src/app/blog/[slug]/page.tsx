@@ -175,6 +175,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           <div className="absolute inset-x-0 bottom-0 max-w-4xl mx-auto px-6 pb-12">
             <Link 
               href="/blog"
+              prefetch={false}
               className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white text-sm font-bold px-4 py-2 rounded-full hover:bg-white/30 mb-6 transition-all"
             >
               <ArrowLeft size={16} /> Quay lại
@@ -228,7 +229,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                 </h4>
                 <div className="space-y-6">
                   {relatedPosts.map((rp) => (
-                    <Link key={rp.id} href={`/blog/${rp.slug}`} className="group flex gap-4">
+                    <Link key={rp.id} href={`/blog/${rp.slug}`} prefetch={false} className="group flex gap-4">
                       <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-gray-50 shrink-0">
                         <Image 
                           src={rp.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=200'}
@@ -255,14 +256,14 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
             {/* Right Banners */}
             {sideBanners.map((banner) => (
-              <Link key={banner.id} href={banner.link || '#'} className="block rounded-[32px] overflow-hidden group shadow-xl hover:shadow-primary/20 transition-all duration-500">
+              <Link key={banner.id} href={banner.link || '#'} prefetch={false} className="block rounded-[32px] overflow-hidden group shadow-xl hover:shadow-primary/20 transition-all duration-200">
                 <Image 
                   src={banner.image} 
                   alt={banner.title} 
                   width={360}
                   height={480}
                   sizes="(max-width: 1024px) 100vw, 360px"
-                  className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-200"
                   loading="lazy"
                 />
               </Link>

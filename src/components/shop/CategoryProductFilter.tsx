@@ -186,13 +186,13 @@ export default function CategoryProductFilter({ products, categoryName }: { prod
             const discount = hasSale ? Math.round(((product.basePrice - price) / product.basePrice) * 100) : 0;
 
             return (
-              <Link key={product.id} href={`/products/${product.slug}`}
+              <Link key={product.id} href={`/products/${product.slug}`} prefetch={false}
                 className="bg-white rounded-xl md:rounded-2xl border border-gray-100 p-2 md:p-3 group hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 flex flex-col gap-2 md:gap-3">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-lg md:rounded-xl bg-gray-50">
                   <img
                     src={product.thumbnail ? `/api/img?url=${encodeURIComponent(product.thumbnail)}&w=400&q=80` : 'https://placehold.co/400x500/f8fafc/94a3b8?text=Product'}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                     loading="lazy"
                   />
                   {hasSale && (

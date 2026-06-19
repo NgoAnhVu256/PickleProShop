@@ -331,6 +331,7 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <Link 
       href={`/products/${product.slug}`} 
+      prefetch={false}
       className="bg-white rounded-2xl border border-gray-100 p-2 md:p-3 group hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 flex flex-col gap-2 md:gap-3"
     >
       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gray-50">
@@ -339,7 +340,7 @@ function ProductCard({ product }: { product: Product }) {
           alt={product.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover group-hover:scale-105 transition-transform duration-200"
           loading="lazy"
         />
         {hasSale && (

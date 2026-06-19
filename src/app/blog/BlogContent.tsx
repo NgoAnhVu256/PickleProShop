@@ -35,7 +35,7 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
       {/* Breadcrumb & Tiêu đề */}
       <div className="mb-8 md:mb-12">
         <div className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-4 flex-wrap">
-          <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
+          <Link href="/" prefetch={false} className="hover:text-primary transition-colors">Trang chủ</Link>
           <ChevronRight size={12} />
           <span className="text-gray-900">Tin tức Pickleball</span>
         </div>
@@ -81,12 +81,12 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
           {filteredPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredPosts.map((post) => (
-                <Link key={post.id} href={`/blog/${post.slug}`} className="flex flex-col gap-4 group cursor-pointer bg-white p-3 md:p-4 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500">
+                <Link key={post.id} href={`/blog/${post.slug}`} prefetch={false} className="flex flex-col gap-4 group cursor-pointer bg-white p-3 md:p-4 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-200">
                   <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gray-100 aspect-[16/10]">
                     <img 
                       src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=800'} 
                       alt={post.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                       loading="lazy"
                       decoding="async"
                     />
@@ -129,12 +129,12 @@ export default function BlogContent({ posts, categories }: { posts: Post[]; cate
             </h3>
             <div className="space-y-5">
               {latestPosts.map(post => (
-                <Link key={post.id} href={`/blog/${post.slug}`} className="flex gap-4 group items-center">
+                <Link key={post.id} href={`/blog/${post.slug}`} prefetch={false} className="flex gap-4 group items-center">
                   <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-gray-100">
                     <img 
                       src={post.image || 'https://images.unsplash.com/photo-1551773188-0801da13dfae?q=80&w=200'} 
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
                       loading="lazy"
                     />
                   </div>

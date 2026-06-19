@@ -20,6 +20,7 @@ export default function TopBanner({ banners = [] }: { banners?: any[] }) {
         <Link
           key={banner.id}
           href={banner.link || '#'}
+          prefetch={false}
           className={`absolute inset-0 transition-opacity duration-1000 ${
             i === index ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
           }`}
