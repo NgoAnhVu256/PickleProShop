@@ -6,6 +6,7 @@ import { getSiteSettings } from "@/lib/settings";
 import GoogleAnalytics from "@/components/shop/GoogleAnalytics";
 import Providers from "@/components/shop/Providers";
 import MobileBottomNav from "@/components/shop/MobileBottomNav";
+import PurchaseNotification from "@/components/shop/PurchaseNotification";
 // Only load essential font weights to reduce font file size (~40% reduction)
 const inter = Inter({ subsets: ["latin"], weight: ["400", "600", "700", "800"], display: "swap" });
 
@@ -195,6 +196,7 @@ export default async function RootLayout({
             {children}
           </div>
           <MobileBottomNav />
+          <PurchaseNotification />
         </Providers>
         <Toaster position="top-center" />
         {/* GA loads after hydration — not render-blocking */}
